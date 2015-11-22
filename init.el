@@ -50,7 +50,8 @@
 (setq savehist-additional-variables
       '(kill-ring
 	search-ring
-	regexp-search-ring))
+	regexp-search-ring
+	ioccur-history))
 
 (setq sentence-end-double-space nil)
 
@@ -354,6 +355,28 @@
 (autoload 'magit-ido-completing-read "magit-utils" "Ido-based `completing-read' almost-replacement.")
 (setq magit-completing-read-function #'magit-ido-completing-read)
 (setq ioccur-buffer-completion-use-ido t)
+
+(eval-after-load "ioccur"
+  '(progn
+     (defun ioccur-follow-next ()
+       "Move to the next line and follow in the connected buffer."
+       (interactive)
+       (ioccur-next-line)
+       (ioccur-jump-without-quit))
+     (defun ioccur-follow-previous ()
+       "Move to the previous line and follow in the connected buffer."
+       (interactive)
+       (ioccur-precedent-line)
+       (ioccur-jump-without-quit))
+     (define-key ioccur-mode-map (kbd "M-n") #'ioccur-follow-next)
+     (define-key ioccur-mode-map (kbd "M-p") #'ioccur-follow-previous)
+     (define-key ioccur-mode-map (kbd "n") #'ioccur-next-line)
+     (define-key ioccur-mode-map (kbd "p") #'ioccur-precedent-line)
+     (define-key ioccur-mode-map (kbd "z") #'ioccur-jump-without-quit)
+     (define-key ioccur-mode-map (kbd "r") #'ioccur-restart)
+     (define-key ioccur-mode-map (kbd "s") #'ioccur-restart)
+     (define-key ioccur-mode-map (kbd "o") #'ioccur-restart)))
+
 (setq aw-keys (list ?h ?t ?n ?s ?a ?o ?e ?u))
 
 (global-set-key (kbd "C-c g") 'magit-status)
@@ -457,6 +480,7 @@ your recently and most frequently used commands.")
 (add-to-list 'ido-ignore-files "^\.slime-history\.eld$")
 (add-to-list 'ido-ignore-files "^\.python_history$")
 (add-to-list 'ido-ignore-files "^\.w3m/$")
+(add-to-list 'ido-ignore-files "^\.histfile$")
 
 (add-to-list 'default-frame-alist '(font . "Linux Libertine Mono:pixelsize=14:foundry=unknown:weight=normal:slant=normal:width=normal:scalable=true"))
 (setq split-width-threshold 100)
