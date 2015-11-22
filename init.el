@@ -41,6 +41,8 @@
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/") ("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
 
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
+
 (setq savehist-file "~/.emacs.d/savehist")
 (savehist-mode 1)
 (setq history-delete-duplicates t)
