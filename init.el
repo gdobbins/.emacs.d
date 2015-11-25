@@ -43,6 +43,8 @@
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
 
+(setq kmacro-ring-max 24)
+
 (setq savehist-file "~/.emacs.d/savehist")
 (savehist-mode 1)
 (setq history-delete-duplicates t)
@@ -51,12 +53,17 @@
       '(kill-ring
 	search-ring
 	regexp-search-ring
-	ioccur-history))
+	ioccur-history
+	kmacro-ring
+	last-kbd-macro
+	kmacro-counter
+	kmacro-counter-format
+	register-alist))
 
 (setq sentence-end-double-space nil)
 
 (require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x r" "C-c" "C-x 4" "C-x 8"))
+(setq guide-key/guide-key-sequence '("C-x r" "C-c" "C-x 4" "C-x 8" "C-x a" "C-c k"))
 (guide-key-mode 1)
 
 (prefer-coding-system 'utf-8)
@@ -356,18 +363,21 @@
 (setq magit-completing-read-function #'magit-ido-completing-read)
 (setq ioccur-buffer-completion-use-ido t)
 
-(eval-after-load "ioccur"
-  '(progn
-     (defun ioccur-follow-next ()
+(defun ioccur-follow-next ()
        "Move to the next line and follow in the connected buffer."
        (interactive)
        (ioccur-next-line)
        (ioccur-jump-without-quit))
-     (defun ioccur-follow-previous ()
-       "Move to the previous line and follow in the connected buffer."
-       (interactive)
-       (ioccur-precedent-line)
-       (ioccur-jump-without-quit))
+
+(defun ioccur-follow-previous ()
+  "Move to the previous line and follow in the connected buffer."
+  (interactive)
+  (ioccur-precedent-line)
+  (ioccur-jump-without-quit))
+
+(eval-after-load "ioccur"
+  '(progn
+     (defvar ioccur-mode-map)
      (define-key ioccur-mode-map (kbd "M-n") #'ioccur-follow-next)
      (define-key ioccur-mode-map (kbd "M-p") #'ioccur-follow-previous)
      (define-key ioccur-mode-map (kbd "n") #'ioccur-next-line)
@@ -401,6 +411,7 @@
 (global-set-key (kbd "M-n") 'smartscan-symbol-go-forward)
 (global-set-key (kbd "M-p") 'smartscan-symbol-go-backward)
 (global-set-key (kbd "M-'") 'smartscan-symbol-replace)
+(global-set-key (kbd "C-c k") 'kmacro-keymap)
 
 (global-set-key (kbd "C-c m m") 'mpc)
 (global-set-key (kbd "C-c m r") 'mpc-resume)
