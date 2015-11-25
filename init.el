@@ -63,7 +63,7 @@
 (setq sentence-end-double-space nil)
 
 (require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x r" "C-c" "C-x 4" "C-x 8" "C-x a" "C-c k"))
+(setq guide-key/guide-key-sequence '("C-x r" "C-c" "C-x 4" "C-x 8" "C-x a" "C-c k" "C-c p"))
 (guide-key-mode 1)
 
 (prefer-coding-system 'utf-8)
@@ -397,8 +397,12 @@
 (global-set-key (kbd "C-c t") 'toggle-window-split)
 (global-set-key (kbd "C-c C-z") 'smart-switch-to-output-buffer)
 (global-set-key (kbd "C-c z") 'smart-switch-to-output-buffer)
-(global-set-key (kbd "C-c p") 'pop-to-mark-command)
-(global-set-key (kbd "C-c P") 'pop-global-mark)
+(global-set-key (kbd "C-c p SPC") 'pop-to-mark-command)
+(global-set-key (kbd "C-c p m") 'pop-to-mark-command)
+(global-set-key (kbd "C-c p g") 'pop-global-mark)
+(global-set-key (kbd "C-c p p") 'goto-last-change)
+(global-set-key (kbd "C-c p n") 'goto-last-change-reverse)
+(global-set-key (kbd "C-c p r") 'jump-to-register)
 (global-set-key (kbd "C-c e") 'eval-and-replace)
 (global-set-key (kbd "C-c '") 'insert-backquote)
 (global-set-key (kbd "C-c -") 'insert-twidle)
@@ -435,6 +439,8 @@
 
 (autoload 'elisp-slime-nav-mode "elisp-slime-nav")
 (add-hook 'emacs-lisp-mode-hook #'turn-on-elisp-slime-nav-mode)
+
+(define-key emacs-lisp-mode-map (kbd "C-c C-c") 'eval-defun)
 
 (require 'ido-sort-mtime)
 (ido-sort-mtime-mode 1)
