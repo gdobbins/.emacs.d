@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (setq inhibit-startup-screen t)
 (when (fboundp #'menu-bar-mode)
   (menu-bar-mode -1))
@@ -27,9 +28,10 @@
 (add-hook 'after-change-major-mode-hook 'purge-minor-modes)
 
 (defun command-line-diff (switch)
-      (let ((file1 (pop command-line-args-left))
-            (file2 (pop command-line-args-left)))
-        (ediff file1 file2)))
+  (ignore switch)
+  (let ((file1 (pop command-line-args-left))
+	(file2 (pop command-line-args-left)))
+    (ediff file1 file2)))
 
 (setq ediff-split-window-function 'split-window-horizontally)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -75,6 +77,8 @@
 (autoload 'w3m-browse-url "w3m" "Ask a www browser to show a URL." t)
 
 (defvar *w3m-number-of-windows-beforehand* 1 "The number of windows open before opening w3m.")
+
+(defvar w3m-pop-up-windows)
 
 (defun w3m-browse-url-other-window (url &optional newwin)
   "Set `*w3m-number-of-windows-beforehand*' to the current number of windows, then call `w3m-browse-url' in the `other-window', using `split-window' if necessary."
