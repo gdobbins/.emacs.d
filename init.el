@@ -38,6 +38,22 @@
 
 (add-to-list 'command-switch-alist '("-diff" . command-line-diff))
 
+(defmacro make-last-key-repeating-function (func &optional trans-map)
+  "Add advice to to the function such that repeating the
+last key used to call the function repeats the call.
+If trans-map, use trans-map as the transient map such that
+multiple functions can call each other in repetition."
+  (let ((new-func (intern (concat "last-key-repeating-" (symbol-name func)))))
+    `(defadvice ,func (after ,new-func compile activate)
+       ,@(if trans-map
+	     `(,(format "Set the transient map to `%s'" trans-map)
+	       (set-transient-map ,trans-map t))
+	   `("Set the transient map to one where `last-input-event' repeats the function call"
+	     (set-transient-map
+	      (let ((map (make-sparse-keymap)))
+		(define-key map (vector last-input-event) ',func)
+		map)))))))
+
 (require 'package)
 
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/") ("melpa" . "https://melpa.org/packages/")))
@@ -393,6 +409,10 @@
 
 (setq aw-keys (list ?h ?t ?n ?s ?a ?o ?e ?u))
 
+(define-prefix-command 'pop-repeating-map)
+(define-key pop-repeating-map (kbd "j") 'jump-to-register)
+(define-key pop-repeating-map (kbd "r") 'jump-to-register)
+
 (global-set-key (kbd "C-c g") 'magit-status)
 (global-set-key (kbd "C-c o") 'ioccur)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
@@ -401,12 +421,18 @@
 (global-set-key (kbd "C-c t") 'toggle-window-split)
 (global-set-key (kbd "C-c C-z") 'smart-switch-to-output-buffer)
 (global-set-key (kbd "C-c z") 'smart-switch-to-output-buffer)
+(global-set-key (kbd "C-c p") 'pop-repeating-map)
 (global-set-key (kbd "C-c p SPC") 'pop-to-mark-command)
 (global-set-key (kbd "C-c p m") 'pop-to-mark-command)
+(global-set-key (kbd "C-c p l") 'pop-to-mark-command)
+(make-last-key-repeating-function pop-to-mark-command pop-repeating-map)
 (global-set-key (kbd "C-c p g") 'pop-global-mark)
+(global-set-key (kbd "C-c p C-SPC") 'pop-global-mark)
+(make-last-key-repeating-function pop-global-mark pop-repeating-map)
 (global-set-key (kbd "C-c p p") 'goto-last-change)
+(make-last-key-repeating-function goto-last-change pop-repeating-map)
 (global-set-key (kbd "C-c p n") 'goto-last-change-reverse)
-(global-set-key (kbd "C-c p r") 'jump-to-register)
+(make-last-key-repeating-function goto-last-change-reverse pop-repeating-map)
 (global-set-key (kbd "C-c e") 'eval-and-replace)
 (global-set-key (kbd "C-c '") 'insert-backquote)
 (global-set-key (kbd "C-c -") 'insert-twidle)
