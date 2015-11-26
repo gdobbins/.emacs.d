@@ -78,6 +78,14 @@ multiple functions can call each other in repetition."
 	kmacro-counter-format
 	register-alist))
 
+(defmacro make-keyboard-macro (string)
+  "Make a function which emulates pushing the key sequence string"
+  (let ((new-func (intern (concat "push-" string))))
+    `(defun ,new-func ()
+       ,(concat "Emulate the keypress " string)
+       (interactive)
+       (kmacro-call-macro nil t nil (kbd ,string)))))
+
 (setq sentence-end-double-space nil)
 
 (require 'guide-key)
@@ -412,6 +420,12 @@ multiple functions can call each other in repetition."
 (define-prefix-command 'pop-repeating-map)
 (define-key pop-repeating-map (kbd "j") 'jump-to-register)
 (define-key pop-repeating-map (kbd "r") 'jump-to-register)
+(define-key pop-repeating-map (kbd ".") (make-keyboard-macro "M-."))
+(define-key pop-repeating-map (kbd ",") (make-keyboard-macro "M-,"))
+(make-last-key-repeating-function push-M-\. pop-repeating-map)
+(make-last-key-repeating-function push-M-\, pop-repeating-map)
+(global-set-key (kbd "C-.") 'push-M-\.)
+(global-set-key (kbd "C-,") 'push-M-\,)
 
 (global-set-key (kbd "C-c g") 'magit-status)
 (global-set-key (kbd "C-c o") 'ioccur)
