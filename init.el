@@ -89,7 +89,7 @@ multiple functions can call each other in repetition."
 (setq sentence-end-double-space nil)
 
 (require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x r" "C-c" "C-x 4" "C-x 8" "C-x a" "C-c k" "C-c p"))
+(setq guide-key/guide-key-sequence '("C-x r" "C-c" "C-x 4" "C-x 8" "C-x a" "C-c k" "C-c p" "C-c m"))
 (guide-key-mode 1)
 
 (prefer-coding-system 'utf-8)
@@ -461,11 +461,23 @@ multiple functions can call each other in repetition."
 (global-set-key (kbd "M-'") 'smartscan-symbol-replace)
 (global-set-key (kbd "C-c k") 'kmacro-keymap)
 
+(autoload 'mpc-resume "mpc")
+(autoload 'mpc-pause "mpc")
+(autoload 'mpc-next "mpc")
+(autoload 'mpc-prev "mpc")
+
+(define-prefix-command 'mpc-repeating-map)
+(global-set-key (kbd "C-c m") 'mpc-repeating-map)
 (global-set-key (kbd "C-c m m") 'mpc)
+(make-last-key-repeating-function mpc mpc-repeating-map)
 (global-set-key (kbd "C-c m r") 'mpc-resume)
+(make-last-key-repeating-function mpc-resume mpc-repeating-map)
 (global-set-key (kbd "C-c m p") 'mpc-pause)
+(make-last-key-repeating-function mpc-pause mpc-repeating-map)
 (global-set-key (kbd "C-c m n") 'mpc-next)
+(make-last-key-repeating-function mpc-next mpc-repeating-map)
 (global-set-key (kbd "C-c m l") 'mpc-prev)
+(make-last-key-repeating-function mpc-prev mpc-repeating-map)
 
 (global-set-key (kbd "<mouse-8>") 'previous-buffer)
 (global-set-key (kbd "<mouse-9>") 'next-buffer)
