@@ -137,6 +137,9 @@ multiple functions can call each other in repetition."
      (setq dired-omit-files "^\\.\\|^#.#$\\|.~$")
      (define-key dired-mode-map (kbd "h") 'dired-omit-mode)))
 
+(global-set-key (kbd "C-x p") 'proced)
+(setq-default proced-filter 'emacs)
+
 (setq ibuffer-saved-filter-groups
       `(("default"
 	 ("Lisp" (or
@@ -165,7 +168,8 @@ multiple functions can call each other in repetition."
 		    (mode . org-agenda-mode)))
 	 ("Dired" (or
 		   (mode . dired-mode)
-		   (mode . archive-mode)))
+		   (mode . archive-mode)
+		   (mode . proced-mode)))
 	 ("Git" (derived-mode . magit-mode))
 	 ("Emacs" (or
 		   (mode . emacs-lisp-mode)
