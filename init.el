@@ -154,6 +154,8 @@ multiple functions can call each other in repetition."
 	 ("Assembly" (or
 		      (mode . asm-mode)
 		      (filename . "^/usr/local/doc/64-ia-32-architectures-software-developer-manual-325462.pdf$")))
+	 ("Data" (or
+		  (filename . ".*\.\\([ct]sv\\|dat\\)$")))
 	 ("Text" (mode . text-mode))
 	 ("Books" (or
 		   (mode . pdf-view-mode)
@@ -161,7 +163,9 @@ multiple functions can call each other in repetition."
 	 ("Web" (mode . w3m-mode))
 	 ("Org" (or (derived-mode . org-mode)
 		    (mode . org-agenda-mode)))
-	 ("Dired" (mode . dired-mode))
+	 ("Dired" (or
+		   (mode . dired-mode)
+		   (mode . archive-mode)))
 	 ("Git" (derived-mode . magit-mode))
 	 ("Emacs" (or
 		   (mode . emacs-lisp-mode)
