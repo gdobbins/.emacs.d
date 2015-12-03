@@ -442,6 +442,7 @@ multiple functions can call each other in repetition."
 (define-prefix-command 'pop-repeating-map)
 (define-key pop-repeating-map (kbd "j") 'jump-to-register)
 (define-key pop-repeating-map (kbd "r") 'jump-to-register)
+(define-key pop-repeating-map (kbd "s") 'imenu)
 (define-key pop-repeating-map (kbd ".") (make-keyboard-macro "M-."))
 (define-key pop-repeating-map (kbd ",") (make-keyboard-macro "M-,"))
 (make-last-key-repeating-function push-M-\. pop-repeating-map)
@@ -482,6 +483,7 @@ multiple functions can call each other in repetition."
 (global-set-key (kbd "M-p") 'smartscan-symbol-go-backward)
 (global-set-key (kbd "M-'") 'smartscan-symbol-replace)
 (global-set-key (kbd "C-c k") 'kmacro-keymap)
+(global-set-key (kbd "C-c s") 'imenu)
 
 (autoload 'mpc-resume "mpc")
 (autoload 'mpc-pause "mpc")
