@@ -511,7 +511,12 @@ multiple functions can call each other in repetition."
      (define-key help-mode-map (kbd "C-c b") 'help-go-back)
      (define-key help-mode-map (kbd "C-c f") 'help-go-forward)
      (define-key help-mode-map (kbd "n") 'next-line)
-     (define-key help-mode-map (kbd "p") 'previous-line)))
+     (define-key help-mode-map (kbd "p") 'previous-line)
+     (defadvice describe-bindings (after describe-bindings-move-to-major-mode compile activate)
+       "Pop to the help buffer and search forward for the Major mode bindings."
+       (pop-to-buffer (help-buffer))
+       (search-forward "Major Mode Bindings:")
+       (recenter-top-bottom 0))))
 
 ;(add-hook 'help-mode-hook #'set-help-mode)
 
