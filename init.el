@@ -137,6 +137,11 @@ multiple functions can call each other in repetition."
      (setq dired-omit-files "^\\.\\|^#.#$\\|.~$")
      (define-key dired-mode-map (kbd "h") 'dired-omit-mode)))
 
+(eval-after-load 'wdired
+  '(progn
+    (define-key wdired-mode-map (kbd "C-c C-g") 'wdired-abort-changes)
+    (setq wdired-allow-to-change-permissions t)))
+
 (global-set-key (kbd "C-x p") 'proced)
 (setq-default proced-filter 'emacs)
 
@@ -168,6 +173,7 @@ multiple functions can call each other in repetition."
 		    (mode . org-agenda-mode)))
 	 ("Dired" (or
 		   (mode . dired-mode)
+		   (mode . wdired-mode)
 		   (mode . archive-mode)
 		   (mode . proced-mode)))
 	 ("Git" (derived-mode . magit-mode))
