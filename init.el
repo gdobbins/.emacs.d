@@ -158,7 +158,7 @@ multiple functions can call each other in repetition."
 		      (mode . asm-mode)
 		      (filename . "^/usr/local/doc/64-ia-32-architectures-software-developer-manual-325462.pdf$")))
 	 ("Data" (or
-		  (filename . ".*\.\\([ct]sv\\|dat\\)$")))
+		  (filename . ".*\\.\\([ct]sv\\|dat\\)$")))
 	 ("Text" (mode . text-mode))
 	 ("Books" (or
 		   (mode . pdf-view-mode)
@@ -179,6 +179,7 @@ multiple functions can call each other in repetition."
 		   (mode . package-menu-mode)
 		   (mode . ioccur-mode)
 		   (mode . occur-mode)
+		   (mode . reb-mode)
 		   (name . "^\\*Messages\\*$")
 		   (name . "^\\*scratch\\*$"))))))
 
@@ -226,6 +227,13 @@ multiple functions can call each other in repetition."
 (add-hook 'ibuffer-mode-hook
               (lambda ()
                 (ibuffer-switch-to-saved-filter-groups "default")))
+
+(global-set-key (kbd "C-h r") 're-builder)
+
+(eval-after-load "re-builder"
+  '(progn
+     (define-key reb-mode-map (kbd "C-c C-g") 'reb-quit)
+     (setq reb-re-syntax 'string)))
 
 (load (expand-file-name "~/quicklisp/slime-helper"))
 
