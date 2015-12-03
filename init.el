@@ -584,6 +584,9 @@ your recently and most frequently used commands.")
 (add-to-list 'ido-ignore-files "^\.w3m/$")
 (add-to-list 'ido-ignore-files "^\.histfile$")
 
+(setq ido-file-extensions-order '(".el" ".org" ".lisp" ".py" ".pdf" t))
+(setq ido-use-filename-at-point 'guess)
+
 (add-to-list 'default-frame-alist '(font . "Linux Libertine Mono:pixelsize=14:foundry=unknown:weight=normal:slant=normal:width=normal:scalable=true"))
 (setq split-width-threshold 100)
 
