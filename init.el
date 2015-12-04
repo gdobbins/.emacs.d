@@ -72,6 +72,7 @@ multiple functions can call each other in repetition."
 	search-ring
 	regexp-search-ring
 	ioccur-history
+	imenu--history-list
 	kmacro-ring
 	last-kbd-macro
 	kmacro-counter
@@ -135,7 +136,8 @@ multiple functions can call each other in repetition."
      (require 'dired-x)
      (setq-default dired-omit-files-p t)
      (setq dired-omit-files "^\\.\\|^#.#$\\|.~$")
-     (define-key dired-mode-map (kbd "h") 'dired-omit-mode)))
+     (define-key dired-mode-map (kbd "h") 'dired-omit-mode)
+     (define-key dired-mode-map (kbd "e") 'read-only-mode)))
 
 (eval-after-load 'wdired
   '(progn
@@ -158,7 +160,8 @@ multiple functions can call each other in repetition."
 	 ("Shell" (or
 		   (mode . shell-mode)
 		   (mode . term-mode)
-		   (mode . sh-mode)))
+		   (mode . sh-mode)
+		   (name . "^\\*Shell Command Output\\*$")))
 	 ("Assembly" (or
 		      (mode . asm-mode)
 		      (filename . "^/usr/local/doc/64-ia-32-architectures-software-developer-manual-325462.pdf$")))
@@ -479,6 +482,7 @@ multiple functions can call each other in repetition."
 (global-set-key (kbd "C-c l") 'count-buffer-lines)
 (global-set-key (kbd "C-h x") 'x86-lookup)
 (global-set-key (kbd "C-x o") 'ace-window)
+(global-set-key (kbd "C-o") 'ace-window)
 (global-set-key (kbd "M-n") 'smartscan-symbol-go-forward)
 (global-set-key (kbd "M-p") 'smartscan-symbol-go-backward)
 (global-set-key (kbd "M-'") 'smartscan-symbol-replace)
