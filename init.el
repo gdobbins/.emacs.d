@@ -767,11 +767,25 @@ your recently and most frequently used commands.")
 
 (setq org-agenda-sticky t)
 
+(defun python-repl-clear-buffer ()
+  (interactive)
+  (let ((start-point (point)))
+    (goto-char (point-max))
+    (move-beginning-of-line 1)
+    (forward-char -4)
+    (let* ((new-point (point))
+	   (diff (- start-point new-point)))
+      (delete-region (point-min) new-point)
+      (if (<= 0 diff)
+	  (forward-char diff)
+	(goto-char (point-max))))))
+
 (eval-after-load "python"
   '(progn
      (elpy-enable)
      (defvar inferior-python-mode-map)
-     (define-key inferior-python-mode-map (kbd "C-d") 'comint-delchar-or-eof-or-kill-buffer)))
+     (define-key inferior-python-mode-map (kbd "C-d") 'comint-delchar-or-eof-or-kill-buffer)
+     (define-key inferior-python-mode-map (kbd "C-c M-o") 'python-repl-clear-buffer)))
 
 (eval-after-load "elpy"
   '(progn
