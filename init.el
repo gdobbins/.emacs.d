@@ -156,7 +156,8 @@ multiple functions can call each other in repetition."
 		  (filename . "^/usr/local/doc/HyperSpec/")))
 	 ("Python" (or
 		    (mode . python-mode)
-		    (mode . inferior-python-mode)))
+		    (mode . inferior-python-mode)
+		    (name . "^\\*Python \\(Check\\|Doc\\)\\*$")))
 	 ("Shell" (or
 		   (mode . shell-mode)
 		   (mode . term-mode)
@@ -170,7 +171,7 @@ multiple functions can call each other in repetition."
 	 ("Text" (mode . text-mode))
 	 ("Books" (or
 		   (mode . pdf-view-mode)
-		   (filename . ,(expand-file-name "~/Books"))))
+		   (filename . ,(concat "^" (expand-file-name "~/Books")))))
 	 ("Web" (mode . w3m-mode))
 	 ("Org" (or (derived-mode . org-mode)
 		    (mode . org-agenda-mode)))
@@ -186,11 +187,12 @@ multiple functions can call each other in repetition."
 		   (mode . help-mode)
 		   (mode . Info-mode)
 		   (mode . package-menu-mode)
+		   (mode . Custom-mode)
+		   (mode . apropos-mode)
 		   (mode . ioccur-mode)
 		   (mode . occur-mode)
 		   (mode . reb-mode)
-		   (name . "^\\*Messages\\*$")
-		   (name . "^\\*scratch\\*$"))))))
+		   (mode . messages-buffer-mode))))))
 
 (setq ibuffer-show-empty-filter-groups nil)
 (setq ibuffer-jump-offer-only-visible-buffers t)
