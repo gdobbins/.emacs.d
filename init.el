@@ -440,6 +440,11 @@ multiple functions can call each other in repetition."
      (define-key ioccur-mode-map (kbd "s") #'ioccur-restart)
      (define-key ioccur-mode-map (kbd "o") #'ioccur-restart)))
 
+(defun revert-this-buffer ()
+  (interactive)
+  (revert-buffer nil t t)
+  (message (concat "Reverted buffer " (buffer-name))))
+
 (setq aw-keys (list ?h ?t ?n ?s ?a ?o ?e ?u))
 
 (define-prefix-command 'pop-repeating-map)
@@ -488,6 +493,7 @@ multiple functions can call each other in repetition."
 (global-set-key (kbd "M-'") 'smartscan-symbol-replace)
 (global-set-key (kbd "C-c k") 'kmacro-keymap)
 (global-set-key (kbd "C-c s") 'imenu)
+(global-set-key (kbd "C-c u") 'revert-this-buffer)
 
 (autoload 'mpc-resume "mpc")
 (autoload 'mpc-pause "mpc")
@@ -545,7 +551,18 @@ your recently and most frequently used commands.")
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "<menu>") 'ido-hacks-execute-extended-command)
 (global-set-key (kbd "M-/") 'hippie-expand)
-(global-set-key (kbd "C-<tab>") 'dabbrev-expand)
+
+(setq hippie-expand-try-functions-list
+      '(try-expand-all-abbrevs
+	try-expand-dabbrev
+	try-expand-list
+	try-expand-line
+	try-expand-dabbrev-all-buffers
+	try-expand-dabbrev-from-kill
+	try-complete-lisp-symbol-partially
+	try-complete-lisp-symbol
+	try-complete-file-name-partially
+	try-complete-file-name))
 
 (defadvice he-substitute-string (after he-paredit-fix compile activate)
   "remove extra paren when expanding line in paredit"
@@ -760,6 +777,19 @@ your recently and most frequently used commands.")
      (define-key elpy-mode-map (kbd "M-,") 'pop-tag-mark)
      (define-key elpy-mode-map (kbd "C-c C-c") 'python-shell-send-defun)
      (define-key elpy-mode-map (kbd "C-c C-k") 'elpy-shell-send-region-or-buffer)))
+
+(defun company-yasnippet-or-completion ()
+  "Solve company yasnippet conflicts."
+  (interactive)
+  (let ((yas-fallback-behavior
+         '(apply 'company-complete-common nil)))
+    (yas-expand)))
+
+(eval-after-load "company"
+  '(substitute-key-definition
+    'company-complete-common
+    'company-yasnippet-or-completion
+    company-active-map))
 
 (defun byte-compile-current-buffer ()
   "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
