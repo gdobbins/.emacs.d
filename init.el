@@ -141,8 +141,10 @@ multiple functions can call each other in repetition."
 
 (eval-after-load 'wdired
   '(progn
-    (define-key wdired-mode-map (kbd "C-c C-g") 'wdired-abort-changes)
-    (setq wdired-allow-to-change-permissions t)))
+     (defvar wdired-mode-map)
+     (define-key wdired-mode-map (kbd "C-c C-g") 'wdired-abort-changes)
+     (defvar wdired-allow-to-change-permissions)
+     (setq wdired-allow-to-change-permissions t)))
 
 (global-set-key (kbd "C-x p") 'proced)
 (setq-default proced-filter 'emacs)
@@ -243,7 +245,9 @@ multiple functions can call each other in repetition."
 
 (eval-after-load "re-builder"
   '(progn
+     (defvar reb-mode-map)
      (define-key reb-mode-map (kbd "C-c C-g") 'reb-quit)
+     (defvar reb-re-syntax)
      (setq reb-re-syntax 'string)))
 
 (load (expand-file-name "~/quicklisp/slime-helper"))
@@ -448,6 +452,7 @@ multiple functions can call each other in repetition."
   (message (concat "Reverted buffer " (buffer-name))))
 
 (setq aw-keys (list ?h ?t ?n ?s ?a ?o ?e ?u))
+(setq avy-keys (list ?h ?t ?n ?s ?a ?o ?e ?u))
 
 (define-prefix-command 'pop-repeating-map)
 (define-key pop-repeating-map (kbd "j") 'jump-to-register)
@@ -492,7 +497,7 @@ multiple functions can call each other in repetition."
 (global-set-key (kbd "C-o") 'ace-window)
 (global-set-key (kbd "M-n") 'smartscan-symbol-go-forward)
 (global-set-key (kbd "M-p") 'smartscan-symbol-go-backward)
-(global-set-key (kbd "M-'") 'smartscan-symbol-replace)
+(global-set-key (kbd "M-'") 'avy-goto-char)
 (global-set-key (kbd "C-c k") 'kmacro-keymap)
 (global-set-key (kbd "C-c s") 'imenu)
 (global-set-key (kbd "C-c u") 'revert-this-buffer)
