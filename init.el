@@ -494,7 +494,7 @@ multiple functions can call each other in repetition."
 (global-set-key (kbd "C-c l") 'count-buffer-lines)
 (global-set-key (kbd "C-h x") 'x86-lookup)
 (global-set-key (kbd "C-x o") 'ace-window)
-(global-set-key (kbd "C-o") 'ace-window)
+(global-set-key (kbd "M-o") 'ace-window)
 (global-set-key (kbd "M-n") 'smartscan-symbol-go-forward)
 (global-set-key (kbd "M-p") 'smartscan-symbol-go-backward)
 (global-set-key (kbd "M-'") 'avy-goto-char)
