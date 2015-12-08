@@ -389,9 +389,17 @@ multiple functions can call each other in repetition."
 	  (if this-win-2nd (other-window 1))))))
 
 (defun count-buffer-lines ()
-  "Count the number of lines in the active buffer."
+  "Count the number of lines in the active region or buffer."
   (interactive)
-  (princ (format "%d lines in %s" (count-lines 1 (point-max)) (buffer-name (current-buffer)))))
+  (princ
+   (if mark-active
+       (format "%d lines in region of %s" (let ((pt (point))
+						(mk (mark)))
+					    (if (> pt mk)
+						(count-lines mk pt)
+					      (count-lines pt mk)))
+	       (buffer-name (current-buffer)))
+     (format "%d lines in %s" (count-lines 1 (point-max)) (buffer-name (current-buffer))))))
 
 (defun insert-backquote ()
   (interactive)
