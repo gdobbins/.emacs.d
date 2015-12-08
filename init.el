@@ -135,6 +135,7 @@ multiple functions can call each other in repetition."
   '(progn
      (require 'dired-x)
      (setq-default dired-omit-files-p t)
+     (setq dired-listing-switches "-alh")
      (setq dired-omit-files "^\\.\\|^#.#$\\|.~$")
      (define-key dired-mode-map (kbd "h") 'dired-omit-mode)
      (define-key dired-mode-map (kbd "e") 'read-only-mode)))
@@ -451,6 +452,28 @@ multiple functions can call each other in repetition."
   (revert-buffer nil t t)
   (message (concat "Reverted buffer " (buffer-name))))
 
+(defun really-desktop-clear ()
+  (interactive)
+  (when (yes-or-no-p "Really clear the desktop? ")
+    (desktop-clear)))
+
+(defun rename-current-buffer-file ()
+  "Renames current buffer and file it is visiting."
+  (interactive)
+  (let ((name (buffer-name))
+        (filename (buffer-file-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Buffer '%s' is not visiting a file!" name)
+      (let ((new-name (read-file-name "New name: " filename)))
+        (if (get-buffer new-name)
+            (error "A buffer named '%s' already exists!" new-name)
+          (rename-file filename new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil)
+          (message "File '%s' successfully renamed to '%s'"
+                   name (file-name-nondirectory new-name)))))))
+
 (setq aw-keys (list ?h ?t ?n ?s ?a ?o ?e ?u))
 (setq avy-keys (list ?h ?t ?n ?s ?a ?o ?e ?u))
 
@@ -469,8 +492,12 @@ multiple functions can call each other in repetition."
 (global-set-key (kbd "C-c o") 'ioccur)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
-(global-set-key (kbd "C-c r") 'rotate-windows)
-(global-set-key (kbd "C-c t") 'toggle-window-split)
+(global-set-key (kbd "C-c w r") 'rotate-windows)
+(global-set-key (kbd "C-c w t") 'toggle-window-split)
+(global-set-key (kbd "C-c w k") 'really-desktop-clear)
+(global-set-key (kbd "C-c w u") 'revert-this-buffer)
+(global-set-key (kbd "C-c w l") 'count-buffer-lines)
+(global-set-key (kbd "C-c w f") 'rename-current-buffer-file)
 (global-set-key (kbd "C-c C-z") 'smart-switch-to-output-buffer)
 (global-set-key (kbd "C-c z") 'smart-switch-to-output-buffer)
 (global-set-key (kbd "C-c p") 'pop-repeating-map)
@@ -491,16 +518,14 @@ multiple functions can call each other in repetition."
 (global-set-key (kbd "C-c ,") 'insert-splice)
 (global-set-key (kbd "C-c b") 'previous-buffer)
 (global-set-key (kbd "C-c f") 'next-buffer)
-(global-set-key (kbd "C-c l") 'count-buffer-lines)
 (global-set-key (kbd "C-h x") 'x86-lookup)
 (global-set-key (kbd "C-x o") 'ace-window)
 (global-set-key (kbd "M-o") 'ace-window)
 (global-set-key (kbd "M-n") 'smartscan-symbol-go-forward)
 (global-set-key (kbd "M-p") 'smartscan-symbol-go-backward)
-(global-set-key (kbd "M-'") 'avy-goto-char)
+(global-set-key (kbd "M-'") 'avy-goto-word-1)
 (global-set-key (kbd "C-c k") 'kmacro-keymap)
 (global-set-key (kbd "C-c s") 'imenu)
-(global-set-key (kbd "C-c u") 'revert-this-buffer)
 
 (autoload 'mpc-resume "mpc")
 (autoload 'mpc-pause "mpc")
@@ -799,18 +824,20 @@ your recently and most frequently used commands.")
      (define-key elpy-mode-map (kbd "C-c C-c") 'python-shell-send-defun)
      (define-key elpy-mode-map (kbd "C-c C-k") 'elpy-shell-send-region-or-buffer)))
 
-(defun company-yasnippet-or-completion ()
-  "Solve company yasnippet conflicts."
-  (interactive)
-  (let ((yas-fallback-behavior
-         '(apply 'company-complete-common nil)))
-    (yas-expand)))
-
 (eval-after-load "company"
-  '(substitute-key-definition
-    'company-complete-common
-    'company-yasnippet-or-completion
-    company-active-map))
+  '(eval-after-load "yasnippet"
+     '(progn
+	(defvar company-active-map)
+	(substitute-key-definition
+	 'company-complete-common
+	 'company-yasnippet-or-completion
+	 company-active-map)(defvar yas-fallback-behavior)
+	(defun company-yasnippet-or-completion ()
+	  "Solve company yasnippet conflicts."
+	  (interactive)
+	  (let ((yas-fallback-behavior
+		 '(apply 'company-complete-common nil)))
+	    (yas-expand))))))
 
 (defun byte-compile-current-buffer ()
   "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
