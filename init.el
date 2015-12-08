@@ -401,6 +401,39 @@ multiple functions can call each other in repetition."
 	       (buffer-name (current-buffer)))
      (format "%d lines in %s" (count-lines 1 (point-max)) (buffer-name (current-buffer))))))
 
+(defun activate-word-column-region ()
+  "Look at the symbol at point, search backward and place the point before a
+symbol, and search forward and place the mark after a symbol such that all
+lines have identical symbols at identical goal columns as the symbol at point."
+  (interactive)
+  (let (upper-pt lower-pt (next-line-add-newlines t))
+    (save-excursion
+      (let ((target (format "%s" (symbol-at-point))))
+	(while (looking-back "\\(\\sw\\|\\s_\\)" 1)
+	  (backward-char 1))
+	(with-no-warnings
+	  (save-excursion
+	    (next-line 1)
+	    (while (looking-at target)
+	      (setf lower-pt (point))
+	      (next-line 1)))
+	  (save-excursion
+	    (next-line -1)
+	    (while (looking-at target)
+	      (setf upper-pt (point))
+	      (next-line -1))))))
+    (when (or upper-pt lower-pt)
+      (let ((upper-pt (or upper-pt (point)))
+	    (lower-pt (or lower-pt (point))))
+	(goto-char lower-pt)
+	(while (looking-at "\\(\\sw\\|\\s_\\)")
+	  (forward-char 1))
+	(push-mark nil nil t)
+	(goto-char upper-pt)
+	(while (looking-back "\\(\\sw\\|\\s_\\)" 1)
+	  (backward-char 1)))))
+  (rectangle-mark-mode))
+
 (defun insert-backquote ()
   (interactive)
   (insert "`"))
@@ -534,6 +567,7 @@ multiple functions can call each other in repetition."
 (global-set-key (kbd "M-'") 'avy-goto-word-1)
 (global-set-key (kbd "C-c k") 'kmacro-keymap)
 (global-set-key (kbd "C-c s") 'imenu)
+(global-set-key (kbd "C-x r S") 'activate-word-column-region)
 
 (autoload 'mpc-resume "mpc")
 (autoload 'mpc-pause "mpc")
