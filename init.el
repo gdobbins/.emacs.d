@@ -72,7 +72,6 @@ multiple functions can call each other in repetition."
 	search-ring
 	regexp-search-ring
 	ioccur-history
-	imenu--history-list
 	kmacro-ring
 	last-kbd-macro
 	kmacro-counter
@@ -250,6 +249,12 @@ multiple functions can call each other in repetition."
      (define-key reb-mode-map (kbd "C-c C-g") 'reb-quit)
      (defvar reb-re-syntax)
      (setq reb-re-syntax 'string)))
+
+(eval-after-load "isearch"
+  '(progn
+     (require 'isearch+)
+     (defvar isearch-mode-map)
+     (define-key isearch-mode-map [remap ace-window] 'isearchp-open-recursive-edit)))
 
 (load (expand-file-name "~/quicklisp/slime-helper"))
 
