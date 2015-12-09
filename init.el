@@ -90,7 +90,7 @@ multiple functions can call each other in repetition."
 (setq sentence-end-double-space nil)
 
 (require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x r" "C-c" "C-x 4" "C-x 8" "C-x a" "C-c k" "C-c p" "C-c m"))
+(setq guide-key/guide-key-sequence '("C-x r" "C-c" "C-x 4" "C-x 8" "C-x a" "C-c k" "C-c p" "C-c m" "C-c w"))
 (guide-key-mode 1)
 
 (prefer-coding-system 'utf-8)
@@ -516,7 +516,7 @@ lines have identical symbols at identical goal columns as the symbol at point."
                    name (file-name-nondirectory new-name)))))))
 
 (setq aw-keys (list ?h ?t ?n ?s ?a ?o ?e ?u))
-(setq avy-keys (list ?h ?t ?n ?s ?a ?o ?e ?u))
+(setq avy-keys aw-keys)
 
 (define-prefix-command 'pop-repeating-map)
 (define-key pop-repeating-map (kbd "j") 'jump-to-register)
@@ -879,7 +879,8 @@ your recently and most frequently used commands.")
 	  (interactive)
 	  (let ((yas-fallback-behavior
 		 '(apply 'company-complete-common nil)))
-	    (yas-expand))))))
+	    (with-no-warnings
+	      (yas-expand)))))))
 
 (defun byte-compile-current-buffer ()
   "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
