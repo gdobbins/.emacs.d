@@ -38,7 +38,7 @@
 
 (add-to-list 'command-switch-alist '("-diff" . command-line-diff))
 
-(defmacro make-last-key-repeating-function (func &optional trans-map)
+(cl-defmacro make-last-key-repeating-function (func &optional trans-map (keep-map t))
   "Add advice to to the function such that repeating the
 last key used to call the function repeats the call.
 If trans-map, use trans-map as the transient map such that
@@ -47,7 +47,7 @@ multiple functions can call each other in repetition."
     `(defadvice ,func (after ,new-func compile activate)
        ,@(if trans-map
 	     `(,(format "Set the transient map to `%s'" trans-map)
-	       (set-transient-map ,trans-map t))
+	       (set-transient-map ,trans-map ,keep-map))
 	   `("Set the transient map to one where `last-input-event' repeats the function call"
 	     (set-transient-map
 	      (let ((map (make-sparse-keymap)))
@@ -519,6 +519,44 @@ lines have identical symbols at identical goal columns as the symbol at point."
           (set-buffer-modified-p nil)
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
+(with-no-warnings
+ (defun duplicate-other-window-buffer ()
+   (interactive)
+   (let ((this-buffer (current-buffer))
+	 (len (length (window-list))))
+     (cond
+      ((= len 2)
+       (other-window 1)
+       (switch-to-buffer this-buffer t t)
+       (other-window 1))
+      ((= len 1)
+       (split-window-right))
+      ((error "Too many windows"))))))
+
+(defmacro defun-other-window-do (name if-2-list &rest else)
+  `(defun ,name ()
+     (interactive)
+     (if (= 2 (length (window-list)))
+	 (progn
+	   (other-window 1)
+	   ,@if-2-list
+	   (other-window 1))
+       ,@(if else
+	    else
+	   '((error "Need two windows"))))))
+
+(defun-other-window-do other-window-imenu
+  ((call-interactively #'imenu)))
+
+(defun-other-window-do other-window-isearch-forward
+  ((let ((isearch-mode-end-hook (append isearch-mode-end-hook '(exit-recursive-edit))))
+     (call-interactively #'isearch-forward)
+     (recursive-edit))))
+
+(defun-other-window-do other-window-isearch-backward
+  ((let ((isearch-mode-end-hook (append isearch-mode-end-hook '(exit-recursive-edit))))
+     (call-interactively #'isearch-backward)
+     (recursive-edit))))
 
 (setq aw-keys (list ?h ?t ?n ?s ?a ?o ?e ?u))
 (setq avy-keys aw-keys)
@@ -534,6 +572,15 @@ lines have identical symbols at identical goal columns as the symbol at point."
 (global-set-key (kbd "C-.") 'push-M-\.)
 (global-set-key (kbd "C-,") 'push-M-\,)
 
+(define-prefix-command 'my-other-window-map)
+(make-last-key-repeating-function duplicate-other-window-buffer my-other-window-map nil)
+(define-key my-other-window-map (kbd "C-c s") 'other-window-imenu)
+(define-key my-other-window-map (kbd "C-s") 'other-window-isearch-forward)
+(define-key my-other-window-map (kbd "C-r") 'other-window-isearch-backward)
+(define-key my-other-window-map (kbd "C-v") 'scroll-other-window)
+(define-key my-other-window-map (kbd "C-M-v") 'scroll-other-window)
+(define-key my-other-window-map (kbd "M-v") 'scroll-other-window-down)
+
 (global-set-key (kbd "C-c g") 'magit-status)
 (global-set-key (kbd "C-c o") 'ioccur)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
@@ -544,6 +591,8 @@ lines have identical symbols at identical goal columns as the symbol at point."
 (global-set-key (kbd "C-c w u") 'revert-this-buffer)
 (global-set-key (kbd "C-c w l") 'count-buffer-lines)
 (global-set-key (kbd "C-c w f") 'rename-current-buffer-file)
+(global-set-key (kbd "C-c w d") 'duplicate-other-window-buffer)
+(global-set-key (kbd "C-c d") 'duplicate-other-window-buffer)
 (global-set-key (kbd "C-c C-z") 'smart-switch-to-output-buffer)
 (global-set-key (kbd "C-c z") 'smart-switch-to-output-buffer)
 (global-set-key (kbd "C-c p") 'pop-repeating-map)
