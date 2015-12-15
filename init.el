@@ -38,6 +38,14 @@
 
 (add-to-list 'command-switch-alist '("-diff" . command-line-diff))
 
+(defun command-line-magit (switch)
+  (ignore switch)
+  (let ((git-dir (pop command-line-args-left)))
+    (magit-status-internal (expand-file-name git-dir))
+    (delete-other-windows)))
+
+(add-to-list 'command-switch-alist '("-magit" . command-line-magit))
+
 (cl-defmacro make-last-key-repeating-function (func &optional trans-map (keep-map t))
   "Add advice to to the function such that repeating the
 last key used to call the function repeats the call.
