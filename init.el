@@ -555,6 +555,11 @@ lines have identical symbols at identical goal columns as the symbol at point."
 	    else
 	   '((error "Need two windows"))))))
 
+(defun find-user-init-file ()
+  "Edit the `user-init-file'"
+  (interactive)
+  (find-file user-init-file))
+
 (defun-other-window-do other-window-imenu
   ((call-interactively #'imenu)))
 
@@ -603,6 +608,7 @@ lines have identical symbols at identical goal columns as the symbol at point."
 (global-set-key (kbd "C-c w f") 'rename-current-buffer-file)
 (global-set-key (kbd "C-c w d") 'duplicate-other-window-buffer)
 (global-set-key (kbd "C-c w c") 'emacs-uptime)
+(global-set-key (kbd "C-c w i") 'find-user-init-file)
 (global-set-key (kbd "C-c d") 'duplicate-other-window-buffer)
 (global-set-key (kbd "C-c C-z") 'smart-switch-to-output-buffer)
 (global-set-key (kbd "C-c z") 'smart-switch-to-output-buffer)
