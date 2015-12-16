@@ -97,7 +97,7 @@ multiple functions can call each other in repetition."
 (setq sentence-end-double-space nil)
 
 (require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x r" "C-c" "C-x 4" "C-x 8" "C-x a" "C-c k" "C-c p" "C-c m" "C-c w"))
+(setq guide-key/guide-key-sequence '("C-x r" "C-c" "C-x 4" "C-x 8" "C-x a" "C-c k" "C-c p" "C-c m" "C-c w" "C-h"))
 (guide-key-mode 1)
 
 (prefer-coding-system 'utf-8)
@@ -626,6 +626,9 @@ lines have identical symbols at identical goal columns as the symbol at point."
 (global-set-key (kbd "C-c f") 'next-buffer)
 (global-set-key (kbd "C-h x") 'x86-lookup)
 (global-set-key (kbd "C-h s") 'string-edit-at-point)
+(global-set-key (kbd "C-h C-f") 'find-function)
+(global-set-key (kbd "C-h C-k") 'find-function-on-key)
+(global-set-key (kbd "C-h C-v") 'find-variable)
 (global-set-key (kbd "C-x o") 'ace-window)
 (global-set-key (kbd "M-o") 'ace-window)
 (global-set-key (kbd "M-n") 'smartscan-symbol-go-forward)
@@ -673,6 +676,8 @@ lines have identical symbols at identical goal columns as the symbol at point."
 ;(add-hook 'help-mode-hook #'set-help-mode)
 
 (autoload 'elisp-slime-nav-mode "elisp-slime-nav")
+(eval-after-load "elisp-slime-nav"
+  '(define-key elisp-slime-nav-mode-map (kbd "C-c C-d") 'elisp-slime-nav-describe-elisp-thing-at-point))
 (add-hook 'emacs-lisp-mode-hook #'turn-on-elisp-slime-nav-mode)
 
 (define-key emacs-lisp-mode-map (kbd "C-c C-c") 'eval-defun)
