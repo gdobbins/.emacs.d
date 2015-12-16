@@ -513,6 +513,15 @@ lines have identical symbols at identical goal columns as the symbol at point."
   (when (yes-or-no-p "Really clear the desktop? ")
     (desktop-clear)))
 
+(defun kill-other-buffers ()
+  "Kill all buffers but the current one.
+Don't mess with special buffers."
+  (interactive)
+  (when (yes-or-no-p "Really kill all other buffers? ")
+    (dolist (buffer (buffer-list))
+      (unless (or (eql buffer (current-buffer)) (not (buffer-file-name buffer)))
+	(kill-buffer buffer)))))
+
 (defun rename-current-buffer-file ()
   "Renames current buffer and file it is visiting."
   (interactive)
@@ -602,7 +611,8 @@ lines have identical symbols at identical goal columns as the symbol at point."
 (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
 (global-set-key (kbd "C-c w r") 'rotate-windows)
 (global-set-key (kbd "C-c w t") 'toggle-window-split)
-(global-set-key (kbd "C-c w k") 'really-desktop-clear)
+(global-set-key (kbd "C-c w C-k") 'really-desktop-clear)
+(global-set-key (kbd "C-c w k") 'kill-other-buffers)
 (global-set-key (kbd "C-c w u") 'revert-this-buffer)
 (global-set-key (kbd "C-c w l") 'count-buffer-lines)
 (global-set-key (kbd "C-c w f") 'rename-current-buffer-file)
