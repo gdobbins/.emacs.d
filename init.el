@@ -474,7 +474,9 @@ lines have identical symbols at identical goal columns as the symbol at point."
    (t (princ "No available process to switch to."))))
 
 (autoload 'magit-ido-completing-read "magit-utils" "Ido-based `completing-read' almost-replacement.")
-(setq magit-completing-read-function #'magit-ido-completing-read)
+(eval-after-load "magit"
+  '(progn
+     (setq magit-completing-read-function #'magit-ido-completing-read)))
 (setq ioccur-buffer-completion-use-ido t)
 
 (defun ioccur-follow-next ()
@@ -921,7 +923,8 @@ your recently and most frequently used commands.")
      (elpy-enable)
      (defvar inferior-python-mode-map)
      (define-key inferior-python-mode-map (kbd "C-d") 'comint-delchar-or-eof-or-kill-buffer)
-     (define-key inferior-python-mode-map (kbd "C-c M-o") 'python-repl-clear-buffer)))
+     (define-key inferior-python-mode-map (kbd "C-c M-o") 'python-repl-clear-buffer)
+     (add-to-list 'safe-local-variable-values '(python-shell-interpreter . "python2"))))
 
 (eval-after-load "elpy"
   '(progn
@@ -929,6 +932,13 @@ your recently and most frequently used commands.")
      (define-key elpy-mode-map (kbd "M-,") 'pop-tag-mark)
      (define-key elpy-mode-map (kbd "C-c C-c") 'python-shell-send-defun)
      (define-key elpy-mode-map (kbd "C-c C-k") 'elpy-shell-send-region-or-buffer)))
+
+(defvar flymake-no-changes-timeout)
+(defun set-flymake-no-changes-timeout-to-one-hour ()
+  (interactive)
+  (set (make-local-variable 'flymake-no-changes-timeout) 3600))
+
+(add-hook 'elpy-mode-hook #'set-flymake-no-changes-timeout-to-one-hour)
 
 (eval-after-load "company"
   '(eval-after-load "yasnippet"
