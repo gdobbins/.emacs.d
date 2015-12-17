@@ -936,6 +936,9 @@ your recently and most frequently used commands.")
 
 (setq org-agenda-sticky t)
 
+(defun add-delete-trailing-whitespace-before-save-hook ()
+  (add-hook 'before-save-hook #'delete-trailing-whitespace nil t))
+
 (defun python-repl-clear-buffer ()
   (interactive)
   (let ((start-point (point)))
@@ -957,6 +960,7 @@ your recently and most frequently used commands.")
      (define-key inferior-python-mode-map (kbd "C-c M-o") 'python-repl-clear-buffer)
      (add-to-list 'safe-local-variable-values '(python-shell-interpreter . "python2"))))
 
+(add-hook 'python-mode-hook #'add-delete-trailing-whitespace-before-save-hook)
 (add-hook 'python-mode-hook #'electric-pair-mode)
 (add-hook 'inferior-python-mode-hook #'electric-pair-mode)
 (eval-after-load "elec-pair"
