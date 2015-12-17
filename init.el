@@ -956,6 +956,13 @@ your recently and most frequently used commands.")
      (define-key inferior-python-mode-map (kbd "C-c M-o") 'python-repl-clear-buffer)
      (add-to-list 'safe-local-variable-values '(python-shell-interpreter . "python2"))))
 
+(add-hook 'python-mode-hook #'electric-pair-mode)
+(add-hook 'inferior-python-mode-hook #'electric-pair-mode)
+(eval-after-load "elec-pair"
+  '(progn
+     (require 'paredit)
+     (define-key electric-pair-mode-map (kbd ")") #'paredit-close-round)))
+
 (eval-after-load "elpy"
   '(progn
      (defvar elpy-mode-map)
