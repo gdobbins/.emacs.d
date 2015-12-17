@@ -624,6 +624,7 @@ Don't mess with special buffers."
 (global-set-key (kbd "C-c w i") 'find-user-init-file)
 (global-set-key (kbd "C-c w e") 'erase-buffer)
 (global-set-key (kbd "C-c w s") 'delete-trailing-whitespace)
+(global-set-key (kbd "C-c w n") 'column-number-mode)
 (global-set-key (kbd "C-c d") 'duplicate-other-window-buffer)
 (global-set-key (kbd "C-c C-z") 'smart-switch-to-output-buffer)
 (global-set-key (kbd "C-c z") 'smart-switch-to-output-buffer)
