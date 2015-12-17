@@ -625,6 +625,7 @@ Don't mess with special buffers."
 (global-set-key (kbd "C-c w e") 'erase-buffer)
 (global-set-key (kbd "C-c w s") 'delete-trailing-whitespace)
 (global-set-key (kbd "C-c w n") 'column-number-mode)
+(global-set-key (kbd "C-c w m") 'how-many)
 (global-set-key (kbd "C-c d") 'duplicate-other-window-buffer)
 (global-set-key (kbd "C-c C-z") 'smart-switch-to-output-buffer)
 (global-set-key (kbd "C-c z") 'smart-switch-to-output-buffer)
@@ -961,6 +962,7 @@ your recently and most frequently used commands.")
 (eval-after-load "elec-pair"
   '(progn
      (require 'paredit)
+     (defvar electric-pair-mode-map)
      (define-key electric-pair-mode-map (kbd ")") #'paredit-close-round)))
 
 (eval-after-load "elpy"
