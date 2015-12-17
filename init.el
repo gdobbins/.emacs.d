@@ -191,6 +191,9 @@ multiple functions can call each other in repetition."
 		   (mode . archive-mode)
 		   (mode . proced-mode)))
 	 ("Git" (derived-mode . magit-mode))
+	 ("Diff" (or
+		  (mode . ediff-mode)
+		  (name . "^\\*[Ee]?[Dd]iff.*\\*$")))
 	 ("Emacs" (or
 		   (mode . emacs-lisp-mode)
 		   (mode . lisp-interaction-mode)
@@ -249,8 +252,6 @@ multiple functions can call each other in repetition."
 (add-hook 'ibuffer-mode-hook
               (lambda ()
                 (ibuffer-switch-to-saved-filter-groups "default")))
-
-(global-set-key (kbd "C-h r") 're-builder)
 
 (eval-after-load "re-builder"
   '(progn
@@ -477,6 +478,7 @@ lines have identical symbols at identical goal columns as the symbol at point."
 (autoload 'magit-ido-completing-read "magit-utils" "Ido-based `completing-read' almost-replacement.")
 (eval-after-load "magit"
   '(progn
+     (defvar magit-completing-read-function)
      (setq magit-completing-read-function #'magit-ido-completing-read)))
 (setq ioccur-buffer-completion-use-ido t)
 
@@ -643,6 +645,7 @@ Don't mess with special buffers."
 (global-set-key (kbd "C-c b") 'previous-buffer)
 (global-set-key (kbd "C-c f") 'next-buffer)
 (global-set-key (kbd "C-h x") 'x86-lookup)
+(global-set-key (kbd "C-h r") 're-builder)
 (global-set-key (kbd "C-h s") 'string-edit-at-point)
 (global-set-key (kbd "C-h C-f") 'find-function)
 (global-set-key (kbd "C-h C-k") 'find-function-on-key)
