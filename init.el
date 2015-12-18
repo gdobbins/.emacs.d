@@ -299,6 +299,56 @@ multiple functions can call each other in repetition."
 (ido-everywhere 1)
 (setq ido-enable-flex-matching t)
 
+(require 'ido-sort-mtime)
+(ido-sort-mtime-mode 1)
+(autoload 'smex "smex"
+  "Smex is a M-x enhancement for Emacs, it provides a convenient interface to
+your recently and most frequently used commands.")
+(require 'ido-yes-or-no)
+(ido-yes-or-no-mode 1)
+(require 'ido-hacks)
+(ido-hacks-mode 1)
+(require 'ido-ubiquitous)
+(ido-ubiquitous-mode)
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "<menu>") 'ido-hacks-execute-extended-command)
+
+(defset-function pathname->~->home "~" ido-completion-map)
+(defset-function pathname->/->root "/" ido-completion-map)
+
+(add-hook 'ido-setup-hook #'set-pathname->~->home)
+(add-hook 'ido-setup-hook #'set-pathname->/->root)
+
+(add-to-list 'ido-ignore-files "^\\.smex-items$")
+(add-to-list 'ido-ignore-files "^\\.slime-history\\.eld$")
+(add-to-list 'ido-ignore-files "^\\.python_history$")
+(add-to-list 'ido-ignore-files "^\\.w3m/$")
+(add-to-list 'ido-ignore-files "^\\.histfile$")
+(add-to-list 'ido-ignore-files "^ido\\.last$")
+
+(setq ido-file-extensions-order '(".el" ".org" ".lisp" ".py" ".pdf" t))
+(setq ido-use-filename-at-point 'guess)
+
+(defadvice ido-find-file (after find-file-sudo compile activate)
+  "Find file as root if necessary."
+  (unless (and buffer-file-name
+               (file-writable-p buffer-file-name))
+    (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+
+(global-set-key (kbd "M-/") 'hippie-expand)
+
+(setq hippie-expand-try-functions-list
+      '(try-expand-all-abbrevs
+	try-expand-dabbrev
+	try-expand-list
+	try-expand-line
+	try-expand-dabbrev-all-buffers
+	try-expand-dabbrev-from-kill
+	try-complete-lisp-symbol-partially
+	try-complete-lisp-symbol
+	try-complete-file-name-partially
+	try-complete-file-name))
+
 (defun truncate-lines->t ()
   (interactive)
   (unless truncate-lines
@@ -707,33 +757,6 @@ Don't mess with special buffers."
 
 (define-key emacs-lisp-mode-map (kbd "C-c C-c") 'eval-defun)
 
-(require 'ido-sort-mtime)
-(ido-sort-mtime-mode 1)
-(autoload 'smex "smex"
-  "Smex is a M-x enhancement for Emacs, it provides a convenient interface to
-your recently and most frequently used commands.")
-(require 'ido-yes-or-no)
-(ido-yes-or-no-mode 1)
-(require 'ido-hacks)
-(ido-hacks-mode 1)
-(require 'ido-ubiquitous)
-(ido-ubiquitous-mode)
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "<menu>") 'ido-hacks-execute-extended-command)
-(global-set-key (kbd "M-/") 'hippie-expand)
-
-(setq hippie-expand-try-functions-list
-      '(try-expand-all-abbrevs
-	try-expand-dabbrev
-	try-expand-list
-	try-expand-line
-	try-expand-dabbrev-all-buffers
-	try-expand-dabbrev-from-kill
-	try-complete-lisp-symbol-partially
-	try-complete-lisp-symbol
-	try-complete-file-name-partially
-	try-complete-file-name))
-
 (defadvice he-substitute-string (after he-paredit-fix compile activate)
   "remove extra paren when expanding line in paredit"
   (if (and paredit-mode (equal (substring str -1) ")"))
@@ -762,22 +785,6 @@ your recently and most frequently used commands.")
        ,(if keymap
 	    `(define-key ,keymap (kbd ,key-string) #',function)
 	  `(local-set-key (kbd ,key-string) #',function)))))
-
-(defset-function pathname->~->home "~" ido-completion-map)
-(defset-function pathname->/->root "/" ido-completion-map)
-
-(add-hook 'ido-setup-hook #'set-pathname->~->home)
-(add-hook 'ido-setup-hook #'set-pathname->/->root)
-
-(add-to-list 'ido-ignore-files "^\\.smex-items$")
-(add-to-list 'ido-ignore-files "^\\.slime-history\\.eld$")
-(add-to-list 'ido-ignore-files "^\\.python_history$")
-(add-to-list 'ido-ignore-files "^\\.w3m/$")
-(add-to-list 'ido-ignore-files "^\\.histfile$")
-(add-to-list 'ido-ignore-files "^ido\\.last$")
-
-(setq ido-file-extensions-order '(".el" ".org" ".lisp" ".py" ".pdf" t))
-(setq ido-use-filename-at-point 'guess)
 
 (add-to-list 'default-frame-alist '(font . "Linux Libertine Mono:pixelsize=14:foundry=unknown:weight=normal:slant=normal:width=normal:scalable=true"))
 (setq split-width-threshold 100)
