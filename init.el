@@ -293,7 +293,9 @@ multiple functions can call each other in repetition."
  kept-old-versions 2
  version-control t)			; use versioned backups
 
+(setq show-paren-delay 0)
 (show-paren-mode 1)
+
 (require 'ido)
 (ido-mode t)
 (ido-everywhere 1)
@@ -896,6 +898,7 @@ Don't mess with special buffers."
 (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
 (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
 (add-hook 'slime-repl-mode-hook       #'enable-paredit-mode)
+(add-hook 'eshell-mode-hook #'enable-paredit-mode)
 
 (defun electrify-return-if-match (arg)
   "If the text after the cursor matches \"[\]\)}]\" then
