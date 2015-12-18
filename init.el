@@ -11,6 +11,16 @@
 (setq ad-redefinition-action 'accept)
 
 (setq inhibit-startup-echo-area-message "graham")
+(message "Live long and prosper.")
+(setq initial-scratch-message
+      ";;                                     ____
+;;                           __...---~'    `~~~----...__
+;;                        _===============================
+;;   ,----------------._/'      `---..._______...---'
+;;   (_______________||_) . .  ,--'
+;;       /    /.---'         `/
+;;      '--------_- - - - - _/
+;;                `--------'\n\n")
 
 (load "~/.emacs.d/secrets" t t)
 
