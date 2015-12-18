@@ -8,6 +8,9 @@
   (tooltip-mode -1))
 
 (setq gc-cons-threshold 100000000)
+(setq ad-redefinition-action 'accept)
+
+(setq inhibit-startup-echo-area-message "graham")
 
 (load "~/.emacs.d/secrets" t t)
 
@@ -266,7 +269,7 @@ multiple functions can call each other in repetition."
      (defvar isearch-mode-map)
      (define-key isearch-mode-map [remap ace-window] 'isearchp-open-recursive-edit)))
 
-(load (expand-file-name "~/quicklisp/slime-helper"))
+(load "~/quicklisp/slime-helper" t t)
 
 (defun port-file->swank-start-server (port-file _)
   (format "(swank:start-server %S)\n" port-file))
@@ -314,6 +317,18 @@ your recently and most frequently used commands.")
 (ido-ubiquitous-mode)
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "<menu>") 'ido-hacks-execute-extended-command)
+
+(defmacro defset-function (function key-string &optional keymap)
+  "Create a function which sets set-function to bind (kbd key-string) to function either locally, or optionally in keymap."
+  (let ((function-symbol (intern (concat "set-" (symbol-name function)))))
+    `(defun ,function-symbol ()
+       ,(if keymap
+	    (concat "Set the key " key-string " to `" (symbol-name function) "' in `" (symbol-name keymap) "'")
+	  (concat "Set the key " key-string " to `" (symbol-name function) "' locally."))
+       (interactive)
+       ,(if keymap
+	    `(define-key ,keymap (kbd ,key-string) #',function)
+	  `(local-set-key (kbd ,key-string) #',function)))))
 
 (defset-function pathname->~->home "~" ido-completion-map)
 (defset-function pathname->/->root "/" ido-completion-map)
@@ -775,18 +790,6 @@ Don't mess with special buffers."
   (if (looking-back "/" 1)
       (insert "//")
     (call-interactively 'self-insert-command)))
-
-(defmacro defset-function (function key-string &optional keymap)
-  "Create a function which sets set-function to bind (kbd key-string) to function either locally, or optionally in keymap."
-  (let ((function-symbol (intern (concat "set-" (symbol-name function)))))
-    `(defun ,function-symbol ()
-       ,(if keymap
-	    (concat "Set the key " key-string " to `" (symbol-name function) "' in `" (symbol-name keymap) "'")
-	  (concat "Set the key " key-string " to `" (symbol-name function) "' locally."))
-       (interactive)
-       ,(if keymap
-	    `(define-key ,keymap (kbd ,key-string) #',function)
-	  `(local-set-key (kbd ,key-string) #',function)))))
 
 (add-to-list 'default-frame-alist '(font . "Linux Libertine Mono:pixelsize=14:foundry=unknown:weight=normal:slant=normal:width=normal:scalable=true"))
 (setq split-width-threshold 100)
