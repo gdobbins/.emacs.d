@@ -28,6 +28,7 @@
   '(undo-tree-mode
     guide-key-mode
     paredit-mode
+    smartparens-mode
     elisp-slime-nav-mode
     eldoc-mode))
 
@@ -975,22 +976,23 @@ Don't mess with special buffers."
 	  (forward-char diff)
 	(goto-char (point-max))))))
 
+(add-hook 'python-mode-hook #'add-delete-trailing-whitespace-before-save-hook)
+
 (eval-after-load "python"
   '(progn
      (elpy-enable)
      (defvar inferior-python-mode-map)
      (define-key inferior-python-mode-map (kbd "C-d") 'comint-delchar-or-eof-or-kill-buffer)
      (define-key inferior-python-mode-map (kbd "C-c M-o") 'python-repl-clear-buffer)
-     (add-to-list 'safe-local-variable-values '(python-shell-interpreter . "python2"))))
+     (add-to-list 'safe-local-variable-values '(python-shell-interpreter . "python2"))
+     (require 'smartparens-python)))
 
-(add-hook 'python-mode-hook #'add-delete-trailing-whitespace-before-save-hook)
-(add-hook 'python-mode-hook #'electric-pair-mode)
-(add-hook 'inferior-python-mode-hook #'electric-pair-mode)
-(eval-after-load "elec-pair"
+(add-hook 'python-mode-hook #'smartparens-strict-mode)
+(add-hook 'inferior-python-mode-hook #'smartparens-strict-mode)
+
+(eval-after-load "smartparens"
   '(progn
-     (require 'paredit)
-     (defvar electric-pair-mode-map)
-     (define-key electric-pair-mode-map (kbd ")") #'paredit-close-round)))
+     (sp-use-paredit-bindings)))
 
 (eval-after-load "elpy"
   '(progn
