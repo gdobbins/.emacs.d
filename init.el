@@ -141,6 +141,15 @@ multiple functions can call each other in repetition."
   (unless (>= *w3m-number-of-windows-beforehand* (length (window-list)))    (delete-window)))
 
 (add-to-list 'browse-url-browser-function '("^file" . w3m-browse-url-other-window))
+(add-to-list 'browse-url-browser-function '("^https?://en\\.wiktionary\\.org/wiki/" . w3m-browse-url-other-window))
+
+(autoload 'ispell-get-word "ispell")
+
+(defun wiktionary-word (word)
+  (interactive (list (save-excursion (car (ispell-get-word nil)))))
+  (browse-url (format "https://en.wiktionary.org/wiki/%s" word)))
+
+(global-set-key (kbd "M-#") 'wiktionary-word)
 
 (autoload 'dired-jump "dired-x"
   "Jump to Dired buffer corresponding to current buffer." t)
