@@ -1000,9 +1000,18 @@ Don't mess with special buffers."
 (add-hook 'python-mode-hook #'smartparens-strict-mode)
 (add-hook 'inferior-python-mode-hook #'smartparens-strict-mode)
 
-(eval-after-load "smartparens"
-  '(progn
-     (sp-use-paredit-bindings)))
+(with-eval-after-load "smartparens"
+  (sp-use-paredit-bindings)
+  (with-no-warnings
+    (defun sp-paredit-like-close-round ()
+      "If the next character is a closing character as according to smartparens skip it, otherwise insert `last-input-event'"
+      (interactive)
+      (let ((pt (point)))
+	(if (and (< pt (point-max))
+		 (sp--char-is-part-of-closing (buffer-substring-no-properties pt (1+ pt))))
+	    (forward-char 1)
+	  (call-interactively #'self-insert-command))))
+    (define-key smartparens-mode-map (kbd ")") #'sp-paredit-like-close-round)))
 
 (eval-after-load "elpy"
   '(progn
