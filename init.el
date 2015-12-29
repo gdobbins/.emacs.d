@@ -8,6 +8,7 @@
   (tooltip-mode -1))
 
 (setq gc-cons-threshold 100000000)
+(setq ring-bell-function 'ignore)
 (setq ad-redefinition-action 'accept)
 
 (setq inhibit-startup-echo-area-message "graham")
@@ -189,7 +190,7 @@ multiple functions can call each other in repetition."
 		   (name . "^\\*Shell Command Output\\*$")))
 	 ("Assembly" (or
 		      (mode . asm-mode)
-		      (filename . "^/usr/local/doc/64-ia-32-architectures-software-developer-manual-325462.pdf$")))
+		      (filename . "^/usr/local/doc/64-ia-32-architectures-software-developer-manual-325462\\.pdf$")))
 	 ("Data" (or
 		  (filename . ".*\\.\\([ct]sv\\|dat\\)$")))
 	 ("Text" (mode . text-mode))
