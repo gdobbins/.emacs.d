@@ -112,7 +112,7 @@ multiple functions can call each other in repetition."
 (setq sentence-end-double-space nil)
 
 (require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x r" "C-c" "C-x 4" "C-x 8" "C-x a" "C-c k" "C-c p" "C-c m" "C-c w" "C-h"))
+(setq guide-key/guide-key-sequence '("C-x r" "C-c" "C-x 4" "C-x 8" "C-x a" "C-x w" "C-c k" "C-c p" "C-c m" "C-c w" "C-h"))
 (guide-key-mode 1)
 
 (prefer-coding-system 'utf-8)
@@ -737,6 +737,12 @@ Don't mess with special buffers."
 (global-set-key (kbd "C-c f") 'next-buffer)
 (global-set-key (kbd "C-c k") 'kmacro-keymap)
 (global-set-key (kbd "C-c s") 'imenu)
+(global-set-key (kbd "C-x w b") 'hi-lock-write-interactive-patterns)
+(global-set-key (kbd "C-x w r") 'unhighlight-regexp)
+(global-set-key (kbd "C-x w h") 'highlight-regexp)
+(global-set-key (kbd "C-x w p") 'highlight-phrase)
+(global-set-key (kbd "C-x w l") 'highlight-lines-matching-regexp)
+(global-set-key (kbd "C-x w i") 'hi-lock-find-patterns)
 (global-set-key (kbd "C-x r S") 'activate-word-column-region)
 (global-set-key (kbd "C-h x") 'x86-lookup)
 (global-set-key (kbd "C-h r") 're-builder)
