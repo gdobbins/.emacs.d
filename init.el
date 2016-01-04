@@ -202,6 +202,11 @@ multiple functions can call each other in repetition."
 		      (filename . "^/usr/local/doc/64-ia-32-architectures-software-developer-manual-325462\\.pdf$")))
 	 ("Data" (or
 		  (filename . ".*\\.\\([ct]sv\\|dat\\)$")))
+	 ("LaTeX" (or
+		   (mode . latex-mode)
+		   (mode . tex-shell)
+		   (mode . TeX-output-mode)
+		   (name . "^\\*\\(Latex Preview Pane \\(Welcome\\|Errors\\)\\|pdflatex-buffer\\)\\*$")))
 	 ("Text" (mode . text-mode))
 	 ("Books" (or
 		   (mode . pdf-view-mode)
@@ -832,7 +837,10 @@ Don't mess with special buffers."
      (defvar shell-mode-map)
      (define-key shell-mode-map (kbd "C-d") 'comint-delchar-or-eof-or-kill-buffer)))
 
-(autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+(autoload 'LaTeX-math-mode "latex" "A minor mode with easy access to TeX math macros.")
+(add-hook 'LaTeX-mode-hook #'flyspell-mode)
+(add-hook 'LaTeX-mode-hook #'LaTeX-math-mode)
+(add-hook 'LaTeX-mode-hook #'latex-preview-pane-mode)
 
 (defun fix-capitalization->paren ()
   (interactive)
