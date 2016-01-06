@@ -703,6 +703,7 @@ Don't mess with special buffers."
 
 (global-set-key (kbd "C-c g") 'magit-status)
 (global-set-key (kbd "C-c o") 'ioccur)
+(global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
 (global-set-key (kbd "C-c w r") 'rotate-windows)
@@ -974,15 +975,16 @@ Don't mess with special buffers."
 
 (add-hook 'pdf-view-mode-hook 'set-mode-line-numbers-at-front)
 
-(require 'org)
-(add-to-list 'org-modules 'org-habit)
-(require 'org-habit)
-(global-set-key (kbd "C-c a") 'org-agenda)
-(define-key org-mode-map (kbd "C-c i") 'interleave)
-(define-key org-mode-map (kbd "M-n") 'outline-next-visible-heading)
-(define-key org-mode-map (kbd "M-p") 'outline-previous-visible-heading)
-
-(setq org-agenda-sticky t)
+(with-eval-after-load "org"
+  (defvar org-modules)
+  (add-to-list 'org-modules 'org-habit)
+  (require 'org-habit)
+  (defvar org-mode-map)
+  (define-key org-mode-map (kbd "C-c i") 'interleave)
+  (define-key org-mode-map (kbd "M-n") 'outline-next-visible-heading)
+  (define-key org-mode-map (kbd "M-p") 'outline-previous-visible-heading)
+  (defvar org-agenda-sticky)
+  (setq org-agenda-sticky t))
 
 (defun add-delete-trailing-whitespace-before-save-hook ()
   (add-hook 'before-save-hook #'delete-trailing-whitespace nil t))
