@@ -795,7 +795,7 @@ Don't mess with special buffers."
      (defadvice describe-bindings (after describe-bindings-move-to-major-mode compile activate)
        "Pop to the help buffer and search forward for the Major mode bindings."
        (pop-to-buffer (help-buffer))
-       (search-forward "Major Mode Bindings:")
+       (search-forward "Major Mode Bindings:" nil t)
        (recenter-top-bottom 0))))
 
 ;(add-hook 'help-mode-hook #'set-help-mode)
