@@ -908,6 +908,9 @@ Don't mess with special buffers."
 (eval-after-load "lisp-mode"
   '(progn
      (set-cl-help-mode lisp-mode-map)
+     (font-lock-add-keywords 'lisp-mode
+			     '(("(\\(iter\\(ate\\)?\\)" 1 'font-lock-keyword-face))
+			     t)
      (define-key lisp-mode-map (kbd "C-c e") #'slime-eval-and-replace)
      (define-key lisp-mode-map (kbd "*") #'insert-earmuffs)
      (define-key lisp-mode-map (kbd "<tab>") #'slime-indent-and-complete-symbol)))
