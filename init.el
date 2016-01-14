@@ -111,6 +111,8 @@ multiple functions can call each other in repetition."
 
 (setq sentence-end-double-space nil)
 
+(require 'smooth-scrolling)
+
 (require 'guide-key)
 (setq guide-key/guide-key-sequence '("C-x r" "C-c" "C-x 4" "C-x 8" "C-x a" "C-x w" "C-c k" "C-c p" "C-c m" "C-c w" "C-h"))
 (guide-key-mode 1)
