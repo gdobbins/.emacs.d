@@ -409,10 +409,19 @@ your recently and most frequently used commands.")
 					;  (require 'discover)
 					;  (global-discover-mode 1)
 
+(defun undo-tree-save-history-ignore-file (orig &rest args)
+  "Ignore files matching the regex, otherwise save history"
+  (unless (string-match ".*\\.gpg$" buffer-file-name)
+    (apply orig args)))
+
 (require 'undo-tree)
 (global-undo-tree-mode)
 (eval-after-load 'undo-tree
-  '(define-key undo-tree-visualizer-mode-map (kbd "RET") 'undo-tree-visualizer-quit))
+  '(progn
+     (define-key undo-tree-visualizer-mode-map (kbd "RET") 'undo-tree-visualizer-quit)
+     (setq undo-tree-auto-save-history t)
+     (setq undo-tree-history-directory-alist '((".*\\.gpg" . "/dev/null") ("." . "~/.emacs.d/undo/")))
+     (advice-add 'undo-tree-save-history :around #'undo-tree-save-history-ignore-file)))
 
 (eval-after-load "x86-lookup"
   '(let ((location "/usr/local/doc/64-ia-32-architectures-software-developer-manual-325462.pdf"))
