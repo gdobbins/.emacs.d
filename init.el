@@ -762,6 +762,7 @@ Don't mess with special buffers."
 (global-set-key (kbd "C-c f") 'next-buffer)
 (global-set-key (kbd "C-c k") 'kmacro-keymap)
 (global-set-key (kbd "C-c s") 'imenu)
+(global-set-key (kbd "C-c y") 'browse-kill-ring)
 (global-set-key (kbd "C-x w b") 'hi-lock-write-interactive-patterns)
 (global-set-key (kbd "C-x w r") 'unhighlight-regexp)
 (global-set-key (kbd "C-x w h") 'highlight-regexp)
