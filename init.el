@@ -164,21 +164,19 @@ multiple functions can call each other in repetition."
 (define-key global-map "\C-x4\C-j" 'dired-jump-other-window)
 (global-set-key (kbd "C-x 4 C-d") 'dired-jump-other-window)
 
-(eval-after-load 'dired
-  '(progn
-     (require 'dired-x)
-     (setq-default dired-omit-files-p t)
-     (setq dired-listing-switches "-alh")
-     (setq dired-omit-files "^\\.\\|^#.#$\\|.~$")
-     (define-key dired-mode-map (kbd "h") 'dired-omit-mode)
-     (define-key dired-mode-map (kbd "e") 'read-only-mode)))
+(with-eval-after-load 'dired
+  (require 'dired-x)
+  (setq-default dired-omit-files-p t)
+  (setq dired-listing-switches "-alh")
+  (setq dired-omit-files "^\\.\\|^#.#$\\|.~$")
+  (define-key dired-mode-map (kbd "h") 'dired-omit-mode)
+  (define-key dired-mode-map (kbd "e") 'read-only-mode))
 
-(eval-after-load 'wdired
-  '(progn
-     (defvar wdired-mode-map)
-     (define-key wdired-mode-map (kbd "C-c C-g") 'wdired-abort-changes)
-     (defvar wdired-allow-to-change-permissions)
-     (setq wdired-allow-to-change-permissions t)))
+(with-eval-after-load 'wdired
+  (defvar wdired-mode-map)
+  (define-key wdired-mode-map (kbd "C-c C-g") 'wdired-abort-changes)
+  (defvar wdired-allow-to-change-permissions)
+  (setq wdired-allow-to-change-permissions t))
 
 (global-set-key (kbd "C-x p") 'proced)
 (setq-default proced-filter 'emacs)
@@ -248,24 +246,22 @@ multiple functions can call each other in repetition."
   (ibuffer-mark-forward 1)
   (ibuffer-do-kill-lines))
 
-(eval-after-load "ibuffer"
-  '(progn
-     (define-key ibuffer-mode-map (kbd "H") nil)
-     (define-key ibuffer-mode-map (kbd "k") 'ibuffer-do-delete)
-     (define-key ibuffer-mode-map (kbd "C-k") 'ibuffer-mark-and-kill-lines)
-     (define-key ibuffer-mode-map (kbd "M-o") nil)
-     (defadvice ibuffer (around ibuffer-point-to-most-recent compile activate) ()
-		"Open ibuffer with cursor pointed to most recent buffer name"
-		(let ((recent-buffer-name (buffer-name)))
-		  ad-do-it
-		  (ibuffer-jump-to-buffer recent-buffer-name)))))
+(with-eval-after-load "ibuffer"
+  (define-key ibuffer-mode-map (kbd "H") nil)
+  (define-key ibuffer-mode-map (kbd "k") 'ibuffer-do-delete)
+  (define-key ibuffer-mode-map (kbd "C-k") 'ibuffer-mark-and-kill-lines)
+  (define-key ibuffer-mode-map (kbd "M-o") nil)
+  (defadvice ibuffer (around ibuffer-point-to-most-recent compile activate) ()
+	     "Open ibuffer with cursor pointed to most recent buffer name"
+	     (let ((recent-buffer-name (buffer-name)))
+	       ad-do-it
+	       (ibuffer-jump-to-buffer recent-buffer-name))))
 
-(eval-after-load "ibuf-ext"
-  '(progn
-     (add-to-list 'ibuffer-never-show-predicates "^\\*slime-events\\*$")
-     (add-to-list 'ibuffer-never-show-predicates "^\\*inferior-lisp\\*$")
-     (add-to-list 'ibuffer-never-show-predicates "^\\*Compile-Log\\*$")
-     (add-to-list 'ibuffer-never-show-predicates "^\\*Completions\\*$")))
+(with-eval-after-load "ibuf-ext"
+  (add-to-list 'ibuffer-never-show-predicates "^\\*slime-events\\*$")
+  (add-to-list 'ibuffer-never-show-predicates "^\\*inferior-lisp\\*$")
+  (add-to-list 'ibuffer-never-show-predicates "^\\*Compile-Log\\*$")
+  (add-to-list 'ibuffer-never-show-predicates "^\\*Completions\\*$"))
 
 (defvar hidden-ibuffer-groups '("^\\[ Default \\]"))
 
@@ -285,18 +281,16 @@ multiple functions can call each other in repetition."
               (lambda ()
                 (ibuffer-switch-to-saved-filter-groups "default")))
 
-(eval-after-load "re-builder"
-  '(progn
-     (defvar reb-mode-map)
-     (define-key reb-mode-map (kbd "C-c C-g") 'reb-quit)
-     (defvar reb-re-syntax)
-     (setq reb-re-syntax 'string)))
+(with-eval-after-load "re-builder"
+  (defvar reb-mode-map)
+  (define-key reb-mode-map (kbd "C-c C-g") 'reb-quit)
+  (defvar reb-re-syntax)
+  (setq reb-re-syntax 'string))
 
-(eval-after-load "isearch"
-  '(progn
-     (require 'isearch+)
-     (defvar isearch-mode-map)
-     (define-key isearch-mode-map [remap ace-window] 'isearchp-open-recursive-edit)))
+(with-eval-after-load "isearch"
+  (require 'isearch+)
+  (defvar isearch-mode-map)
+  (define-key isearch-mode-map [remap ace-window] 'isearchp-open-recursive-edit))
 
 (load "~/quicklisp/slime-helper" t t)
 
@@ -419,18 +413,17 @@ your recently and most frequently used commands.")
 
 (require 'undo-tree)
 (global-undo-tree-mode)
-(eval-after-load 'undo-tree
-  '(progn
-     (define-key undo-tree-visualizer-mode-map (kbd "RET") 'undo-tree-visualizer-quit)
-     (setq undo-tree-auto-save-history t)
-     (setq undo-tree-history-directory-alist '((".*\\.gpg" . "/dev/null") ("." . "~/.emacs.d/undo/")))
-     (advice-add 'undo-tree-save-history :around #'undo-tree-save-history-ignore-file)))
+(with-eval-after-load 'undo-tree
+  (define-key undo-tree-visualizer-mode-map (kbd "RET") 'undo-tree-visualizer-quit)
+  (setq undo-tree-auto-save-history t)
+  (setq undo-tree-history-directory-alist '((".*\\.gpg" . "/dev/null") ("." . "~/.emacs.d/undo/")))
+  (advice-add 'undo-tree-save-history :around #'undo-tree-save-history-ignore-file))
 
-(eval-after-load "x86-lookup"
-  '(let ((location "/usr/local/doc/64-ia-32-architectures-software-developer-manual-325462.pdf"))
-     (when (file-exists-p location)
-       (defvar x86-lookup-pdf)
-       (setq x86-lookup-pdf location))))
+(with-eval-after-load "x86-lookup"
+  (let ((location "/usr/local/doc/64-ia-32-architectures-software-developer-manual-325462.pdf"))
+    (when (file-exists-p location)
+      (defvar x86-lookup-pdf)
+      (setq x86-lookup-pdf location))))
 
 (defun eval-and-replace (x)
   "Replace the preceding sexp with its value."
@@ -581,10 +574,9 @@ lines have identical symbols at identical goal columns as the symbol at point."
    (t (princ "No available process to switch to."))))
 
 (autoload 'magit-ido-completing-read "magit-utils" "Ido-based `completing-read' almost-replacement.")
-(eval-after-load "magit"
-  '(progn
-     (defvar magit-completing-read-function)
-     (setq magit-completing-read-function #'magit-ido-completing-read)))
+(with-eval-after-load "magit"
+  (defvar magit-completing-read-function)
+  (setq magit-completing-read-function #'magit-ido-completing-read))
 (setq ioccur-buffer-completion-use-ido t)
 
 (defun ioccur-follow-next ()
@@ -599,17 +591,16 @@ lines have identical symbols at identical goal columns as the symbol at point."
   (ioccur-precedent-line)
   (ioccur-jump-without-quit))
 
-(eval-after-load "ioccur"
-  '(progn
-     (defvar ioccur-mode-map)
-     (define-key ioccur-mode-map (kbd "M-n") #'ioccur-follow-next)
-     (define-key ioccur-mode-map (kbd "M-p") #'ioccur-follow-previous)
-     (define-key ioccur-mode-map (kbd "n") #'ioccur-next-line)
-     (define-key ioccur-mode-map (kbd "p") #'ioccur-precedent-line)
-     (define-key ioccur-mode-map (kbd "z") #'ioccur-jump-without-quit)
-     (define-key ioccur-mode-map (kbd "r") #'ioccur-restart)
-     (define-key ioccur-mode-map (kbd "s") #'ioccur-restart)
-     (define-key ioccur-mode-map (kbd "o") #'ioccur-restart)))
+(with-eval-after-load "ioccur"
+  (defvar ioccur-mode-map)
+  (define-key ioccur-mode-map (kbd "M-n") #'ioccur-follow-next)
+  (define-key ioccur-mode-map (kbd "M-p") #'ioccur-follow-previous)
+  (define-key ioccur-mode-map (kbd "n") #'ioccur-next-line)
+  (define-key ioccur-mode-map (kbd "p") #'ioccur-precedent-line)
+  (define-key ioccur-mode-map (kbd "z") #'ioccur-jump-without-quit)
+  (define-key ioccur-mode-map (kbd "r") #'ioccur-restart)
+  (define-key ioccur-mode-map (kbd "s") #'ioccur-restart)
+  (define-key ioccur-mode-map (kbd "o") #'ioccur-restart))
 
 (defun revert-this-buffer ()
   (interactive)
@@ -806,25 +797,24 @@ Don't mess with special buffers."
 (global-set-key (kbd "<mouse-8>") 'previous-buffer)
 (global-set-key (kbd "<mouse-9>") 'next-buffer)
 
-(eval-after-load 'help-mode
-  '(progn
-     (define-key help-mode-map (kbd "<mouse-8>") 'help-go-back)
-     (define-key help-mode-map (kbd "<mouse-9>") 'help-go-forward)
-     (define-key help-mode-map (kbd "C-c b") 'help-go-back)
-     (define-key help-mode-map (kbd "C-c f") 'help-go-forward)
-     (define-key help-mode-map (kbd "n") 'next-line)
-     (define-key help-mode-map (kbd "p") 'previous-line)
-     (defadvice describe-bindings (after describe-bindings-move-to-major-mode compile activate)
-       "Pop to the help buffer and search forward for the Major mode bindings."
-       (pop-to-buffer (help-buffer))
-       (search-forward "Major Mode Bindings:" nil t)
-       (recenter-top-bottom 0))))
+(with-eval-after-load 'help-mode
+  (define-key help-mode-map (kbd "<mouse-8>") 'help-go-back)
+  (define-key help-mode-map (kbd "<mouse-9>") 'help-go-forward)
+  (define-key help-mode-map (kbd "C-c b") 'help-go-back)
+  (define-key help-mode-map (kbd "C-c f") 'help-go-forward)
+  (define-key help-mode-map (kbd "n") 'next-line)
+  (define-key help-mode-map (kbd "p") 'previous-line)
+  (defadvice describe-bindings (after describe-bindings-move-to-major-mode compile activate)
+    "Pop to the help buffer and search forward for the Major mode bindings."
+    (pop-to-buffer (help-buffer))
+    (search-forward "Major Mode Bindings:" nil t)
+    (recenter-top-bottom 0)))
 
 ;(add-hook 'help-mode-hook #'set-help-mode)
 
 (autoload 'elisp-slime-nav-mode "elisp-slime-nav")
-(eval-after-load "elisp-slime-nav"
-  '(define-key elisp-slime-nav-mode-map (kbd "C-c C-d") 'elisp-slime-nav-describe-elisp-thing-at-point))
+(with-eval-after-load "elisp-slime-nav"
+  (define-key elisp-slime-nav-mode-map (kbd "C-c C-d") 'elisp-slime-nav-describe-elisp-thing-at-point))
 (add-hook 'emacs-lisp-mode-hook #'turn-on-elisp-slime-nav-mode)
 
 (define-key emacs-lisp-mode-map (kbd "C-c C-c") 'eval-defun)
@@ -855,11 +845,10 @@ Don't mess with special buffers."
       (kill-buffer)
     (comint-delchar-or-maybe-eof arg)))
 
-(eval-after-load "shell"
-  '(progn
-     (add-hook 'shell-mode-hook #'truncate-lines->t)
-     (defvar shell-mode-map)
-     (define-key shell-mode-map (kbd "C-d") 'comint-delchar-or-eof-or-kill-buffer)))
+(with-eval-after-load "shell"
+  (add-hook 'shell-mode-hook #'truncate-lines->t)
+  (defvar shell-mode-map)
+  (define-key shell-mode-map (kbd "C-d") 'comint-delchar-or-eof-or-kill-buffer))
 
 (autoload 'LaTeX-math-mode "latex" "A minor mode with easy access to TeX math macros.")
 (add-hook 'LaTeX-mode-hook #'flyspell-mode)
@@ -875,11 +864,10 @@ Don't mess with special buffers."
     (insert ")")
     (goto-char (+ 1 pointer-position))))
 
-(eval-after-load "paredit"
-  '(progn
-     (define-key paredit-mode-map (kbd "C-c (") #'fix-capitalization->paren)
-     (add-to-list 'paredit-space-for-delimiter-predicates
-		  #'paredit-space-for-predicates-cl)))
+(with-eval-after-load "paredit"
+  (define-key paredit-mode-map (kbd "C-c (") #'fix-capitalization->paren)
+  (add-to-list 'paredit-space-for-delimiter-predicates
+	       #'paredit-space-for-predicates-cl))
 
 (defun insert-earmuffs ()
   (interactive)
@@ -920,15 +908,14 @@ Don't mess with special buffers."
 	  (backward-kill-sexp)
 	  (forward-char destination-distance)))))
 
-(eval-after-load "lisp-mode"
-  '(progn
-     (set-cl-help-mode lisp-mode-map)
-     (font-lock-add-keywords 'lisp-mode
-			     '(("(\\(iter\\(ate\\)?\\)" 1 'font-lock-keyword-face))
-			     t)
-     (define-key lisp-mode-map (kbd "C-c e") #'slime-eval-and-replace)
-     (define-key lisp-mode-map (kbd "*") #'insert-earmuffs)
-     (define-key lisp-mode-map (kbd "<tab>") #'slime-indent-and-complete-symbol)))
+(with-eval-after-load "lisp-mode"
+  (set-cl-help-mode lisp-mode-map)
+  (font-lock-add-keywords 'lisp-mode
+			  '(("(\\(iter\\(ate\\)?\\)" 1 'font-lock-keyword-face))
+			  t)
+  (define-key lisp-mode-map (kbd "C-c e") #'slime-eval-and-replace)
+  (define-key lisp-mode-map (kbd "*") #'insert-earmuffs)
+  (define-key lisp-mode-map (kbd "<tab>") #'slime-indent-and-complete-symbol))
 
 (defun slime-return-to-lisp-file ()
   (interactive)
@@ -939,17 +926,16 @@ Don't mess with special buffers."
 	  (pop-to-buffer buff)
 	  (return buff)))))
 
-(eval-after-load "slime-repl"
-  '(progn
-     (set-cl-help-mode slime-repl-mode-map)
-     (define-key slime-repl-mode-map (kbd "C-c e") #'slime-eval-and-replace)
-     (define-key slime-repl-mode-map (kbd "*") #'insert-earmuffs)
-     (define-key slime-repl-mode-map (kbd "<up>") 'slime-repl-previous-input)
-     (define-key slime-repl-mode-map (kbd "<down>") 'slime-repl-next-input)
-     (define-key slime-repl-mode-map (kbd "<right>") 'forward-word)
-     (define-key slime-repl-mode-map (kbd "<left>") 'backward-word)
-     (define-key slime-repl-mode-map (kbd "C-c C-z") 'slime-return-to-lisp-file)
-     (define-key slime-repl-mode-map (kbd "C-c q") 'slime-quit-lisp)))
+(with-eval-after-load "slime-repl"
+  (set-cl-help-mode slime-repl-mode-map)
+  (define-key slime-repl-mode-map (kbd "C-c e") #'slime-eval-and-replace)
+  (define-key slime-repl-mode-map (kbd "*") #'insert-earmuffs)
+  (define-key slime-repl-mode-map (kbd "<up>") 'slime-repl-previous-input)
+  (define-key slime-repl-mode-map (kbd "<down>") 'slime-repl-next-input)
+  (define-key slime-repl-mode-map (kbd "<right>") 'forward-word)
+  (define-key slime-repl-mode-map (kbd "<left>") 'backward-word)
+  (define-key slime-repl-mode-map (kbd "C-c C-z") 'slime-return-to-lisp-file)
+  (define-key slime-repl-mode-map (kbd "C-c q") 'slime-quit-lisp))
 
 (defadvice slime-scratch (after slime-scratch-add-top-line-comment compile activate)
   (unless (/= 1 (point))
@@ -1030,14 +1016,13 @@ Don't mess with special buffers."
 
 (add-hook 'python-mode-hook #'add-delete-trailing-whitespace-before-save-hook)
 
-(eval-after-load "python"
-  '(progn
-     (elpy-enable)
-     (defvar inferior-python-mode-map)
-     (define-key inferior-python-mode-map (kbd "C-d") 'comint-delchar-or-eof-or-kill-buffer)
-     (define-key inferior-python-mode-map (kbd "C-c M-o") 'python-repl-clear-buffer)
-     (add-to-list 'safe-local-variable-values '(python-shell-interpreter . "python2"))
-     (require 'smartparens-python)))
+(with-eval-after-load "python"
+  (elpy-enable)
+  (defvar inferior-python-mode-map)
+  (define-key inferior-python-mode-map (kbd "C-d") 'comint-delchar-or-eof-or-kill-buffer)
+  (define-key inferior-python-mode-map (kbd "C-c M-o") 'python-repl-clear-buffer)
+  (add-to-list 'safe-local-variable-values '(python-shell-interpreter . "python2"))
+  (require 'smartparens-python))
 
 (add-hook 'python-mode-hook #'smartparens-strict-mode)
 (add-hook 'inferior-python-mode-hook #'smartparens-strict-mode)
@@ -1055,12 +1040,11 @@ Don't mess with special buffers."
 	  (call-interactively #'self-insert-command))))
     (define-key smartparens-mode-map (kbd ")") #'sp-paredit-like-close-round)))
 
-(eval-after-load "elpy"
-  '(progn
-     (defvar elpy-mode-map)
-     (define-key elpy-mode-map (kbd "M-,") 'pop-tag-mark)
-     (define-key elpy-mode-map (kbd "C-c C-c") 'python-shell-send-defun)
-     (define-key elpy-mode-map (kbd "C-c C-k") 'elpy-shell-send-region-or-buffer)))
+(with-eval-after-load "elpy"
+  (defvar elpy-mode-map)
+  (define-key elpy-mode-map (kbd "M-,") 'pop-tag-mark)
+  (define-key elpy-mode-map (kbd "C-c C-c") 'python-shell-send-defun)
+  (define-key elpy-mode-map (kbd "C-c C-k") 'elpy-shell-send-region-or-buffer))
 
 (defvar flymake-no-changes-timeout)
 (defun set-flymake-no-changes-timeout-to-one-hour ()
@@ -1069,21 +1053,20 @@ Don't mess with special buffers."
 
 (add-hook 'elpy-mode-hook #'set-flymake-no-changes-timeout-to-one-hour)
 
-(eval-after-load "company"
-  '(eval-after-load "yasnippet"
-     '(progn
-	(defvar company-active-map)
-	(substitute-key-definition
-	 'company-complete-common
-	 'company-yasnippet-or-completion
-	 company-active-map)(defvar yas-fallback-behavior)
-	(defun company-yasnippet-or-completion ()
-	  "Solve company yasnippet conflicts."
-	  (interactive)
-	  (let ((yas-fallback-behavior
-		 '(apply 'company-complete-common nil)))
-	    (with-no-warnings
-	      (yas-expand)))))))
+(with-eval-after-load "company"
+  (with-eval-after-load "yasnippet"
+    (defvar company-active-map)
+    (substitute-key-definition
+     'company-complete-common
+     'company-yasnippet-or-completion
+     company-active-map)(defvar yas-fallback-behavior)
+    (defun company-yasnippet-or-completion ()
+      "Solve company yasnippet conflicts."
+      (interactive)
+      (let ((yas-fallback-behavior
+	     '(apply 'company-complete-common nil)))
+	(with-no-warnings
+	  (yas-expand))))))
 
 (defun byte-compile-current-buffer ()
   "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
