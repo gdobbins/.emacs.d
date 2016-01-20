@@ -28,6 +28,7 @@
 (defvar hidden-minor-modes
   '(undo-tree-mode
     guide-key-mode
+    auto-revert-mode
     paredit-mode
     smartparens-mode
     elisp-slime-nav-mode
