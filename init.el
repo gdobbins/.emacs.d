@@ -189,6 +189,7 @@ multiple functions can call each other in repetition."
 		  (mode . lisp-mode)
 		  (mode . slime-repl-mode)
 		  (mode . slime-inspector-mode)
+		  (name . "^\\*slime-\\(description\\|compilation\\)\\*$")
 		  (filename . "^/usr/local/doc/HyperSpec/")))
 	 ("Python" (or
 		    (mode . python-mode)
