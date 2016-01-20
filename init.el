@@ -92,8 +92,6 @@ multiple functions can call each other in repetition."
 (setq savehist-save-minibuffer-history 1)
 (setq savehist-additional-variables
       '(kill-ring
-	search-ring
-	regexp-search-ring
 	ioccur-history
 	kmacro-ring
 	last-kbd-macro
@@ -140,7 +138,8 @@ multiple functions can call each other in repetition."
 
 (defadvice w3m-close-window (after w3m-close-duplicate-buffer compile)
   "Delete the w3m window if the current number of windows is less than `*w3m-number-of-windows-beforehand*'."
-  (unless (>= *w3m-number-of-windows-beforehand* (length (window-list)))    (delete-window)))
+  (unless (>= *w3m-number-of-windows-beforehand* (length (window-list)))
+    (delete-window)))
 
 (add-to-list 'browse-url-browser-function '("^file" . w3m-browse-url-other-window))
 (add-to-list 'browse-url-browser-function '("^https?://en\\.wiktionary\\.org/wiki/" . w3m-browse-url-other-window))
@@ -308,7 +307,8 @@ multiple functions can call each other in repetition."
 	(ecl ("/usr/bin/ecl"))
 	(clisp ("/usr/bin/clisp"))))
 
-(when (file-exists-p "/usr/local/doc/HyperSpec/") (setq common-lisp-hyperspec-root "file://usr/local/doc/HyperSpec/"))
+(when (file-exists-p "/usr/local/doc/HyperSpec/")
+  (setq common-lisp-hyperspec-root "file://usr/local/doc/HyperSpec/"))
 
 (setq
  backup-by-copying t			; don't clobber symlinks
@@ -942,14 +942,14 @@ Don't mess with special buffers."
     (unless (looking-at ".")
       (insert ";; This buffer is for notes you don't want to save, and for Common Lisp evaluation.\n\n"))))
 
-(add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
-(add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
-(add-hook 'ielm-mode-hook             #'enable-paredit-mode)
-(add-hook 'lisp-mode-hook             #'enable-paredit-mode)
-(add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
-(add-hook 'scheme-mode-hook           #'enable-paredit-mode)
-(add-hook 'slime-repl-mode-hook       #'enable-paredit-mode)
-(add-hook 'eshell-mode-hook #'enable-paredit-mode)
+(add-hook 'emacs-lisp-mode-hook				#'enable-paredit-mode)
+(add-hook 'eval-expression-minibuffer-setup-hook	#'enable-paredit-mode)
+(add-hook 'ielm-mode-hook				#'enable-paredit-mode)
+(add-hook 'lisp-mode-hook				#'enable-paredit-mode)
+(add-hook 'lisp-interaction-mode-hook			#'enable-paredit-mode)
+(add-hook 'scheme-mode-hook				#'enable-paredit-mode)
+(add-hook 'slime-repl-mode-hook				#'enable-paredit-mode)
+(add-hook 'eshell-mode-hook				#'enable-paredit-mode)
 
 (defun electrify-return-if-match (arg)
   "If the text after the cursor matches \"[\]\)}]\" then
@@ -963,10 +963,6 @@ Don't mess with special buffers."
     (indent-according-to-mode)))
 
 (defset-function electrify-return-if-match "RET")
-
-;(add-hook 'lisp-mode-hook #'set-electrify-return-if-match)
-;(add-hook 'lisp-interaction-mode-hook #'set-electrify-return-if-match)
-;(add-hook 'emacs-lisp-mode-hook #'set-electrify-return-if-match)
 
 (pdf-tools-install)
 (define-key pdf-view-mode-map (kbd "a") 'image-bol)
@@ -1014,18 +1010,16 @@ Don't mess with special buffers."
 	  (forward-char diff)
 	(goto-char (point-max))))))
 
-(add-hook 'python-mode-hook #'add-delete-trailing-whitespace-before-save-hook)
-
 (with-eval-after-load "python"
   (elpy-enable)
   (defvar inferior-python-mode-map)
   (define-key inferior-python-mode-map (kbd "C-d") 'comint-delchar-or-eof-or-kill-buffer)
   (define-key inferior-python-mode-map (kbd "C-c M-o") 'python-repl-clear-buffer)
   (add-to-list 'safe-local-variable-values '(python-shell-interpreter . "python2"))
+  (add-hook 'python-mode-hook #'add-delete-trailing-whitespace-before-save-hook)
+  (add-hook 'python-mode-hook #'smartparens-strict-mode)
+  (add-hook 'inferior-python-mode-hook #'smartparens-strict-mode)
   (require 'smartparens-python))
-
-(add-hook 'python-mode-hook #'smartparens-strict-mode)
-(add-hook 'inferior-python-mode-hook #'smartparens-strict-mode)
 
 (with-eval-after-load "smartparens"
   (sp-use-paredit-bindings)
@@ -1041,6 +1035,7 @@ Don't mess with special buffers."
     (define-key smartparens-mode-map (kbd ")") #'sp-paredit-like-close-round)))
 
 (with-eval-after-load "elpy"
+  (add-hook 'elpy-mode-hook #'set-flymake-no-changes-timeout-to-one-hour)
   (defvar elpy-mode-map)
   (define-key elpy-mode-map (kbd "M-,") 'pop-tag-mark)
   (define-key elpy-mode-map (kbd "C-c C-c") 'python-shell-send-defun)
@@ -1051,15 +1046,14 @@ Don't mess with special buffers."
   (interactive)
   (set (make-local-variable 'flymake-no-changes-timeout) 3600))
 
-(add-hook 'elpy-mode-hook #'set-flymake-no-changes-timeout-to-one-hour)
-
 (with-eval-after-load "company"
   (with-eval-after-load "yasnippet"
     (defvar company-active-map)
     (substitute-key-definition
      'company-complete-common
      'company-yasnippet-or-completion
-     company-active-map)(defvar yas-fallback-behavior)
+     company-active-map)
+    (defvar yas-fallback-behavior)
     (defun company-yasnippet-or-completion ()
       "Solve company yasnippet conflicts."
       (interactive)
