@@ -857,6 +857,7 @@ Don't mess with special buffers."
 
 (eval-after-load "shell"
   '(progn
+     (add-hook 'shell-mode-hook #'truncate-lines->t)
      (defvar shell-mode-map)
      (define-key shell-mode-map (kbd "C-d") 'comint-delchar-or-eof-or-kill-buffer)))
 
