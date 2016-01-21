@@ -28,6 +28,7 @@
 (defvar hidden-minor-modes
   '(undo-tree-mode
     guide-key-mode
+    abbrev-mode
     auto-revert-mode
     paredit-mode
     smartparens-mode
@@ -319,6 +320,41 @@ multiple functions can call each other in repetition."
  kept-new-versions 6
  kept-old-versions 2
  version-control t)			; use versioned backups
+
+(defun endless/ispell-word-then-abbrev (p)
+  "Call `ispell-word', then create an abbrev for it.
+With prefix P, create local abbrev. Otherwise it will
+be global.
+If there's nothing wrong with the word at point, keep
+looking for a typo until the beginning of buffer. You can
+skip typos you don't want to fix with `SPC', and you can
+abort completely with `C-g'."
+  (interactive "P")
+  (let (bef aft)
+    (save-excursion
+      (while (if (setq bef (thing-at-point 'word))
+                 ;; Word was corrected or used quit.
+                 (if (ispell-word nil 'quiet)
+                     nil ; End the loop.
+                   ;; Also end if we reach `bob'.
+                   (not (bobp)))
+               ;; If there's no word at point, keep looking
+               ;; until `bob'.
+               (not (bobp)))
+        (backward-word))
+      (setq aft (thing-at-point 'word)))
+    (if (and aft bef (not (equal aft bef)))
+        (let ((aft (downcase aft))
+              (bef (downcase bef)))
+          (define-abbrev
+            (if p local-abbrev-table global-abbrev-table)
+            bef aft)
+          (message "\"%s\" now expands to \"%s\" %sally"
+                   bef aft (if p "loc" "glob")))
+      (user-error "No typo at or before point"))))
+
+(setq save-abbrevs 'silently)
+(setq-default abbrev-mode t)
 
 (setq show-paren-delay 0)
 (show-paren-mode 1)
@@ -757,6 +793,7 @@ Don't mess with special buffers."
 (global-set-key (kbd "C-c k") 'kmacro-keymap)
 (global-set-key (kbd "C-c s") 'imenu)
 (global-set-key (kbd "C-c y") 'browse-kill-ring)
+(global-set-key (kbd "C-c c") 'endless/ispell-word-then-abbrev)
 (global-set-key (kbd "C-x w b") 'hi-lock-write-interactive-patterns)
 (global-set-key (kbd "C-x w r") 'unhighlight-regexp)
 (global-set-key (kbd "C-x w h") 'highlight-regexp)
