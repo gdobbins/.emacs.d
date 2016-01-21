@@ -33,6 +33,7 @@
     paredit-mode
     smartparens-mode
     elisp-slime-nav-mode
+    yas-minor-mode
     eldoc-mode))
 
 (defun purge-minor-modes ()
@@ -952,6 +953,7 @@ Don't mess with special buffers."
 			  '(("(\\(iter\\(ate\\)?\\)" 1 'font-lock-keyword-face))
 			  t)
   (define-key lisp-mode-map (kbd "C-c e") #'slime-eval-and-replace)
+  (add-hook 'lisp-mode-hook #'yas-minor-mode)
   (add-hook 'lisp-mode-hook #'set-up-slime-hippie-expand))
 
 (defun slime-return-to-lisp-file ()
@@ -1099,6 +1101,9 @@ Don't mess with special buffers."
 	     '(apply 'company-complete-common nil)))
 	(with-no-warnings
 	  (yas-expand))))))
+
+(with-eval-after-load "yasnippet"
+  (yas-reload-all))
 
 (defun byte-compile-current-buffer ()
   "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
