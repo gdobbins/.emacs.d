@@ -966,6 +966,7 @@ Don't mess with special buffers."
 (with-eval-after-load "slime-repl"
   (set-cl-help-mode slime-repl-mode-map)
   (add-hook 'slime-repl-mode-hook #'set-up-slime-hippie-expand)
+  (setq slime-auto-start 'always)
   (define-key slime-repl-mode-map (kbd "C-c e") #'slime-eval-and-replace)
   (define-key slime-repl-mode-map (kbd "<up>") 'slime-repl-previous-input)
   (define-key slime-repl-mode-map (kbd "<down>") 'slime-repl-next-input)
