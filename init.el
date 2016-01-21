@@ -952,8 +952,7 @@ Don't mess with special buffers."
 			  '(("(\\(iter\\(ate\\)?\\)" 1 'font-lock-keyword-face))
 			  t)
   (define-key lisp-mode-map (kbd "C-c e") #'slime-eval-and-replace)
-  (define-key lisp-mode-map (kbd "*") #'insert-earmuffs)
-  (define-key lisp-mode-map (kbd "<tab>") #'slime-indent-and-complete-symbol))
+  (add-hook 'lisp-mode-hook #'set-up-slime-hippie-expand))
 
 (defun slime-return-to-lisp-file ()
   (interactive)
@@ -966,8 +965,8 @@ Don't mess with special buffers."
 
 (with-eval-after-load "slime-repl"
   (set-cl-help-mode slime-repl-mode-map)
+  (add-hook 'slime-repl-mode-hook #'set-up-slime-hippie-expand)
   (define-key slime-repl-mode-map (kbd "C-c e") #'slime-eval-and-replace)
-  (define-key slime-repl-mode-map (kbd "*") #'insert-earmuffs)
   (define-key slime-repl-mode-map (kbd "<up>") 'slime-repl-previous-input)
   (define-key slime-repl-mode-map (kbd "<down>") 'slime-repl-next-input)
   (define-key slime-repl-mode-map (kbd "<right>") 'forward-word)
