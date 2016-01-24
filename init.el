@@ -438,11 +438,6 @@ your recently and most frequently used commands.")
 (setq uniquify-buffer-name-style 'forward)
 (require 'saveplace)
 (setq-default save-place t)
-					;(setq load-path (cons "/usr/share/emacs/site-lisp/ess" load-path))
-					;(require 'ess-site)
-
-					;  (require 'discover)
-					;  (global-discover-mode 1)
 
 (defun undo-tree-save-history-ignore-file (orig &rest args)
   "Ignore files matching the regex, otherwise save history"
@@ -454,7 +449,7 @@ your recently and most frequently used commands.")
 (with-eval-after-load 'undo-tree
   (define-key undo-tree-visualizer-mode-map (kbd "RET") 'undo-tree-visualizer-quit)
   (setq undo-tree-auto-save-history t)
-  (setq undo-tree-history-directory-alist '((".*\\.gpg" . "/dev/null") ("." . "~/.emacs.d/undo/")))
+  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo/")))
   (advice-add 'undo-tree-save-history :around #'undo-tree-save-history-ignore-file))
 
 (with-eval-after-load "x86-lookup"
@@ -950,7 +945,7 @@ Don't mess with special buffers."
 (with-eval-after-load "lisp-mode"
   (set-cl-help-mode lisp-mode-map)
   (font-lock-add-keywords 'lisp-mode
-			  '(("(\\(iter\\(ate\\)?\\)" 1 'font-lock-keyword-face))
+			  '(("(\\(iter\\(ate\\)?\\|defmacro-\\(driver\\|clause\\)\\)" 1 'font-lock-keyword-face))
 			  t)
   (define-key lisp-mode-map (kbd "C-c e") #'slime-eval-and-replace)
   (define-key lisp-mode-map (kbd "C-c C-s") #'slime-scratch)
