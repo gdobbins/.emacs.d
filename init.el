@@ -8,6 +8,8 @@
   (tooltip-mode -1))
 
 (setq gc-cons-threshold 100000000)
+(add-hook 'after-init-hook (lambda () (setq gc-cons-threshold 800000)))
+
 (setq ring-bell-function 'ignore)
 (setq ad-redefinition-action 'accept)
 
@@ -1105,7 +1107,8 @@ Don't mess with special buffers."
 	  (yas-expand))))))
 
 (with-eval-after-load "yasnippet"
-  (yas-reload-all))
+  (with-no-warnings
+    (yas-reload-all)))
 
 (defun byte-compile-current-buffer ()
   "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
@@ -1118,5 +1121,3 @@ Don't mess with special buffers."
   (add-hook 'after-save-hook #'byte-compile-current-buffer nil t))
 
 (add-hook 'emacs-lisp-mode-hook 'add-byte-compile-hook)
-
-(setq gc-cons-threshold 800000)
