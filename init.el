@@ -190,6 +190,7 @@ multiple functions can call each other in repetition."
 		  (mode . slime-repl-mode)
 		  (mode . slime-inspector-mode)
 		  (name . "^\\*slime-\\(description\\|compilation\\)\\*$")
+		  (name . "^\\*sldb .*\\*$")
 		  (filename . "^/usr/local/doc/HyperSpec/")))
 	 ("Python" (or
 		    (mode . python-mode)
@@ -203,6 +204,10 @@ multiple functions can call each other in repetition."
 	 ("Assembly" (or
 		      (mode . asm-mode)
 		      (filename . "^/usr/local/doc/64-ia-32-architectures-software-developer-manual-325462\\.pdf$")))
+	 ("Man" (or
+		 (mode . Man-mode)
+		 (mode . woman-mode)
+		 (name . "^\\*WoMan-Log\\*$")))
 	 ("Data" (or
 		  (filename . ".*\\.\\([ct]sv\\|dat\\)$")))
 	 ("LaTeX" (or
