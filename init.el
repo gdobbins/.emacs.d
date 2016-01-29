@@ -816,6 +816,7 @@ Don't mess with special buffers."
 (global-set-key (kbd "M-p") 'smartscan-symbol-go-backward)
 (global-set-key (kbd "M-'") 'avy-goto-word-1)
 (global-set-key (kbd "M-SPC") 'cycle-spacing)
+(global-set-key (kbd "C-z") 'repeat)
 
 (autoload 'mpc-resume "mpc")
 (autoload 'mpc-pause "mpc")
