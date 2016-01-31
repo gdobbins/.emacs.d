@@ -191,7 +191,7 @@ multiple functions can call each other in repetition."
 		  (mode . lisp-mode)
 		  (mode . slime-repl-mode)
 		  (mode . slime-inspector-mode)
-		  (name . "^\\*slime-\\(description\\|compilation\\)\\*$")
+		  (name . "^\\*slime-\\(description\\|compilation\\|xref\\)\\*$")
 		  (name . "^\\*sldb .*\\*$")
 		  (filename . "^/usr/local/doc/HyperSpec/")))
 	 ("Python" (or
@@ -208,8 +208,7 @@ multiple functions can call each other in repetition."
 		      (filename . "^/usr/local/doc/64-ia-32-architectures-software-developer-manual-325462\\.pdf$")))
 	 ("Man" (or
 		 (mode . Man-mode)
-		 (mode . woman-mode)
-		 (name . "^\\*WoMan-Log\\*$")))
+		 (mode . woman-mode)))
 	 ("Data" (or
 		  (filename . ".*\\.\\([ct]sv\\|dat\\)$")))
 	 ("LaTeX" (or
@@ -244,6 +243,8 @@ multiple functions can call each other in repetition."
 		   (mode . ioccur-mode)
 		   (mode . occur-mode)
 		   (mode . reb-mode)
+		   (mode . calc-mode)
+		   (mode . calc-trail-mode)
 		   (mode . messages-buffer-mode))))))
 
 (setq ibuffer-show-empty-filter-groups nil)
@@ -268,9 +269,10 @@ multiple functions can call each other in repetition."
 
 (with-eval-after-load "ibuf-ext"
   (add-to-list 'ibuffer-never-show-predicates "^\\*slime-events\\*$")
-  (add-to-list 'ibuffer-never-show-predicates "^\\*inferior-lisp\\*$")
+  (add-to-list 'ibuffer-never-show-predicates "^\\*inferior-lisp\\*\\(<[0-9]>\\)?$")
   (add-to-list 'ibuffer-never-show-predicates "^\\*Compile-Log\\*$")
-  (add-to-list 'ibuffer-never-show-predicates "^\\*Completions\\*$"))
+  (add-to-list 'ibuffer-never-show-predicates "^\\*Completions\\*$")
+  (add-to-list 'ibuffer-never-show-predicates "^\\*WoMan-Log\\*$"))
 
 (defvar hidden-ibuffer-groups '("^\\[ Default \\]"))
 
