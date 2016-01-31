@@ -238,6 +238,7 @@ multiple functions can call each other in repetition."
 		   (mode . help-mode)
 		   (mode . Info-mode)
 		   (mode . package-menu-mode)
+		   (mode . finder-mode)
 		   (mode . Custom-mode)
 		   (mode . apropos-mode)
 		   (mode . ioccur-mode)
