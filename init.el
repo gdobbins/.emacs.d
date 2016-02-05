@@ -417,6 +417,8 @@ your recently and most frequently used commands.")
 (setq ido-file-extensions-order '(".el" ".org" ".lisp" ".py" ".pdf" t))
 (setq ido-use-filename-at-point 'guess)
 
+(setq password-cache-expiry 300)
+
 (defadvice ido-find-file (after find-file-sudo compile activate)
   "Find file as root if necessary."
   (unless (and buffer-file-name
