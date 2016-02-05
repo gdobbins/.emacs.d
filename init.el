@@ -647,7 +647,7 @@ lines have identical symbols at identical goal columns as the symbol at point."
 
 (defun revert-this-buffer ()
   (interactive)
-  (revert-buffer nil t t)
+  (revert-buffer t t t)
   (message (concat "Reverted buffer " (buffer-name))))
 
 (defun really-desktop-clear ()
