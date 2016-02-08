@@ -460,7 +460,8 @@ your recently and most frequently used commands.")
 (global-undo-tree-mode)
 (with-eval-after-load 'undo-tree
   (define-key undo-tree-visualizer-mode-map (kbd "RET") #'undo-tree-visualizer-quit)
-  (setq undo-tree-auto-save-history t)
+  (unless (string= user-login-name "root")
+    (setq undo-tree-auto-save-history t))
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo/")))
   (advice-add 'undo-tree-save-history :around #'undo-tree-save-history-ignore-file))
 
