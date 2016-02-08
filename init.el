@@ -688,6 +688,26 @@ Don't mess with special buffers."
   (interactive)
   (message (format-time-string "%T %A %B %e, %Y")))
 
+(defun egg-timer (x)
+  "Set a timer to go off in x minutes, default to 5."
+  (interactive "P")
+  (let ((time (cond
+	       ((equal x nil) "5")
+	       ((listp x) (if (= (first x) 4)
+			      (read-string "Number of minutes: " nil nil "10")
+			    (format "%d"
+				    (* (string-to-number
+					(read-string "Number of hours: " nil nil "1"))
+				       60))))
+	       (t (format "%d" x)))))
+    (run-at-time (concat time " min") nil
+		 (lambda ()
+		   (let ((visible-bell t)
+			 (ring-bell-function nil))
+		     (ding t)
+		     (message (concat time " minutes timer has finished.")))))
+    (message (concat "Timer set for " time " minutes."))))
+
 (with-no-warnings
  (defun duplicate-other-window-buffer ()
    (interactive)
@@ -822,6 +842,7 @@ Don't mess with special buffers."
 (global-set-key (kbd "M-'") #'avy-goto-word-1)
 (global-set-key (kbd "M-SPC") #'cycle-spacing)
 (global-set-key (kbd "C-z") #'repeat)
+(global-set-key (kbd "<f5>") #'egg-timer)
 
 (autoload 'mpc-resume "mpc")
 (autoload 'mpc-pause "mpc")
