@@ -27,6 +27,10 @@
 
 (load "~/.emacs.d/secrets" t t)
 
+(require 'server)
+(unless (or (server-running-p) (string= user-login-name "root"))
+  (add-hook 'emacs-startup-hook #'server-start))
+
 (defvar hidden-minor-modes
   '(undo-tree-mode
     guide-key-mode
@@ -824,6 +828,7 @@ Don't mess with special buffers."
 (global-set-key (kbd "M-SPC") #'cycle-spacing)
 (global-set-key (kbd "C-z") #'repeat)
 (global-set-key (kbd "<f5>") #'egg-timer)
+(global-set-key (kbd "C-x c") #'server-edit)
 
 (autoload 'mpc-resume "mpc")
 (autoload 'mpc-pause "mpc")
