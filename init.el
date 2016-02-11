@@ -126,28 +126,8 @@ multiple functions can call each other in repetition."
 
 (setf browse-url-browser-function '(("." . browse-url-default-browser)))
 
-(autoload 'w3m-browse-url "w3m" "Ask a www browser to show a URL." t)
-
-(defvar *w3m-number-of-windows-beforehand* 1 "The number of windows open before opening w3m.")
-
-(defvar w3m-pop-up-windows)
-
-(defun w3m-browse-url-other-window (url &optional newwin)
-  "Set `*w3m-number-of-windows-beforehand*' to the current number of windows, then call `w3m-browse-url' in the `other-window', using `split-window' if necessary."
-  (setq *w3m-number-of-windows-beforehand* (length (window-list)))
-  (let ((w3m-pop-up-windows t))
-    (if (one-window-p)
-	(split-window nil nil t))
-    (other-window 1)
-    (w3m-browse-url url newwin)))
-
-(defadvice w3m-close-window (after w3m-close-duplicate-buffer compile)
-  "Delete the w3m window if the current number of windows is less than `*w3m-number-of-windows-beforehand*'."
-  (unless (>= *w3m-number-of-windows-beforehand* (length (window-list)))
-    (delete-window)))
-
-(add-to-list 'browse-url-browser-function '("^file" . w3m-browse-url-other-window))
-(add-to-list 'browse-url-browser-function '("^https?://en\\.wiktionary\\.org/wiki/" . w3m-browse-url-other-window))
+(add-to-list 'browse-url-browser-function '("^file" . eww-browse-url))
+(add-to-list 'browse-url-browser-function '("^https?://en\\.wiktionary\\.org/wiki/" . eww-browse-url))
 
 (autoload 'ispell-get-word "ispell")
 
@@ -321,7 +301,7 @@ multiple functions can call each other in repetition."
 	(clisp ("/usr/bin/clisp"))))
 
 (when (file-exists-p "/usr/local/doc/HyperSpec/")
-  (setq common-lisp-hyperspec-root "file://usr/local/doc/HyperSpec/"))
+  (setq common-lisp-hyperspec-root "file:///usr/local/doc/HyperSpec/"))
 
 (setq
  backup-by-copying t			; don't clobber symlinks
