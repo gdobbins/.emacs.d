@@ -846,6 +846,13 @@ Don't mess with special buffers."
 (global-set-key (kbd "<mouse-8>") #'previous-buffer)
 (global-set-key (kbd "<mouse-9>") #'next-buffer)
 
+(define-key key-translation-map (kbd "C-t") (kbd "C-x"))
+(define-key key-translation-map (kbd "C-x") (kbd "C-t"))
+(define-key key-translation-map (kbd "M-t") (kbd "M-x"))
+(define-key key-translation-map (kbd "M-x") (kbd "M-t"))
+(define-key key-translation-map (kbd "C-M-t") (kbd "C-M-x"))
+(define-key key-translation-map (kbd "C-M-x") (kbd "C-M-t"))
+
 (with-eval-after-load 'help-mode
   (define-key help-mode-map (kbd "<mouse-8>") #'help-go-back)
   (define-key help-mode-map (kbd "<mouse-9>") #'help-go-forward)
