@@ -897,6 +897,8 @@ Don't mess with special buffers."
 (add-to-list 'default-frame-alist '(font . "Linux Libertine Mono:pixelsize=14:foundry=unknown:weight=normal:slant=normal:width=normal:scalable=true"))
 (setq split-width-threshold 100)
 
+(setq-default comint-prompt-read-only t)
+
 (defun comint-delchar-or-eof-or-kill-buffer (arg)
   (interactive "p")
   (if (null (get-buffer-process (current-buffer)))
