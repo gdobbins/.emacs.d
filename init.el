@@ -186,6 +186,7 @@ multiple functions can call each other in repetition."
 		   (mode . shell-mode)
 		   (mode . term-mode)
 		   (mode . sh-mode)
+		   (mode . conf-unix-mode)
 		   (name . "^\\*Shell Command Output\\*$")))
 	 ("Assembly" (or
 		      (mode . asm-mode)
@@ -257,6 +258,7 @@ multiple functions can call each other in repetition."
   (add-to-list 'ibuffer-never-show-predicates "^\\*inferior-lisp\\*\\(<[0-9]>\\)?$")
   (add-to-list 'ibuffer-never-show-predicates "^\\*Compile-Log\\*$")
   (add-to-list 'ibuffer-never-show-predicates "^\\*Completions\\*$")
+  (add-to-list 'ibuffer-never-show-predicates "^\\*tramp/sudo root@localhost\\*$")
   (add-to-list 'ibuffer-never-show-predicates "^\\*WoMan-Log\\*$"))
 
 (defvar hidden-ibuffer-groups '("^\\[ Default \\]"))
