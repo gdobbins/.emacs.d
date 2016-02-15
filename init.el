@@ -70,6 +70,8 @@
 
 (add-to-list 'command-switch-alist '("-magit" . command-line-magit))
 
+(eval-when-compile (require 'cl))
+
 (cl-defmacro make-last-key-repeating-function (func &optional trans-map (keep-map t))
   "Add advice to to the function such that repeating the
 last key used to call the function repeats the call.
