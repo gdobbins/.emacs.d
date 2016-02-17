@@ -253,7 +253,8 @@ multiple functions can call each other in repetition."
 	     "Open ibuffer with cursor pointed to most recent buffer name"
 	     (let ((recent-buffer-name (buffer-name)))
 	       ad-do-it
-	       (ibuffer-jump-to-buffer recent-buffer-name))))
+	       (unless (string= recent-buffer-name "*Ibuffer*")
+		 (ibuffer-jump-to-buffer recent-buffer-name)))))
 
 (with-eval-after-load "ibuf-ext"
   (add-to-list 'ibuffer-never-show-predicates "^\\*slime-events\\*$")
