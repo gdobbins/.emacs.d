@@ -796,7 +796,7 @@ Don't mess with special buffers."
 (global-set-key (kbd "C-c w e") #'erase-buffer)
 (global-set-key (kbd "C-c w s") #'delete-trailing-whitespace)
 (global-set-key (kbd "C-c w n") #'column-number-mode)
-(global-set-key (kbd "C-c w m") #'how-many)
+(global-set-key (kbd "C-c w m") #'calc)
 (global-set-key (kbd "C-c w w") #'message-current-time)
 (global-set-key (kbd "C-c d") #'duplicate-other-window-buffer)
 (global-set-key (kbd "C-c C-z") #'smart-switch-to-output-buffer)
