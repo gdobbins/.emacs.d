@@ -421,8 +421,9 @@ your recently and most frequently used commands.")
 
 (defadvice ido-find-file (after find-file-sudo compile activate)
   "Find file as root if necessary."
-  (unless (and buffer-file-name
-               (file-writable-p buffer-file-name))
+  (when (and buffer-file-name
+	     (not (file-writable-p buffer-file-name))
+	     (file-directory-p default-directory))
     (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
 (global-set-key (kbd "M-/") #'hippie-expand)
