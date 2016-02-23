@@ -159,6 +159,8 @@ multiple functions can call each other in repetition."
   (setq-default dired-omit-files-p t)
   (setq dired-listing-switches "-alhv")
   (setq dired-omit-files "^\\.\\|^#.#$\\|.~$")
+  (define-key dired-mode-map (kbd "M-p") #'dired-up-directory)
+  (define-key dired-mode-map (kbd "M-n") #'quit-window)
   (define-key dired-mode-map (kbd "h") #'dired-omit-mode)
   (define-key dired-mode-map (kbd "e") #'read-only-mode))
 
