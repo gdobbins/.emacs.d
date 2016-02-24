@@ -236,6 +236,7 @@ multiple functions can call each other in repetition."
 		   (mode . lisp-interaction-mode)
 		   (mode . help-mode)
 		   (mode . Info-mode)
+		   (mode . eww-mode)
 		   (mode . package-menu-mode)
 		   (mode . finder-mode)
 		   (mode . Custom-mode)
