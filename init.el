@@ -962,12 +962,12 @@ Don't mess with special buffers."
 (defset-function insert-earmuffs "*")
 
 (defun paredit-space-for-predicates-cl (endp delimiter)
-  "Do not add a space when \" is preceded by #. reader macro or ( is preceded by ,@"
+  "Do not add a space when \" is preceded by #. reader macro or ( is preceded by [ (],@ or #.=?"
   (or endp
       (cond ((eq (char-syntax delimiter) ?\")
 	     (not (looking-back "#." 2)))
 	    ((eq (char-syntax delimiter) ?\()
-	     (not (looking-back "[\n\s-],@" 3)))
+	     (not (looking-back "\\([\n\s-(],@\\)\\|\\(#.=?\\)" 3)))
 	    (t t))))
 
 (defun set-cl-help-mode (km)
