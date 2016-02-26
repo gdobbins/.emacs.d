@@ -868,6 +868,7 @@ Don't mess with special buffers."
 (make-last-key-repeating-function mpc-next mpc-repeating-map)
 (global-set-key (kbd "C-c m l") #'mpc-prev)
 (make-last-key-repeating-function mpc-prev mpc-repeating-map)
+(global-set-key (kbd "C-c m w") #'woman)
 
 (global-set-key (kbd "<mouse-8>") #'previous-buffer)
 (global-set-key (kbd "<mouse-9>") #'next-buffer)
