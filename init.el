@@ -999,7 +999,6 @@ Don't mess with special buffers."
 			  t)
   (define-key lisp-mode-map (kbd "C-c e") #'slime-eval-and-replace)
   (define-key lisp-mode-map (kbd "C-c C-s") #'slime-scratch)
-  (add-hook 'lisp-mode-hook #'yas-minor-mode)
   (add-hook 'lisp-mode-hook #'set-up-slime-hippie-expand))
 
 (defun slime-return-to-lisp-file ()
