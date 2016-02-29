@@ -1014,6 +1014,7 @@ Don't mess with special buffers."
   (set-cl-help-mode slime-repl-mode-map)
   (add-hook 'slime-repl-mode-hook #'set-up-slime-hippie-expand)
   (setq slime-auto-start 'always)
+  (setq slime-repl-history-size 500)
   (define-key slime-repl-mode-map (kbd "C-c C-s") #'slime-scratch)
   (define-key slime-repl-mode-map (kbd "C-c e") #'slime-eval-and-replace)
   (define-key slime-repl-mode-map (kbd "<up>") #'slime-repl-previous-input)
