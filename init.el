@@ -784,7 +784,7 @@ Don't mess with special buffers."
 (global-set-key (kbd "C-c g") #'magit-status)
 (global-set-key (kbd "C-c o") #'ioccur)
 (global-set-key (kbd "C-c a") #'org-agenda)
-(global-set-key (kbd "C-c l") #'slime)
+(global-set-key (kbd "C-c l") #'slime-switch-to-output-buffer)
 (global-set-key (kbd "C-c t") #'sh-show-shell)
 (global-set-key (kbd "C-x C-b") #'ibuffer)
 (global-set-key (kbd "C-x C-k") #'kill-this-buffer)
