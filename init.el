@@ -940,13 +940,15 @@ Don't mess with special buffers."
 (add-hook 'LaTeX-mode-hook #'latex-preview-pane-mode)
 
 (defun fix-capitalization->paren ()
+  "Search backward and replace a capital letter with (<lowercase letter>"
   (interactive)
-  (let ((case-fold-search nil) (pointer-position (point)))
-    (re-search-backward "[\n\t '`,@][A-Z]" nil)
-    (replace-match (concat (substring (match-string 0) 0 1) "(" (downcase (substring (match-string 0) 1))) t)
-    (move-end-of-line nil)
+  (let ((case-fold-search nil))
+    (save-excursion
+      (re-search-backward "[A-Z]" (point-at-bol))
+      (replace-match (concat "(" (downcase (match-string 0))) t t nil 0))
     (insert ")")
-    (goto-char (+ 1 pointer-position))))
+    (backward-char 1)
+    (run-hooks 'post-self-insert-hook)))
 
 (with-eval-after-load "paredit"
   (define-key paredit-mode-map (kbd "C-c (") #'fix-capitalization->paren)
