@@ -1005,6 +1005,7 @@ Don't mess with special buffers."
   (add-hook 'lisp-mode-hook #'set-up-slime-hippie-expand))
 
 (defun slime-return-to-lisp-file ()
+  "Go backwards through the buffer list until one in lisp mode is found."
   (interactive)
   (dolist (buff (buffer-list) (current-buffer))
     (if (equal 'lisp-mode
