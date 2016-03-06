@@ -935,6 +935,7 @@ Don't mess with special buffers."
   (define-key shell-mode-map (kbd "C-d") #'comint-delchar-or-eof-or-kill-buffer))
 
 (with-eval-after-load "eshell"
+  (defvar eshell-visual-commands)
   (add-to-list 'eshell-visual-commands "htop"))
 
 (autoload 'LaTeX-math-mode "latex" "A minor mode with easy access to TeX math macros.")
