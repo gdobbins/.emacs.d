@@ -132,6 +132,13 @@ multiple functions can call each other in repetition."
 
 (setf browse-url-browser-function '(("." . browse-url-default-browser)))
 
+(with-eval-after-load "eww"
+  (defvar eww-mode-map)
+  (define-key eww-mode-map (kbd "<mouse-8>") 'eww-back-url)
+  (define-key eww-mode-map (kbd "<mouse-9>") 'eww-forward-url)
+  (define-key eww-mode-map (kbd "C-c b") 'eww-back-url)
+  (define-key eww-mode-map (kbd "C-c f") 'eww-forward-url))
+
 (add-to-list 'browse-url-browser-function '("^file" . eww-browse-url))
 (add-to-list 'browse-url-browser-function '("^https?://en\\.wiktionary\\.org/wiki/" . eww-browse-url))
 
