@@ -380,6 +380,8 @@ abort completely with `C-g'."
 (setq show-paren-delay 0)
 (show-paren-mode 1)
 
+(setq-default line-move-visual nil)
+
 (require 'ido)
 (ido-mode t)
 (ido-everywhere 1)
