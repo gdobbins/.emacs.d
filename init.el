@@ -314,16 +314,12 @@ multiple functions can call each other in repetition."
   (defvar isearch-mode-map)
   (define-key isearch-mode-map [remap ace-window] #'isearchp-open-recursive-edit))
 
-(load "~/quicklisp/slime-helper" t t)
-
-(defun port-file->swank-start-server (port-file _)
-  (format "(swank:start-server %S)\n" port-file))
+(require 'slime)
+(slime-setup '(slime-fancy))
 
 (setq slime-lisp-implementations
-      '((sbcl ("/usr/bin/sbcl" "--core" "/home/graham/lisp/sbcl.core-graham" "--dynamic-space-size" "3096")
-	      :init port-file->swank-start-server)
-	(sbcl-big ("/usr/bin/sbcl" "--core" "/home/graham/lisp/sbcl.core-graham" "--dynamic-space-size" "6192")
-	      :init port-file->swank-start-server)
+      '((sbcl ("/usr/bin/sbcl" "--core" "/home/graham/lisp/sbcl.core-graham" "--dynamic-space-size" "3096"))
+	(sbcl-big ("/usr/bin/sbcl" "--core" "/home/graham/lisp/sbcl.core-graham" "--dynamic-space-size" "6192"))
 	(sbcl-debug ("/usr/bin/sbcl" "--dynamic-space-size" "3096" "--load" "/home/graham/quicklisp/setup.lisp"))
 	(sbcl-raw ("/usr/bin/sbcl"))
 	(sbcl-git ("/home/graham/sbcl/run-sbcl.sh" "--dynamic-space-size" "3096" "--load" "/home/graham/quicklisp/setup.lisp"))
@@ -452,6 +448,8 @@ your recently and most frequently used commands.")
 	try-complete-lisp-symbol
 	try-complete-file-name-partially
 	try-complete-file-name))
+
+(setq tab-always-indent 'complete)
 
 (defun truncate-lines->t ()
   (interactive)
@@ -906,6 +904,7 @@ Don't mess with special buffers."
 
 (autoload 'elisp-slime-nav-mode "elisp-slime-nav")
 (with-eval-after-load "elisp-slime-nav"
+  (define-key elisp-slime-nav-mode-map (kbd "C-c M-e") #'macrostep-expand)
   (define-key elisp-slime-nav-mode-map (kbd "C-c C-d") #'elisp-slime-nav-describe-elisp-thing-at-point)
   (define-key elisp-slime-nav-mode-map (kbd "C-c C-c") #'eval-defun))
 (add-hook 'emacs-lisp-mode-hook #'turn-on-elisp-slime-nav-mode)
@@ -1014,8 +1013,7 @@ Don't mess with special buffers."
 			    ("(define-constant[ \n\r\t]+\\(\\(\\sw\\|\\s_\\)*\\)" 1 'font-lock-variable-name-face))
 			  t)
   (define-key lisp-mode-map (kbd "C-c e") #'slime-eval-and-replace)
-  (define-key lisp-mode-map (kbd "C-c C-s") #'slime-scratch)
-  (add-hook 'lisp-mode-hook #'set-up-slime-hippie-expand))
+  (define-key lisp-mode-map (kbd "C-c C-s") #'slime-scratch))
 
 (defun slime-return-to-lisp-file ()
   "Go backwards through the buffer list until one in lisp mode is found."
@@ -1029,7 +1027,6 @@ Don't mess with special buffers."
 
 (with-eval-after-load "slime-repl"
   (set-cl-help-mode slime-repl-mode-map)
-  (add-hook 'slime-repl-mode-hook #'set-up-slime-hippie-expand)
   (setq slime-auto-start 'always)
   (setq slime-repl-history-size 500)
   (define-key slime-repl-mode-map (kbd "C-c C-s") #'slime-scratch)
