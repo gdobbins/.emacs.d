@@ -70,7 +70,7 @@
 
 (add-to-list 'command-switch-alist '("-magit" . command-line-magit))
 
-(eval-when-compile (require 'cl))
+(eval-and-compile (require 'cl))
 
 (cl-defmacro make-last-key-repeating-function (func &optional trans-map (keep-map t))
   "Add advice to to the function such that repeating the
@@ -866,7 +866,7 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "C-x r S") #'activate-word-column-region)
 (global-set-key (kbd "C-h x") #'x86-lookup)
 (global-set-key (kbd "C-h r") #'re-builder)
-(global-set-key (kbd "C-h s") 'string-edit-at-point)
+(global-set-key (kbd "C-h s") #'string-edit-at-point)
 (global-set-key (kbd "C-h C-f") #'find-function)
 (global-set-key (kbd "C-h C-k") #'find-function-on-key)
 (global-set-key (kbd "C-h C-v") #'find-variable)
