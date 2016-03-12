@@ -225,7 +225,8 @@ multiple functions can call each other in repetition."
 		   (mode . wdired-mode)
 		   (mode . archive-mode)
 		   (mode . proced-mode)))
-	 ("Git" (derived-mode . magit-mode))
+	 ("Git" (or (derived-mode . magit-mode)
+		    (filename . "\\.git\\(ignore\\|attributes\\)$")))
 	 ("Diff" (or
 		  (mode . ediff-mode)
 		  (name . "^\\*[Ee]?[Dd]iff.*\\*$")))
