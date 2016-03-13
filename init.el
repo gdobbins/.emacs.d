@@ -875,7 +875,7 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "M-o") #'ace-window)
 (global-set-key (kbd "M-n") #'smartscan-symbol-go-forward)
 (global-set-key (kbd "M-p") #'smartscan-symbol-go-backward)
-(global-set-key (kbd "M-'") #'avy-goto-word-1)
+(global-set-key (kbd "C-o") #'avy-goto-char)
 (global-set-key (kbd "M-SPC") #'cycle-spacing)
 (global-set-key (kbd "C-z") #'repeat)
 (global-set-key (kbd "<f5>") #'egg-timer)
@@ -910,6 +910,14 @@ point reaches the beginning or end of the buffer, stop there."
 (define-key input-decode-map (kbd "M-x") (kbd "M-t"))
 (define-key input-decode-map (kbd "C-M-t") (kbd "C-M-x"))
 (define-key input-decode-map (kbd "C-M-x") (kbd "C-M-t"))
+
+(if (display-graphic-p)
+    (progn
+      (define-key input-decode-map (kbd "C-m") (kbd "C-SPC"))
+      (define-key input-decode-map (kbd "C-M-m") (kbd "C-M-SPC")))
+  (progn
+    (global-set-key (kbd "C-x C-m") (kbd "C-SPC"))
+    (global-set-key (kbd "C-x C-M-m") (kbd "C-M-SPC"))))
 
 (with-eval-after-load 'help-mode
   (define-key help-mode-map (kbd "<mouse-8>") #'help-go-back)
