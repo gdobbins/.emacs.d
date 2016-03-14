@@ -972,7 +972,7 @@ point reaches the beginning or end of the buffer, stop there."
   (defvar shell-mode-map)
   (define-key shell-mode-map (kbd "C-d") #'comint-delchar-or-eof-or-kill-buffer))
 
-(with-eval-after-load "eshell"
+(with-eval-after-load "em-term"
   (defvar eshell-visual-commands)
   (add-to-list 'eshell-visual-commands "htop"))
 
