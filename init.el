@@ -339,6 +339,9 @@ multiple functions can call each other in repetition."
  kept-old-versions 2
  version-control t)			; use versioned backups
 
+(defun endless/simple-get-word ()
+  (car-safe (save-excursion (ispell-get-word nil))))
+
 (defun endless/ispell-word-then-abbrev (p)
   "Call `ispell-word', then create an abbrev for it.
 With prefix P, create local abbrev. Otherwise it will
@@ -350,7 +353,7 @@ abort completely with `C-g'."
   (interactive "P")
   (let (bef aft)
     (save-excursion
-      (while (if (setq bef (thing-at-point 'word))
+      (while (if (setq bef (endless/simple-get-word))
                  ;; Word was corrected or used quit.
                  (if (ispell-word nil 'quiet)
                      nil ; End the loop.
@@ -359,8 +362,9 @@ abort completely with `C-g'."
                ;; If there's no word at point, keep looking
                ;; until `bob'.
                (not (bobp)))
-        (backward-word))
-      (setq aft (thing-at-point 'word)))
+        (backward-word)
+        (backward-char))
+      (setq aft (endless/simple-get-word)))
     (if (and aft bef (not (equal aft bef)))
         (let ((aft (downcase aft))
               (bef (downcase bef)))
