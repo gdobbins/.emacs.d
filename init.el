@@ -217,7 +217,9 @@ multiple functions can call each other in repetition."
 	 ("Books" (or
 		   (mode . pdf-view-mode)
 		   (filename . ,(concat "^" (expand-file-name "~/Books")))))
-	 ("Web" (mode . w3m-mode))
+	 ("Web" (or
+		 (mode . w3m-mode)
+		 (mode . eww-mode)))
 	 ("Org" (or (derived-mode . org-mode)
 		    (mode . org-agenda-mode)))
 	 ("Dired" (or
@@ -245,7 +247,6 @@ multiple functions can call each other in repetition."
 		   (mode . lisp-interaction-mode)
 		   (mode . help-mode)
 		   (mode . Info-mode)
-		   (mode . eww-mode)
 		   (mode . package-menu-mode)
 		   (mode . finder-mode)
 		   (mode . Custom-mode)
