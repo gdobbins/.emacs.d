@@ -707,6 +707,10 @@ Don't mess with special buffers."
   (interactive)
   (message (format-time-string "%T %A %B %e, %Y")))
 
+(with-eval-after-load "alert"
+  (defvar alert-default-style)
+  (setq alert-default-style 'libnotify))
+
 (defun egg-timer (x)
   "Set a timer to go off in x minutes, default to 5."
   (interactive "P")
@@ -724,7 +728,8 @@ Don't mess with special buffers."
 		   (let ((visible-bell t)
 			 (ring-bell-function nil))
 		     (ding t)
-		     (message (concat time " minutes timer has finished.")))))
+		     (alert (concat time " minutes timer has finished.")
+			    :category 'egg-timer))))
     (message (concat "Timer set for " time " minutes."))))
 
 (with-no-warnings
