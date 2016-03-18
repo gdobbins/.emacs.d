@@ -1027,13 +1027,6 @@ point reaches the beginning or end of the buffer, stop there."
 	     (not (looking-back "\\([\n\s-(],@\\)\\|\\(#.=?\\)" 3)))
 	    (t t))))
 
-(defun set-cl-help-mode (km)
-  (define-key km (kbd "C-h f") #'slime-describe-function)
-  (define-key km (kbd "C-h v") #'slime-describe-symbol)
-  (define-key km (kbd "C-h d") #'slime-hyperspec-lookup)
-  (define-key km (kbd "C-h ~") #'hyperspec-lookup-format)
-  (define-key km (kbd "C-h #") #'hyperspec-lookup-reader-macro))
-
 (defun slime-eval-and-replace ()
   "Replace the preceding sexp with its common-lisp value."
   (interactive)
@@ -1047,7 +1040,6 @@ point reaches the beginning or end of the buffer, stop there."
 	  (forward-char destination-distance)))))
 
 (with-eval-after-load "lisp-mode"
-  (set-cl-help-mode lisp-mode-map)
   (font-lock-add-keywords 'lisp-mode
 			  '(("(\\(iter\\(ate\\)?\\|defmacro-\\(driver\\|clause\\)\\)" 1 'font-lock-keyword-face)
 			    ("(define-constant[ \n\r\t]+\\(\\(\\sw\\|\\s_\\)*\\)" 1 'font-lock-variable-name-face))
@@ -1066,17 +1058,14 @@ point reaches the beginning or end of the buffer, stop there."
 	  (return buff)))))
 
 (with-eval-after-load "slime-repl"
-  (set-cl-help-mode slime-repl-mode-map)
   (setq slime-auto-start 'always)
   (setq slime-repl-history-size 500)
   (define-key slime-repl-mode-map (kbd "C-c C-s") #'slime-scratch)
   (define-key slime-repl-mode-map (kbd "C-c e") #'slime-eval-and-replace)
   (define-key slime-repl-mode-map (kbd "<up>") #'slime-repl-previous-input)
   (define-key slime-repl-mode-map (kbd "<down>") #'slime-repl-next-input)
-  (define-key slime-repl-mode-map (kbd "<right>") #'forward-word)
-  (define-key slime-repl-mode-map (kbd "<left>") #'backward-word)
   (define-key slime-repl-mode-map (kbd "C-c C-z") #'slime-return-to-lisp-file)
-  (define-key slime-repl-mode-map (kbd "C-c q") #'slime-quit-lisp))
+  (define-key slime-repl-mode-map (kbd "C-c C-q") #'slime-quit-lisp))
 
 (defadvice slime-scratch (after slime-scratch-add-top-line-comment compile activate)
   (unless (/= 1 (point))
