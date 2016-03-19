@@ -122,10 +122,6 @@ multiple functions can call each other in repetition."
 
 (require 'smooth-scrolling)
 
-(require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x r" "C-c" "C-x 4" "C-x 8" "C-x a" "C-x w" "C-c k" "C-c p" "C-c m" "C-c w" "C-h"))
-(guide-key-mode 1)
-
 (prefer-coding-system 'utf-8)
 (when (display-graphic-p)
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
