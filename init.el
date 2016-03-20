@@ -925,6 +925,10 @@ point reaches the beginning or end of the buffer, stop there."
     (global-set-key (kbd "C-x C-m") (kbd "C-SPC"))
     (global-set-key (kbd "C-x C-M-m") (kbd "C-M-SPC"))))
 
+(define-key input-decode-map (kbd "C-h") (kbd "DEL"))
+(define-key input-decode-map (kbd "M-h") (kbd "M-DEL"))
+(define-key input-decode-map (kbd "H-h") (kbd "C-h"))
+
 (with-eval-after-load 'help-mode
   (define-key help-mode-map (kbd "<mouse-8>") #'help-go-back)
   (define-key help-mode-map (kbd "<mouse-9>") #'help-go-forward)
