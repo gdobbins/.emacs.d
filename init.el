@@ -110,14 +110,6 @@ multiple functions can call each other in repetition."
 	kmacro-counter-format
 	register-alist))
 
-(defmacro make-keyboard-macro (string)
-  "Make a function which emulates pushing the key sequence string"
-  (let ((new-func (intern (concat "push-" string))))
-    `(defun ,new-func ()
-       ,(concat "Emulate the keypress " string)
-       (interactive)
-       (kmacro-call-macro nil t nil (kbd ,string)))))
-
 (setq sentence-end-double-space nil)
 
 (require 'smooth-scrolling)
@@ -795,17 +787,6 @@ point reaches the beginning or end of the buffer, stop there."
 (setq aw-keys (list ?h ?t ?n ?s ?a ?o ?e ?u))
 (setq avy-keys aw-keys)
 
-(define-prefix-command 'pop-repeating-map)
-(define-key pop-repeating-map (kbd "j") #'jump-to-register)
-(define-key pop-repeating-map (kbd "r") #'jump-to-register)
-(define-key pop-repeating-map (kbd "s") #'imenu)
-(define-key pop-repeating-map (kbd ".") (make-keyboard-macro "M-."))
-(define-key pop-repeating-map (kbd ",") (make-keyboard-macro "M-,"))
-(make-last-key-repeating-function push-M-\. pop-repeating-map)
-(make-last-key-repeating-function push-M-\, pop-repeating-map)
-(global-set-key (kbd "C-.") #'push-M-\.)
-(global-set-key (kbd "C-,") #'push-M-\,)
-
 (define-prefix-command 'my-other-window-map)
 (make-last-key-repeating-function duplicate-other-window-buffer my-other-window-map nil)
 (define-key my-other-window-map (kbd "C-c s") #'other-window-imenu)
@@ -841,18 +822,6 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "C-c d") #'duplicate-other-window-buffer)
 (global-set-key (kbd "C-c C-z") #'smart-switch-to-output-buffer)
 (global-set-key (kbd "C-c z") #'smart-switch-to-output-buffer)
-(global-set-key (kbd "C-c p") #'pop-repeating-map)
-(global-set-key (kbd "C-c p SPC") #'pop-to-mark-command)
-(global-set-key (kbd "C-c p m") #'pop-to-mark-command)
-(global-set-key (kbd "C-c p l") #'pop-to-mark-command)
-(make-last-key-repeating-function pop-to-mark-command pop-repeating-map)
-(global-set-key (kbd "C-c p g") #'pop-global-mark)
-(global-set-key (kbd "C-c p C-SPC") #'pop-global-mark)
-(make-last-key-repeating-function pop-global-mark pop-repeating-map)
-(global-set-key (kbd "C-c p p") #'goto-last-change)
-(make-last-key-repeating-function goto-last-change pop-repeating-map)
-(global-set-key (kbd "C-c p n") #'goto-last-change-reverse)
-(make-last-key-repeating-function goto-last-change-reverse pop-repeating-map)
 (global-set-key (kbd "C-c e") #'eval-and-replace)
 (global-set-key (kbd "C-c '") #'insert-backquote)
 (global-set-key (kbd "C-c -") #'insert-twidle)
