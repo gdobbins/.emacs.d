@@ -260,12 +260,32 @@ multiple functions can call each other in repetition."
   (define-key ibuffer-mode-map (kbd "k") #'ibuffer-do-delete)
   (define-key ibuffer-mode-map (kbd "C-k") #'ibuffer-mark-and-kill-lines)
   (define-key ibuffer-mode-map (kbd "M-o") nil)
-  (defadvice ibuffer (around ibuffer-point-to-most-recent compile activate) ()
+  (defadvice ibuffer (around ibuffer-point-to-most-recent compile activate)
 	     "Open ibuffer with cursor pointed to most recent buffer name"
 	     (let ((recent-buffer-name (buffer-name)))
 	       ad-do-it
 	       (unless (string= recent-buffer-name "*Ibuffer*")
-		 (ibuffer-jump-to-buffer recent-buffer-name)))))
+		 (ibuffer-jump-to-buffer recent-buffer-name))))
+  (define-ibuffer-column size-h
+    (:name "Size" :inline t)
+    (let ((buf-size (buffer-size)))
+      (cond
+       ((> buf-size 1048576)
+	(format "%7.1fM" (/ buf-size 1048576.0)))
+       ((> buf-size 1024)
+	(format "%7.1fk" (/ buf-size 1024.0)))
+       (t (format "%8d" buf-size)))))
+  (setq ibuffer-formats
+      '((mark modified read-only " "
+              (name 18 18 :left :elide)
+              " "
+              (size-h 9 -1 :right)
+              " "
+              (mode 16 16 :left :elide)
+              " " filename-and-process)
+        (mark " "
+              (name 16 -1)
+              " " filename))))
 
 (with-eval-after-load "ibuf-ext"
   (add-to-list 'ibuffer-never-show-predicates "^\\*slime-events\\*$")
