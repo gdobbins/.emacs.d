@@ -112,8 +112,6 @@ multiple functions can call each other in repetition."
 
 (setq sentence-end-double-space nil)
 
-(require 'smooth-scrolling)
-
 (prefer-coding-system 'utf-8)
 (when (display-graphic-p)
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
