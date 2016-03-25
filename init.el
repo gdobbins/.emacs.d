@@ -426,6 +426,9 @@ your recently and most frequently used commands.")
 
 (add-hook 'ido-setup-hook #'set-pathname->~->home)
 (add-hook 'ido-setup-hook #'set-pathname->/->root)
+(add-hook 'ido-setup-hook (lambda ()
+			    (define-key ido-completion-map (kbd "C-c") nil)
+			    (define-key ido-completion-map (kbd "M-c") #'ido-toggle-case)))
 
 (add-to-list 'ido-ignore-files "^\\.smex-items$")
 (add-to-list 'ido-ignore-files "^\\.slime-history\\.eld$")
