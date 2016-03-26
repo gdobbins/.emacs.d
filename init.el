@@ -95,6 +95,14 @@ multiple functions can call each other in repetition."
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
 
+(defadvice pop-to-mark-command (around ensure-new-mark-position compile activate)
+  (let ((p (point)))
+    (dotimes (i 10)
+      (when (= p (point))
+	ad-do-it))))
+
+(setq set-mark-command-repeat-pop t)
+
 (setq kmacro-ring-max 24)
 
 (setq savehist-file "~/.emacs.d/savehist")
