@@ -628,20 +628,13 @@ lines have identical symbols at identical goal columns as the symbol at point."
 	  (backward-char 1)))))
   (rectangle-mark-mode))
 
-(defun insert-backquote ()
-  (interactive)
-  (insert "`"))
-
-(defun insert-twidle ()
-  (interactive)
-  (insert "~"))
-
 (defun insert-splice ()
   (interactive)
   (if (looking-back "[^ \n]" 1)
       (insert " "))
   (insert ",@()")
-  (backward-char))
+  (backward-char)
+  (run-hooks 'post-self-insert-hook))
 
 (autoload 'sh-show-shell "sh-script" "Pop the shell interaction buffer." t)
 (autoload 'elpy-shell-switch-to-shell "elpy" "Switch to inferior Python process buffer.")
@@ -852,8 +845,8 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "C-c C-z") #'smart-switch-to-output-buffer)
 (global-set-key (kbd "C-c z") #'smart-switch-to-output-buffer)
 (global-set-key (kbd "C-c e") #'eval-and-replace)
-(global-set-key (kbd "C-c '") #'insert-backquote)
-(global-set-key (kbd "C-c -") #'insert-twidle)
+(global-set-key (kbd "C-c '") (kbd "`"))
+(global-set-key (kbd "C-c -") (kbd "~"))
 (global-set-key (kbd "C-c ,") #'insert-splice)
 (global-set-key (kbd "C-c b") #'previous-buffer)
 (global-set-key (kbd "C-c f") #'next-buffer)
