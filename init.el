@@ -95,6 +95,10 @@ multiple functions can call each other in repetition."
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
 
+(defadvice mark-sexp (before maybe-mark-prev-sexp compile activate)
+  (when (looking-at ")")
+    (backward-sexp)))
+
 (defadvice pop-to-mark-command (around ensure-new-mark-position compile activate)
   (let ((p (point)))
     (dotimes (i 10)
