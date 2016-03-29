@@ -332,7 +332,16 @@ multiple functions can call each other in repetition."
 (with-eval-after-load "isearch"
   (require 'isearch+)
   (defvar isearch-mode-map)
-  (define-key isearch-mode-map [remap ace-window] #'isearchp-open-recursive-edit))
+  (define-key isearch-mode-map [remap ace-window] #'isearchp-open-recursive-edit)
+  (defun endless/goto-match-beginning ()
+    "Go to the start of current isearch match.
+Use in `isearch-mode-end-hook'."
+    (when (and isearch-forward
+	       (number-or-marker-p isearch-other-end)
+	       (not mark-active)
+	       (not isearch-mode-end-hook-quit))
+      (goto-char isearch-other-end)))
+  (add-hook 'isearch-mode-end-hook #'endless/goto-match-beginning))
 
 (require 'slime)
 (slime-setup '(slime-fancy))
