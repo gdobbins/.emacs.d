@@ -970,7 +970,7 @@ point reaches the beginning or end of the buffer, stop there."
       (insert "//")
     (call-interactively #'self-insert-command)))
 
-(add-to-list 'default-frame-alist '(font . "Linux Libertine Mono:pixelsize=14:foundry=unknown:weight=normal:slant=normal:width=normal:scalable=true"))
+(add-to-list 'default-frame-alist '(font . "Linux Libertine Mono:pixelsize=14"))
 (setq split-width-threshold 100)
 
 (setq-default comint-prompt-read-only t)
