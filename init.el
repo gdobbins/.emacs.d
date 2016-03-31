@@ -953,6 +953,8 @@ point reaches the beginning or end of the buffer, stop there."
   (define-key elisp-slime-nav-mode-map (kbd "C-c C-c") #'eval-defun))
 (add-hook 'emacs-lisp-mode-hook #'turn-on-elisp-slime-nav-mode)
 
+(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
+
 (defadvice he-substitute-string (after he-paredit-fix compile activate)
   "remove extra paren when expanding line in paredit"
   (if (and paredit-mode (equal (substring str -1) ")"))
