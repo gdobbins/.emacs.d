@@ -196,7 +196,9 @@ multiple functions can call each other in repetition."
 		   (mode . shell-mode)
 		   (mode . term-mode)
 		   (mode . sh-mode)
-		   (mode . conf-unix-mode)
+		   (derived-mode . conf-mode)
+		   (derived-mode . shell-script-mode)
+		   (name . "^\\*.* std\\(out\\|err\\)\\*$")
 		   (name . "^\\*Shell Command Output\\*$")))
 	 ("Assembly" (or
 		      (mode . asm-mode)
