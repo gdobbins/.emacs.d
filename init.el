@@ -916,24 +916,29 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "<mouse-8>") #'previous-buffer)
 (global-set-key (kbd "<mouse-9>") #'next-buffer)
 
-(define-key input-decode-map (kbd "C-t") (kbd "C-x"))
-(define-key input-decode-map (kbd "C-x") (kbd "C-t"))
-(define-key input-decode-map (kbd "M-t") (kbd "M-x"))
-(define-key input-decode-map (kbd "M-x") (kbd "M-t"))
-(define-key input-decode-map (kbd "C-M-t") (kbd "C-M-x"))
-(define-key input-decode-map (kbd "C-M-x") (kbd "C-M-t"))
+(defun setup-input-decode-map ()
+  (define-key input-decode-map (kbd "C-t") (kbd "C-x"))
+  (define-key input-decode-map (kbd "C-x") (kbd "C-t"))
+  (define-key input-decode-map (kbd "M-t") (kbd "M-x"))
+  (define-key input-decode-map (kbd "M-x") (kbd "M-t"))
+  (define-key input-decode-map (kbd "C-M-t") (kbd "C-M-x"))
+  (define-key input-decode-map (kbd "C-M-x") (kbd "C-M-t"))
 
-(if (display-graphic-p)
+  (if (display-graphic-p)
+      (progn
+	(define-key input-decode-map (kbd "C-m") (kbd "C-SPC"))
+	(define-key input-decode-map (kbd "C-M-m") (kbd "C-M-SPC")))
     (progn
-      (define-key input-decode-map (kbd "C-m") (kbd "C-SPC"))
-      (define-key input-decode-map (kbd "C-M-m") (kbd "C-M-SPC")))
-  (progn
-    (global-set-key (kbd "C-x C-m") (kbd "C-SPC"))
-    (global-set-key (kbd "C-x C-M-m") (kbd "C-M-SPC"))))
+      (global-set-key (kbd "C-x C-m") (kbd "C-SPC"))
+      (global-set-key (kbd "C-x C-M-m") (kbd "C-M-SPC"))))
 
-(define-key input-decode-map (kbd "C-h") (kbd "DEL"))
-(define-key input-decode-map (kbd "M-h") (kbd "M-DEL"))
-(define-key input-decode-map (kbd "H-h") (kbd "C-h"))
+  (define-key input-decode-map (kbd "C-h") (kbd "DEL"))
+  (define-key input-decode-map (kbd "M-h") (kbd "M-DEL"))
+  (define-key input-decode-map (kbd "H-h") (kbd "C-h")))
+
+(setup-input-decode-map)
+
+(add-hook 'tty-setup-hook #'setup-input-decode-map)
 
 (with-eval-after-load 'help-mode
   (define-key help-mode-map (kbd "<mouse-8>") #'help-go-back)
