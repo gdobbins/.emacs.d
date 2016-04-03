@@ -305,6 +305,7 @@ multiple functions can call each other in repetition."
   (add-to-list 'ibuffer-never-show-predicates "^\\*Compile-Log\\*$")
   (add-to-list 'ibuffer-never-show-predicates "^\\*Completions\\*$")
   (add-to-list 'ibuffer-never-show-predicates "^\\*tramp/sudo root@localhost\\*$")
+  (add-to-list 'ibuffer-never-show-predicates "^\\*magit-process:.*")
   (add-to-list 'ibuffer-never-show-predicates "^\\*WoMan-Log\\*$"))
 
 (defvar hidden-ibuffer-groups '("^\\[ Default \\]"))
