@@ -669,6 +669,8 @@ lines have identical symbols at identical goal columns as the symbol at point."
   (setq magit-completing-read-function #'magit-ido-completing-read))
 (setq ioccur-buffer-completion-use-ido t)
 
+(setq vc-follow-symlinks t)
+
 (defun ioccur-follow-next ()
        "Move to the next line and follow in the connected buffer."
        (interactive)
