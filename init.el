@@ -207,7 +207,8 @@ multiple functions can call each other in repetition."
 		 (mode . Man-mode)
 		 (mode . woman-mode)))
 	 ("Data" (or
-		  (filename . ".*\\.\\([ct]sv\\|dat\\)$")))
+		  (filename . ".*\\.\\([ct]sv\\|dat\\)$")
+		  (mode . hexl-mode)))
 	 ("LaTeX" (or
 		   (mode . latex-mode)
 		   (mode . tex-shell)
