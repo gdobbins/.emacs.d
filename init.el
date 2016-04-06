@@ -124,6 +124,10 @@ multiple functions can call each other in repetition."
 
 (setq sentence-end-double-space nil)
 
+(with-eval-after-load 'warnings
+  (defvar warning-suppress-types)
+  (add-to-list 'warning-suppress-types '(undo discard-info)))
+
 (prefer-coding-system 'utf-8)
 (when (display-graphic-p)
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
