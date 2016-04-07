@@ -1217,6 +1217,11 @@ point reaches the beginning or end of the buffer, stop there."
   (with-no-warnings
     (yas-reload-all)))
 
+(put 'set-goal-column	'disabled nil)
+(put 'erase-buffer	'disabled nil)
+(put 'downcase-region	'disabled nil)
+(put 'upcase-region	'disabled nil)
+
 (defun byte-compile-current-buffer ()
   "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
   (interactive)
