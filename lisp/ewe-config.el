@@ -4,8 +4,13 @@
 
 (defun markdown-codify-region (x)
   (interactive "p")
-  (if mark-active
+  (if (or mark-active (not transient-mark-mode))
       (save-excursion
+	(let ((p (point))
+	      (m (mark)))
+	  (if (< p m)
+	      (untabify p m)
+	    (untabify m p)))
 	(let ((p (progn
 		   (beginning-of-line)
 		   (point)))
