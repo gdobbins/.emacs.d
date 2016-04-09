@@ -1222,6 +1222,11 @@ point reaches the beginning or end of the buffer, stop there."
 (put 'downcase-region	'disabled nil)
 (put 'upcase-region	'disabled nil)
 
+(defun add-delete-trailing-whitespace-hook ()
+  (add-hook 'before-save-hook #'delete-trailing-whitespace nil t))
+
+(add-hook 'prog-mode-hook #'add-delete-trailing-whitespace-hook)
+
 (defun byte-compile-current-buffer ()
   "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
   (interactive)
