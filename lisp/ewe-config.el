@@ -10,7 +10,8 @@
 	      (m (mark)))
 	  (if (< p m)
 	      (untabify p m)
-	    (untabify m p)))
+	    (untabify m p)
+	    (exchange-point-and-mark)))
 	(let ((p (progn
 		   (beginning-of-line)
 		   (point)))
@@ -21,30 +22,27 @@
 	      (pre (cond
 		    ((= x 1) "    ")
 		    ((= x 4) ">"))))
-	  (if (< p m)
-	      (progn
-		(string-rectangle p m pre)
-		(goto-char p)
-		(when (and (= p (point-min))
-			   (not (looking-at "[ \t]*$")))
-		  (newline)))
-	    (progn
-	      (string-rectangle m p pre)
-	      (goto-char m)
-	      (when (and (= m (point-min))
-			 (not (looking-at "[ \t]*$")))
-		(newline))))
+	  (string-rectangle p m pre)
+	  (goto-char p)
+	  (when (and (= p (point-min))
+		     (not (looking-at "[ \t]*$")))
+	    (newline))
 	  (unless (looking-at "[ \t]*$")
 	    (forward-line -1)
 	    (unless (looking-at "[ \t]*$")
 	      (forward-line 1)
+	      (newline)))
+	  (let ((m (mark)))
+	    (goto-char m)
+	    (forward-line)
+	    (when (eql (point) m)
+	      (move-end-of-line 1)
 	      (newline)))))
-    (progn
-      (save-excursion
-	(cond
-	 ((= x 1) (mark-defun))
-	 ((= x 4) (mark-paragraph)))
-	(markdown-codify-region x)))))
+    (save-excursion
+      (cond
+       ((= x 1) (mark-defun))
+       ((= x 4) (mark-paragraph)))
+      (markdown-codify-region x))))
 
 (define-key edit-server-edit-mode-map (kbd "C-x c") #'edit-server-done)
 (define-key edit-server-edit-mode-map (kbd "C-c C-k") #'edit-server-abort)
@@ -54,5 +52,3 @@
 (add-to-list 'edit-server-url-major-mode-alist '("/r/emacs" . emacs-lisp-mode))
 
 (add-hook 'edit-server-start-hook (lambda () (setq indent-tabs-mode nil)))
-
-
