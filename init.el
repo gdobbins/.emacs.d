@@ -450,6 +450,18 @@ your recently and most frequently used commands.")
 	    `(define-key ,keymap (kbd ,key-string) #',function)
 	  `(local-set-key (kbd ,key-string) #',function)))))
 
+(defun pathname->~->home ()
+  (interactive)
+  (if (looking-back "/" 1)
+      (insert "~/")
+    (call-interactively #'self-insert-command)))
+
+(defun pathname->/->root ()
+  (interactive)
+  (if (looking-back "/" 1)
+      (insert "//")
+    (call-interactively #'self-insert-command)))
+
 (defset-function pathname->~->home "~" ido-completion-map)
 (defset-function pathname->/->root "/" ido-completion-map)
 
@@ -974,18 +986,6 @@ point reaches the beginning or end of the buffer, stop there."
   "remove extra paren when expanding line in paredit"
   (if (and paredit-mode (equal (substring str -1) ")"))
       (progn (backward-delete-char 1) (forward-char))))
-
-(defun pathname->~->home ()
-  (interactive)
-  (if (looking-back "/" 1)
-      (insert "~/")
-    (call-interactively #'self-insert-command)))
-
-(defun pathname->/->root ()
-  (interactive)
-  (if (looking-back "/" 1)
-      (insert "//")
-    (call-interactively #'self-insert-command)))
 
 (add-to-list 'default-frame-alist '(font . "Linux Libertine Mono:pixelsize=14"))
 (setq split-width-threshold 100)
