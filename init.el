@@ -1145,9 +1145,6 @@ point reaches the beginning or end of the buffer, stop there."
   (defvar org-agenda-sticky)
   (setq org-agenda-sticky t))
 
-(defun add-delete-trailing-whitespace-before-save-hook ()
-  (add-hook 'before-save-hook #'delete-trailing-whitespace nil t))
-
 (defun python-repl-clear-buffer ()
   (interactive)
   (let ((start-point (point)))
@@ -1167,7 +1164,6 @@ point reaches the beginning or end of the buffer, stop there."
   (define-key inferior-python-mode-map (kbd "C-d") #'comint-delchar-or-eof-or-kill-buffer)
   (define-key inferior-python-mode-map (kbd "C-c M-o") #'python-repl-clear-buffer)
   (add-to-list 'safe-local-variable-values '(python-shell-interpreter . "python2"))
-  (add-hook 'python-mode-hook #'add-delete-trailing-whitespace-before-save-hook)
   (add-hook 'python-mode-hook #'smartparens-strict-mode)
   (add-hook 'inferior-python-mode-hook #'smartparens-strict-mode)
   (require 'smartparens-python))
