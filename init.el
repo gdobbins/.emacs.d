@@ -678,7 +678,7 @@ lines have identical symbols at identical goal columns as the symbol at point."
    ((get-process "inferior-lisp") (slime-switch-to-output-buffer))
    ((get-process "shell") (sh-show-shell))
    ((get-process "Python") (elpy-shell-switch-to-shell))
-   (t (princ "No available process to switch to."))))
+   (t (user-error "No available process to switch to."))))
 
 (autoload 'magit-ido-completing-read "magit-utils" "Ido-based `completing-read' almost-replacement.")
 (with-eval-after-load "magit"
