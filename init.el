@@ -158,9 +158,7 @@ multiple functions can call each other in repetition."
 (autoload 'dired-jump-other-window "dired-x"
   "Like \\[dired-jump] (dired-jump) but in other window." t)
 
-(define-key global-map "\C-x\C-j" #'dired-jump)
 (global-set-key (kbd "C-x C-d") #'dired-jump)
-(define-key global-map "\C-x4\C-j" #'dired-jump-other-window)
 (global-set-key (kbd "C-x 4 C-d") #'dired-jump-other-window)
 
 (with-eval-after-load 'dired
@@ -436,7 +434,6 @@ your recently and most frequently used commands.")
 (require 'ido-ubiquitous)
 (ido-ubiquitous-mode)
 (global-set-key (kbd "M-x") #'smex)
-(global-set-key (kbd "<menu>") #'ido-hacks-execute-extended-command)
 
 (defmacro defset-function (function key-string &optional keymap)
   "Create a function which sets set-function to bind (kbd key-string) to function either locally, or optionally in keymap."
