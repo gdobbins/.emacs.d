@@ -424,9 +424,6 @@ abort completely with `C-g'."
 
 (require 'ido-sort-mtime)
 (ido-sort-mtime-mode 1)
-(autoload 'smex "smex"
-  "Smex is a M-x enhancement for Emacs, it provides a convenient interface to
-your recently and most frequently used commands.")
 (require 'ido-yes-or-no)
 (ido-yes-or-no-mode 1)
 (require 'ido-hacks)
