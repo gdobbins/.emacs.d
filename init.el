@@ -166,6 +166,7 @@ multiple functions can call each other in repetition."
   (setq-default dired-omit-files-p t)
   (setq dired-listing-switches "-alhv")
   (setq dired-omit-files "^\\.\\|^#.#$\\|.~$")
+  (define-key dired-mode-map (kbd "C-o") nil)
   (define-key dired-mode-map (kbd "M-p") #'dired-up-directory)
   (define-key dired-mode-map (kbd "M-n") #'quit-window)
   (define-key dired-mode-map (kbd "/") #'dired-narrow-fuzzy)
@@ -175,6 +176,7 @@ multiple functions can call each other in repetition."
 (with-eval-after-load 'wdired
   (defvar wdired-mode-map)
   (define-key wdired-mode-map (kbd "C-c C-g") 'wdired-abort-changes)
+  (define-key wdired-mode-map (kbd "C-o") nil)
   (defvar wdired-allow-to-change-permissions)
   (setq wdired-allow-to-change-permissions t))
 
