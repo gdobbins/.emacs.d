@@ -927,6 +927,7 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "C-z") #'repeat)
 (global-set-key (kbd "<f5>") #'egg-timer)
 (global-set-key (kbd "C-x c") #'server-edit)
+(global-set-key (kbd "C-x #") nil)
 (global-set-key (kbd "C-a") #'smarter-move-beginning-of-line)
 
 (autoload 'mpc-resume "mpc")
