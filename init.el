@@ -960,13 +960,9 @@ point reaches the beginning or end of the buffer, stop there."
   (define-key input-decode-map (kbd "C-M-t") (kbd "C-M-x"))
   (define-key input-decode-map (kbd "C-M-x") (kbd "C-M-t"))
 
-  (if (display-graphic-p)
-      (progn
-	(define-key input-decode-map (kbd "C-m") (kbd "C-SPC"))
-	(define-key input-decode-map (kbd "C-M-m") (kbd "C-M-SPC")))
-    (progn
-      (global-set-key (kbd "C-x C-m") (kbd "C-SPC"))
-      (global-set-key (kbd "C-x C-M-m") (kbd "C-M-SPC"))))
+  (when (display-graphic-p)
+    (define-key input-decode-map (kbd "C-m") (kbd "C-SPC"))
+    (define-key input-decode-map (kbd "C-M-m") (kbd "C-M-SPC")))
 
   (define-key input-decode-map (kbd "C-h") (kbd "DEL"))
   (define-key input-decode-map (kbd "M-h") (kbd "M-DEL"))
