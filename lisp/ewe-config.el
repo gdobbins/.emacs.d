@@ -4,7 +4,7 @@
 
 (defun markdown-codify-region (x)
   (interactive "p")
-  (if (or mark-active (not transient-mark-mode))
+  (if (or (use-region-p) (not transient-mark-mode))
       (save-excursion
 	(let ((p (point))
 	      (m (mark)))
