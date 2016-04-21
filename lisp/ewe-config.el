@@ -44,9 +44,24 @@
        ((= x 4) (mark-paragraph)))
       (markdown-codify-region x))))
 
+(defun markdown-inline-codify-region ()
+  "If region is active, surround in backquotes. Otherwise call self-insert-command."
+  (interactive)
+  (if (use-region-p)
+      (progn
+	(when (< (point) (mark))
+	  (exchange-point-and-mark))
+	(save-excursion
+	  (insert "`")
+	  (goto-char (mark))
+	  (insert "`"))
+	(forward-char 1))
+    (call-interactively #'self-insert-command)))
+
 (define-key edit-server-edit-mode-map (kbd "C-x c") #'edit-server-done)
 (define-key edit-server-edit-mode-map (kbd "C-c C-k") #'edit-server-abort)
 (define-key edit-server-edit-mode-map (kbd "C-c SPC") #'markdown-codify-region)
+(define-key edit-server-edit-mode-map (kbd "`") #'markdown-inline-codify-region)
 
 (add-to-list 'edit-server-url-major-mode-alist '("/r/\\(lisp\\|common_lisp\\)" . lisp-mode))
 (add-to-list 'edit-server-url-major-mode-alist '("/r/emacs" . emacs-lisp-mode))
