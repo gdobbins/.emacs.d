@@ -1,0 +1,15 @@
+auto-save-list/
+elpa/
+ido.last
+*.elc
+places
+savehist
+saves/
+secrets.el
+tramp
+undo/
+/#*#
+abbrev_defs
+url/
+eshell/
+projectile-bookmarks.eld
