@@ -522,6 +522,91 @@ abort completely with `C-g'."
 
 (setq tab-always-indent 'complete)
 
+(require 'projectile)
+
+(setq projectile-switch-project-action #'projectile-commander
+      projectile-sort-order 'modification-time
+      projectile-ignored-project-function #'file-remote-p)
+
+(def-projectile-commander-method ?s
+  "Open a *shell* buffer for the project."
+  (shell (get-buffer-create
+          (format "*shell %s*"
+                  (projectile-project-name)))))
+
+(def-projectile-commander-method ?\C-?
+  "Go back to project selection."
+  (projectile-switch-project))
+
+(def-projectile-commander-method ?d
+  "Open project root in dired."
+  (projectile-dired))
+
+(def-projectile-commander-method ?D
+  "Find directory in project."
+  (projectile-find-dir))
+
+(define-key projectile-mode-map (kbd "C-c p d") #'projectile-dired)
+(define-key projectile-mode-map (kbd "C-c p D") #'projectile-find-dir)
+
+(defun projectile-jack-in ()
+  "Attempt to jack-in to the project."
+  (delete-other-windows)
+  (let ((root (projectile-project-root)))
+    (cond ((string-match (expand-file-name "~/quicklisp/local-projects/\\(.*\\)/$")
+			 root)
+	   (let ((cl-package (match-string 1 root)))
+	     (if (directory-files root nil ".*\\.lisp$" t)
+		 (find-file (concat root "*.lisp") t)
+	       (dired root))
+	     (if cl-package
+		 (progn
+		   (slime-repl-eval-string
+		    (format "(when (ql:quickload :%s :silent t) (in-package :%s))"
+			    cl-package
+			    cl-package))
+		   (slime-switch-to-output-buffer)
+		   (cd root))
+	       (projectile-vc root))))
+	  ((string-match (expand-file-name "~/.emacs.d/") root)
+	   (find-file user-init-file)
+	   (projectile-vc root))
+	  (t (dired root)
+	     (projectile-vc root)))))
+
+(def-projectile-commander-method ?j
+  "Jack in."
+  (projectile-jack-in))
+
+(defun projectile-direct-jack-in ()
+  "Switch to a project and jack-in."
+  (interactive)
+  (let ((projectile-switch-project-action #'projectile-jack-in))
+    (projectile-switch-project)))
+
+(define-key projectile-mode-map (kbd "H-p") #'projectile-direct-jack-in)
+
+(setq projectile-mode-line
+      '(:eval
+	(if (file-remote-p default-directory)
+	    " Proj"
+	  (format " Proj[%s]"
+		  (projectile-project-name)))))
+
+(autoload 'dired-read-shell-command "dired-aux")
+
+(defun projectile-dired-command-files ()
+  (interactive)
+  (let ((files (projectile-current-project-files)))
+    (dired-do-shell-command
+     (dired-read-shell-command "! on %s: " current-prefix-arg files)
+     current-prefix-arg
+     files)))
+
+(define-key projectile-mode-map (kbd "C-c p x !") #'projectile-dired-command-files)
+
+(projectile-global-mode)
+
 (defun truncate-lines->t ()
   (interactive)
   (unless truncate-lines
