@@ -784,6 +784,10 @@ lines have identical symbols at identical goal columns as the symbol at point."
 (with-eval-after-load "magit"
   (defvar magit-completing-read-function)
   (setq magit-completing-read-function #'magit-ido-completing-read))
+
+(add-to-list 'safe-local-variable-values
+	     '(magit-commit-arguments . ("--gpg-sign=F1F2C078BAEE096B!")))
+
 (setq ioccur-buffer-completion-use-ido t)
 
 (setq vc-follow-symlinks t)
