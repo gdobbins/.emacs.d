@@ -651,8 +651,8 @@ abort completely with `C-g'."
 	    (condition-case nil
 		(prin1 (eval (read (current-kill 0)))
 		       (current-buffer))
-	      (error (message "Invalid expression")
-		     (insert (current-kill 0))))
+	      (user-error "Invalid expression")
+	      (insert (current-kill 0)))
 	    (forward-sexp -1)
 	    (setq y (1- y)))
 	  (forward-sexp (- x s)))
@@ -663,12 +663,12 @@ abort completely with `C-g'."
 	      (condition-case nil
 		  (prin1 (eval (read (current-kill 0)))
 			 (current-buffer))
-		(error (message "Invalid expression")
-		       (insert (current-kill 0))))
+		(user-error "Invalid expression")
+		(insert (current-kill 0)))
 	      (skip-chars-forward " \n\t")
 	      (setq y (1+ y)))
 	    (goto-char pointer-position))
-	(error (message "Okay?"))))))
+	(user-error "Okay?")))))
 
 (defun rotate-windows ()
   "Rotate your windows"
@@ -840,10 +840,10 @@ Don't mess with special buffers."
   (let ((name (buffer-name))
         (filename (buffer-file-name)))
     (if (not (and filename (file-exists-p filename)))
-        (error "Buffer '%s' is not visiting a file!" name)
+        (user-error "Buffer '%s' is not visiting a file!" name)
       (let ((new-name (read-file-name "New name: " filename)))
         (if (get-buffer new-name)
-            (error "A buffer named '%s' already exists!" new-name)
+            (user-error "A buffer named '%s' already exists!" new-name)
           (rename-file filename new-name 1)
           (rename-buffer new-name)
           (set-visited-file-name new-name)
@@ -893,7 +893,7 @@ Don't mess with special buffers."
        (other-window 1))
       ((= len 1)
        (split-window-right))
-      ((error "Too many windows"))))))
+      ((user-error "Too many windows"))))))
 
 (defmacro defun-other-window-do (name if-2-list &rest else)
   `(defun ,name ()
@@ -905,7 +905,7 @@ Don't mess with special buffers."
 	   (other-window 1))
        ,@(if else
 	    else
-	   '((error "Need two windows"))))))
+	   '((user-error "Need two windows"))))))
 
 (defun find-user-init-file ()
   "Edit the `user-init-file'"
