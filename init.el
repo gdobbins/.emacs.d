@@ -25,6 +25,16 @@
 ;;      '--------_- - - - - _/
 ;;                `--------'\n\n")
 
+(require 'package)
+
+(setq package-archives
+      '(("gnu" . "https://elpa.gnu.org/packages/")
+	("melpa" . "https://melpa.org/packages/")))
+
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
+
+(package-initialize)
+
 (load "~/.emacs.d/secrets" t t)
 
 (require 'server)
@@ -87,13 +97,6 @@ multiple functions can call each other in repetition."
 	      (let ((map (make-sparse-keymap)))
 		(define-key map (vector last-input-event) #',func)
 		map)))))))
-
-(require 'package)
-
-(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/") ("melpa" . "https://melpa.org/packages/")))
-(package-initialize)
-
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
 
 (defadvice mark-sexp (before maybe-mark-prev-sexp compile activate)
   (when (looking-at ")")
