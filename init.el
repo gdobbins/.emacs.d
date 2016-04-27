@@ -35,7 +35,17 @@
 
 (package-initialize)
 
-(load "~/.emacs.d/secrets" t t)
+(defmacro unless-command-flag (flag &rest body)
+  "Unless FLAG is present in `command-line-args' execute BODY.
+FLAG is then removed if found."
+  (declare (indent 1))
+  `(if (member ,flag command-line-args)
+       (setf command-line-args (delete ,flag command-line-args))
+     ,@body))
+
+(unless-command-flag
+    "--no-secrets"
+  (load "~/.emacs.d/secrets" t t))
 
 (require 'server)
 (unless (or (server-running-p) (string= user-login-name "root"))
