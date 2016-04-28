@@ -44,6 +44,10 @@ FLAG is then removed if found."
      ,@body))
 
 (unless-command-flag
+    "--no-theme"
+  (require 'theme))
+
+(unless-command-flag
     "--no-secrets"
   (load "~/.emacs.d/secrets" t t))
 
