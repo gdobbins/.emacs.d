@@ -213,6 +213,8 @@ multiple functions can call each other in repetition."
 		    (mode . python-mode)
 		    (mode . inferior-python-mode)
 		    (name . "^\\*Python \\(Check\\|Doc\\)\\*$")))
+	 ("Lua" (or
+		 (mode . lua-mode)))
 	 ("Shell" (or
 		   (mode . shell-mode)
 		   (mode . term-mode)
@@ -1305,6 +1307,10 @@ point reaches the beginning or end of the buffer, stop there."
   (define-key elpy-mode-map (kbd "M-,") #'pop-tag-mark)
   (define-key elpy-mode-map (kbd "C-c C-c") 'python-shell-send-defun)
   (define-key elpy-mode-map (kbd "C-c C-k") 'elpy-shell-send-region-or-buffer))
+
+(with-eval-after-load "lua-mode"
+  (require 'smartparens-lua)
+  (add-hook 'lua-mode-hook #'smartparens-strict-mode))
 
 (defvar flymake-no-changes-timeout)
 (defun set-flymake-no-changes-timeout-to-one-hour ()
