@@ -931,6 +931,19 @@ Don't mess with special buffers."
   (interactive)
   (find-file user-init-file))
 
+(defun find-first-agenda-file ()
+  "Edit the first file in `org-agenda-files'"
+  (interactive)
+  (require 'org)
+  (defvar org-agenda-files)
+  (defun find-first-agenda-file ()
+    "Edit the first file in `org-agenda-files'"
+    (interactive)
+    (if (and org-agenda-files (listp org-agenda-files))
+	(find-file (first org-agenda-files))
+      (user-error "No agenda files")))
+  (find-first-agenda-file))
+
 (defun-other-window-do other-window-imenu
   ((call-interactively #'imenu)))
 
@@ -993,6 +1006,7 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "C-c w d") #'duplicate-other-window-buffer)
 (global-set-key (kbd "C-c w c") #'emacs-uptime)
 (global-set-key (kbd "C-c w i") #'find-user-init-file)
+(global-set-key (kbd "C-c w a") #'find-first-agenda-file)
 (global-set-key (kbd "C-c w e") #'erase-buffer)
 (global-set-key (kbd "C-c w s") #'delete-trailing-whitespace)
 (global-set-key (kbd "C-c w n") #'column-number-mode)
