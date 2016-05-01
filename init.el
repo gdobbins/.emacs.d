@@ -1041,6 +1041,7 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "C-h C-k") #'find-function-on-key)
 (global-set-key (kbd "C-h C-v") #'find-variable)
 (global-set-key (kbd "C-x o") #'ace-window)
+(global-set-key (kbd "C-x t") #'delete-other-windows)
 (global-set-key (kbd "M-o") #'ace-window)
 (global-set-key (kbd "M-n") #'smartscan-symbol-go-forward)
 (global-set-key (kbd "M-p") #'smartscan-symbol-go-backward)
