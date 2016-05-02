@@ -1158,8 +1158,21 @@ point reaches the beginning or end of the buffer, stop there."
     (backward-char 1)
     (run-hooks 'post-self-insert-hook)))
 
+(defun smarter-paredit-wrap-round ()
+  "Like `paredit-wrap-round' except move `paredit-backward' when
+appropriate."
+  (interactive)
+  (with-no-warnings
+    (if (looking-at "[) \t\n]")
+	(progn
+	  (paredit-backward)
+	  (call-interactively #'paredit-wrap-round)
+	  (paredit-forward))
+      (call-interactively #'paredit-wrap-round))))
+
 (with-eval-after-load "paredit"
   (define-key paredit-mode-map (kbd "C-c (") #'fix-capitalization->paren)
+  (define-key paredit-mode-map (kbd "M-(") #'smarter-paredit-wrap-round)
   (add-to-list 'paredit-space-for-delimiter-predicates
 	       #'paredit-space-for-predicates-cl))
 
