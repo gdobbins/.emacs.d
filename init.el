@@ -215,12 +215,16 @@ multiple functions can call each other in repetition."
 		    (name . "^\\*Python \\(Check\\|Doc\\)\\*$")))
 	 ("Lua" (or
 		 (mode . lua-mode)))
+	 ("C" (or
+	       (mode . c-mode)
+	       (mode . c++-mode)))
 	 ("Shell" (or
 		   (mode . shell-mode)
 		   (mode . term-mode)
 		   (mode . sh-mode)
 		   (derived-mode . conf-mode)
 		   (derived-mode . shell-script-mode)
+		   (mode . compilation-mode)
 		   (name . "^\\*.* std\\(out\\|err\\)\\*$")
 		   (name . "^\\*Shell Command Output\\*$")))
 	 ("Assembly" (or
@@ -1337,6 +1341,12 @@ appropriate."
 (with-eval-after-load "lua-mode"
   (require 'smartparens-lua)
   (add-hook 'lua-mode-hook #'smartparens-strict-mode))
+
+(with-eval-after-load "c-mode"
+  (add-hook 'c-mode-hook #'smartparens-strict-mode))
+
+(with-eval-after-load "c++-mode"
+  (add-hook 'c++-mode-hook #'smartparens-strict-mode))
 
 (defvar flymake-no-changes-timeout)
 (defun set-flymake-no-changes-timeout-to-one-hour ()
