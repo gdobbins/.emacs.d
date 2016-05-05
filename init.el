@@ -545,9 +545,13 @@ abort completely with `C-g'."
 
 (require 'projectile)
 
+(defun projectile-ignored-project-function (file)
+  (or (file-remote-p file)
+      (string-match "^/tmp/" file)))
+
 (setq projectile-switch-project-action #'projectile-commander
       projectile-sort-order 'modification-time
-      projectile-ignored-project-function #'file-remote-p)
+      projectile-ignored-project-function #'projectile-ignored-project-function)
 
 (def-projectile-commander-method ?s
   "Open a *shell* buffer for the project."
