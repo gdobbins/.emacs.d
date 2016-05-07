@@ -169,12 +169,6 @@ multiple functions can call each other in repetition."
 
 (global-set-key (kbd "M-#") #'wiktionary-word)
 
-(autoload 'dired-jump "dired-x"
-  "Jump to Dired buffer corresponding to current buffer." t)
-
-(autoload 'dired-jump-other-window "dired-x"
-  "Like \\[dired-jump] (dired-jump) but in other window." t)
-
 (global-set-key (kbd "C-x C-d") #'dired-jump)
 (global-set-key (kbd "C-x 4 C-d") #'dired-jump-other-window)
 
