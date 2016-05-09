@@ -52,8 +52,11 @@ FLAG is then removed if found."
   (load "~/.emacs.d/secrets" t t))
 
 (require 'server)
-(unless (or (server-running-p) (string= user-login-name "root"))
-  (add-hook 'emacs-startup-hook #'server-start))
+
+(unless-command-flag
+    "--no-server"
+  (unless (or (server-running-p) (string= user-login-name "root"))
+    (add-hook 'emacs-startup-hook #'server-start)))
 
 (defvar hidden-minor-modes
   '(undo-tree-mode
