@@ -1227,13 +1227,31 @@ appropriate."
 	  (pop-to-buffer buff)
 	  (return buff)))))
 
+(defun slime-repl-previous-if-eobp-else-up ()
+  "If point is at end of the buffer call
+`slime-repl-previous-input', else move up."
+  (interactive)
+  (if (eobp)
+      (with-no-warnings
+	(slime-repl-previous-input))
+    (call-interactively #'previous-line)))
+
+(defun slime-repl-next-if-eobp-else-down ()
+  "If point is at end of the buffer call `slime-repl-next-input',
+ else move down."
+  (interactive)
+  (if (eobp)
+      (with-no-warnings
+	(slime-repl-next-input))
+    (call-interactively #'next-line)))
+
 (with-eval-after-load "slime-repl"
   (setq slime-auto-start 'always)
   (setq slime-repl-history-size 500)
   (define-key slime-repl-mode-map (kbd "C-c C-s") #'slime-scratch)
   (define-key slime-repl-mode-map (kbd "C-c e") #'slime-eval-and-replace)
-  (define-key slime-repl-mode-map (kbd "<up>") #'slime-repl-previous-input)
-  (define-key slime-repl-mode-map (kbd "<down>") #'slime-repl-next-input)
+  (define-key slime-repl-mode-map (kbd "<up>") #'slime-repl-previous-if-eobp-else-up)
+  (define-key slime-repl-mode-map (kbd "<down>") #'slime-repl-next-if-eobp-else-down)
   (define-key slime-repl-mode-map (kbd "C-c C-z") #'slime-return-to-lisp-file)
   (define-key slime-repl-mode-map (kbd "C-c C-q") #'slime-quit-lisp))
 
