@@ -1167,7 +1167,7 @@ point reaches the beginning or end of the buffer, stop there."
 appropriate."
   (interactive)
   (with-no-warnings
-    (if (looking-at "[) \t\n]")
+    (if (or (looking-at "[) \t\n]") (eobp))
 	(progn
 	  (paredit-backward)
 	  (call-interactively #'paredit-wrap-round)
