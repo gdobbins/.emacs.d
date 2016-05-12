@@ -405,6 +405,8 @@ Use in `isearch-mode-end-hook'."
 (when (file-exists-p "/usr/local/doc/HyperSpec/")
   (setq common-lisp-hyperspec-root "file:///usr/local/doc/HyperSpec/"))
 
+(add-to-list 'interpreter-mode-alist '("sbcl" . lisp-mode))
+
 (setq
  backup-by-copying t			; don't clobber symlinks
  backup-directory-alist
