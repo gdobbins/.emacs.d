@@ -546,7 +546,7 @@ abort completely with `C-g'."
 
 (defun projectile-ignored-project-function (file)
   (or (file-remote-p file)
-      (string-match "^/tmp/" file)))
+      (string-match "\\(^/tmp/\\|/.cache/\\)" file)))
 
 (setq projectile-switch-project-action #'projectile-commander
       projectile-sort-order 'modification-time
