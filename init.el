@@ -115,9 +115,18 @@ multiple functions can call each other in repetition."
 		(define-key map (vector last-input-event) #',func)
 		map)))))))
 
-(defadvice mark-sexp (before maybe-mark-prev-sexp compile activate)
-  (when (looking-at ")")
-    (backward-sexp)))
+(defun smarter-mark-sexp ()
+  "Like `mark-sexp' except go `backward-sexp' first if
+appropriate."
+  (interactive)
+  (if (and (or (looking-at "[) \t\n]") (eobp)) (not (use-region-p)))
+      (progn
+	(backward-sexp)
+	(call-interactively #'mark-sexp)
+	(exchange-point-and-mark))
+    (call-interactively #'mark-sexp)))
+
+(global-set-key (kbd "C-M-SPC") #'smarter-mark-sexp)
 
 (defadvice pop-to-mark-command (around ensure-new-mark-position compile activate)
   (let ((p (point)))
