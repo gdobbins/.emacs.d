@@ -194,12 +194,16 @@ appropriate."
   (require 'dired-x)
   (setq-default dired-omit-files-p t)
   (setq dired-listing-switches "-alhv")
+  (defvar dired-omit-files)
   (setq dired-omit-files "^\\.\\|^#.#$\\|.~$")
+  (defvar dired-mode-map)
   (define-key dired-mode-map (kbd "C-o") nil)
-  (define-key dired-mode-map (kbd "M-p") #'dired-up-directory)
+  (with-no-warnings
+    (define-key dired-mode-map (kbd "M-p") #'dired-up-directory))
   (define-key dired-mode-map (kbd "M-n") #'quit-window)
   (define-key dired-mode-map (kbd "/") #'dired-narrow-fuzzy)
-  (define-key dired-mode-map (kbd "h") #'dired-omit-mode)
+  (with-no-warnings
+    (define-key dired-mode-map (kbd "h") #'dired-omit-mode))
   (define-key dired-mode-map (kbd "e") #'read-only-mode))
 
 (with-eval-after-load 'wdired
@@ -637,10 +641,11 @@ abort completely with `C-g'."
 (defun projectile-dired-command-files ()
   (interactive)
   (let ((files (projectile-current-project-files)))
-    (dired-do-shell-command
-     (dired-read-shell-command "! on %s: " current-prefix-arg files)
-     current-prefix-arg
-     files)))
+    (with-no-warnings
+      (dired-do-shell-command
+       (dired-read-shell-command "! on %s: " current-prefix-arg files)
+       current-prefix-arg
+       files))))
 
 (define-key projectile-mode-map (kbd "C-c p x !") #'projectile-dired-command-files)
 
