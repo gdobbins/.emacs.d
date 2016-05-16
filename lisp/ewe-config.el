@@ -67,3 +67,4 @@
 (add-to-list 'edit-server-url-major-mode-alist '("/r/emacs" . emacs-lisp-mode))
 
 (add-hook 'edit-server-start-hook (lambda () (setq indent-tabs-mode nil)))
+(add-hook 'edit-server-start-hook #'end-of-buffer)
