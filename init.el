@@ -824,8 +824,28 @@ lines have identical symbols at identical goal columns as the symbol at point."
    ((get-process "Python") (elpy-shell-switch-to-shell))
    (t (user-error "No available process to switch to."))))
 
+(defun magit-auto-create-gitattributes&config (orig &rest args)
+  "Create .gitattributes and .gitconfig files if they do not
+already exist and the content of the files can be predicted based
+on the location of the new git directory."
+  (let* ((dir-name (expand-file-name (first args)))
+	 (attributes-file (concat dir-name ".gitattributes"))
+	 (config-file (concat dir-name ".gitconfig")))
+    (unless (file-exists-p attributes-file)
+      (cond
+       ((string-match "/quicklisp/local-projects/" attributes-file)
+	(with-temp-file attributes-file
+	  (insert "*.lisp diff=lisp\n")))))
+    (unless (file-exists-p config-file)
+      (cond
+       ((string-match "/quicklisp/local-projects/" attributes-file)
+	(with-temp-file config-file
+	  (insert "*.fasl\n"))))))
+  (apply orig args))
+
 (autoload 'magit-ido-completing-read "magit-utils" "Ido-based `completing-read' almost-replacement.")
 (with-eval-after-load "magit"
+  (advice-add 'magit-init :around #'magit-auto-create-gitattributes&config)
   (defvar magit-completing-read-function)
   (setq magit-completing-read-function #'magit-ido-completing-read))
 
