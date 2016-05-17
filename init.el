@@ -393,36 +393,43 @@ Use in `isearch-mode-end-hook'."
 (require 'slime)
 (slime-setup '(slime-fancy))
 
-(let ((quicklisp-setup-file (expand-file-name "~/quicklisp/setup.lisp")))
-  (when (file-exists-p "/usr/bin/clisp")
-    (add-to-list 'slime-lisp-implementations
-		 '(clisp ("/usr/bin/clisp"))))
+(setf slime-lisp-implementations
+      (eval-when-compile
+	(let (temp-lisp-implementations)
+	  (let ((quicklisp-setup-file (expand-file-name "~/quicklisp/setup.lisp")))
+	    (when (file-exists-p "/usr/bin/clisp")
+	      (push '(clisp ("/usr/bin/clisp"))
+		    temp-lisp-implementations))
 
-  (when (file-exists-p "/usr/bin/ecl")
-    (add-to-list 'slime-lisp-implementations
-		 '(ecl ("/usr/bin/ecl"))))
+	    (when (file-exists-p "/usr/bin/ecl")
+	      (push '(ecl ("/usr/bin/ecl"))
+		    temp-lisp-implementations))
 
-  (when (file-exists-p "~/sbcl/")
-    (add-to-list 'slime-lisp-implementations
-		 `(sbcl-git (,(expand-file-name "~/sbcl/run-sbcl.sh") "--dynamic-space-size" "3096" "--load" ,quicklisp-setup-file))))
+	    (when (file-exists-p "~/sbcl/")
+	      (push `(sbcl-git (,(expand-file-name "~/sbcl/run-sbcl.sh") "--dynamic-space-size" "3096" "--load" ,quicklisp-setup-file))
+		    temp-lisp-implementations))
 
-  (when (file-exists-p "/usr/bin/sbcl")
-    (add-to-list 'slime-lisp-implementations
-		 '(sbcl-raw ("/usr/bin/sbcl")))
+	    (when (file-exists-p "/usr/bin/sbcl")
+	      (push '(sbcl-raw ("/usr/bin/sbcl"))
+		    temp-lisp-implementations)
 
-    (when (file-exists-p quicklisp-setup-file)
-      (add-to-list 'slime-lisp-implementations
-		   `(sbcl-debug ("/usr/bin/sbcl" "--dynamic-space-size" "3096" "--load" ,quicklisp-setup-file))))
+	      (when (file-exists-p quicklisp-setup-file)
+		(push `(sbcl-debug ("/usr/bin/sbcl" "--dynamic-space-size" "3096" "--load" ,quicklisp-setup-file))
+		      temp-lisp-implementations))
 
-    (when (file-exists-p "~/lisp/sbcl.core-graham")
-      (let ((sbcl-core-graham (expand-file-name "~/lisp/sbcl.core-graham")))
-	(add-to-list 'slime-lisp-implementations
-		     `(sbcl-big ("/usr/bin/sbcl" "--core" ,sbcl-core-graham "--dynamic-space-size" "6192")))
-	(add-to-list 'slime-lisp-implementations
-		     `(sbcl ("/usr/bin/sbcl" "--core" ,sbcl-core-graham "--dynamic-space-size" "3096")))))))
+	      (when (file-exists-p "~/lisp/sbcl.core-graham")
+		(let ((sbcl-core-graham (expand-file-name "~/lisp/sbcl.core-graham")))
+		  (push `(sbcl-big ("/usr/bin/sbcl" "--core" ,sbcl-core-graham "--dynamic-space-size" "6192"))
+			temp-lisp-implementations)
+		  (push `(sbcl ("/usr/bin/sbcl" "--core" ,sbcl-core-graham "--dynamic-space-size" "3096"))
+			temp-lisp-implementations)))))
+	  temp-lisp-implementations)))
 
-(when (file-exists-p "/usr/local/doc/HyperSpec/")
-  (setq common-lisp-hyperspec-root "file:///usr/local/doc/HyperSpec/"))
+(setq common-lisp-hyperspec-root
+      (eval-when-compile
+	(if (file-exists-p "/usr/local/doc/HyperSpec/")
+	    "file:///usr/local/doc/HyperSpec/"
+	  "http://www.lispworks.com/reference/HyperSpec/")))
 
 (add-to-list 'interpreter-mode-alist '("sbcl" . lisp-mode))
 
