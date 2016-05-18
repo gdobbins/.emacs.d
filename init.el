@@ -1463,3 +1463,8 @@ appropriate."
   (add-hook 'after-save-hook #'byte-compile-current-buffer nil t))
 
 (add-hook 'emacs-lisp-mode-hook #'add-byte-compile-hook)
+
+(font-lock-add-keywords 'emacs-lisp-mode
+			'(("(\\(\\(unless\\|defun\\)-[^ ]*\\)[ \t\n]" 1 'font-lock-keyword-face)
+			  ("(\\(\\(make-last-key-repeating\\|defset\\)-function\\)[ \t\n]" 1 'font-lock-keyword-face))
+			t)
