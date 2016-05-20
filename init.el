@@ -1335,9 +1335,20 @@ appropriate."
 
 (defset-function electrify-return-if-match "RET")
 
-(pdf-tools-install)
-(define-key pdf-view-mode-map (kbd "a") #'image-bol)
-(define-key pdf-view-mode-map (kbd "e") #'image-eol)
+(defun lazy-pdf-tools-install ()
+  "Run `pdf-tools-install' and then call `pdf-view-mode'."
+  (pdf-tools-install)
+  (setf auto-mode-alist
+	(delete '("\\.[pP][dD][fF]\\'" . lazy-pdf-tools-install) auto-mode-alist))
+  (with-no-warnings
+    (pdf-view-mode)))
+
+(add-to-list 'auto-mode-alist '("\\.[pP][dD][fF]\\'" . lazy-pdf-tools-install))
+
+(with-eval-after-load "pdf-tools"
+  (with-no-warnings
+    (define-key pdf-view-mode-map (kbd "a") #'image-bol)
+    (define-key pdf-view-mode-map (kbd "e") #'image-eol)))
 
 (defadvice abort-if-file-too-large (around no-abort-if-file-is-pdf compile activate)
   (if (string-match-p "\\.[pP][dD][fF]$" filename)
