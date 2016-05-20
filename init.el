@@ -1031,6 +1031,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 (setq aw-keys (list ?h ?t ?n ?s ?a ?o ?e ?u))
 (setq avy-keys aw-keys)
+(setq avy-style 'de-bruijn)
 
 (define-prefix-command 'my-other-window-map)
 (make-last-key-repeating-function duplicate-other-window-buffer my-other-window-map nil)
