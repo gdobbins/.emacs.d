@@ -766,19 +766,6 @@ abort completely with `C-g'."
 	  (select-window first-win)
 	  (if this-win-2nd (other-window 1))))))
 
-(defun count-buffer-lines ()
-  "Count the number of lines in the active region or buffer."
-  (interactive)
-  (princ
-   (if mark-active
-       (format "%d lines in region of %s" (let ((pt (point))
-						(mk (mark)))
-					    (if (> pt mk)
-						(count-lines mk pt)
-					      (count-lines pt mk)))
-	       (buffer-name (current-buffer)))
-     (format "%d lines in %s" (count-lines 1 (point-max)) (buffer-name (current-buffer))))))
-
 (defun activate-word-column-region ()
   "Look at the symbol at point, search backward and place the point before a
 symbol, and search forward and place the mark after a symbol such that all
@@ -1029,6 +1016,14 @@ point reaches the beginning or end of the buffer, stop there."
     (when (= orig-point (point))
       (move-beginning-of-line 1))))
 
+(defun count-lines-page-or-maybe-region ()
+  "If region is active call `count-words-region'. Otherwise call
+`count-lines-page'."
+  (interactive)
+  (if (use-region-p)
+      (call-interactively #'count-words-region)
+    (count-lines-page)))
+
 (setq aw-keys (list ?h ?t ?n ?s ?a ?o ?e ?u))
 (setq avy-keys aw-keys)
 (setq avy-style 'de-bruijn)
@@ -1054,7 +1049,7 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "C-c w C-k") #'really-desktop-clear)
 (global-set-key (kbd "C-c w k") #'kill-other-buffers)
 (global-set-key (kbd "C-c w u") #'revert-this-buffer)
-(global-set-key (kbd "C-c w l") #'count-buffer-lines)
+(global-set-key (kbd "C-c w l") #'linum-mode)
 (global-set-key (kbd "C-c w f") #'rename-current-buffer-file)
 (global-set-key (kbd "C-c w d") #'duplicate-other-window-buffer)
 (global-set-key (kbd "C-c w c") #'emacs-uptime)
@@ -1087,6 +1082,7 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "C-x w l") #'highlight-lines-matching-regexp)
 (global-set-key (kbd "C-x w i") 'hi-lock-find-patterns)
 (global-set-key (kbd "C-x r S") #'activate-word-column-region)
+(global-set-key (kbd "C-x l") #'count-lines-page-or-maybe-region)
 (global-set-key (kbd "C-h x") #'x86-lookup)
 (global-set-key (kbd "C-h r") #'re-builder)
 (global-set-key (kbd "C-h s") #'string-edit-at-point)
