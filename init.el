@@ -848,6 +848,8 @@ on the location of the new git directory."
 
 (setq ioccur-buffer-completion-use-ido t)
 
+(setq message-use-idna 'ask)
+
 (setq vc-follow-symlinks t)
 
 (defun ioccur-follow-next ()
