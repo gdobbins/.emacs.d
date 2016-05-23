@@ -68,3 +68,5 @@
 
 (add-hook 'edit-server-start-hook (lambda () (setq indent-tabs-mode nil)))
 (add-hook 'edit-server-start-hook #'end-of-buffer)
+
+(provide 'ewe-config)
