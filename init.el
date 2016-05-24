@@ -298,6 +298,7 @@ appropriate."
 		   (mode . ioccur-mode)
 		   (mode . occur-mode)
 		   (mode . reb-mode)
+		   (mode . calendar-mode)
 		   (mode . calc-mode)
 		   (mode . calc-trail-mode)
 		   (mode . messages-buffer-mode))))))
