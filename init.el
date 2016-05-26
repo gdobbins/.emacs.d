@@ -673,7 +673,7 @@ abort completely with `C-g'."
 
 (defun undo-tree-save-history-ignore-file (orig &rest args)
   "Ignore files matching the regex, otherwise save history"
-  (unless (string-match ".*\\.gpg$" buffer-file-name)
+  (unless (string-match "\\(\\.gpg$\\|^/tmp/\\|/.emacs.d/elpa/\\|/.git/\\)" buffer-file-name)
     (apply orig args)))
 
 (require 'undo-tree)
