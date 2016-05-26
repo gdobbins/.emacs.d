@@ -51,10 +51,12 @@ FLAG is then removed if found."
     "--no-secrets"
   (load "~/.emacs.d/secrets" t t))
 
-(require 'server)
+(autoload #'server-running-p "server")
+(autoload #'server-edit "server")
 
 (unless-command-flag
     "--no-server"
+  (require 'server)
   (unless (or (server-running-p) (string= user-login-name "root"))
     (add-hook 'emacs-startup-hook #'server-start)))
 
