@@ -1001,6 +1001,14 @@ Don't mess with special buffers."
      (call-interactively #'isearch-backward)
      (recursive-edit))))
 
+(defun other-window-quit ()
+  "Run `quit-window' in the window selected by `ace-window'."
+  (interactive)
+  (ace-window 1)
+  (quit-window))
+
+(global-set-key (kbd "H-q") #'other-window-quit)
+
 (defun smarter-move-beginning-of-line (arg)
   "Move point back to indentation of beginning of line.
 
