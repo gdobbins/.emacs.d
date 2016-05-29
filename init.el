@@ -840,6 +840,8 @@ on the location of the new git directory."
 	  (insert "*.fasl\n"))))))
   (apply orig args))
 
+(defvar magit-no-message '("Turning on magit-auto-revert-mode..."))
+
 (autoload 'magit-ido-completing-read "magit-utils" "Ido-based `completing-read' almost-replacement.")
 (with-eval-after-load "magit"
   (advice-add 'magit-init :around #'magit-auto-create-gitattributes&config)
