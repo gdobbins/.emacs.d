@@ -1044,7 +1044,7 @@ point reaches the beginning or end of the buffer, stop there."
 (setq avy-style 'de-bruijn)
 
 (define-prefix-command 'my-other-window-map)
-(make-last-key-repeating-function duplicate-other-window-buffer my-other-window-map nil)
+(make-last-key-repeating-function duplicate-other-window-buffer my-other-window-map t)
 (define-key my-other-window-map (kbd "C-c s") #'other-window-imenu)
 (define-key my-other-window-map (kbd "C-s") #'other-window-isearch-forward)
 (define-key my-other-window-map (kbd "C-r") #'other-window-isearch-backward)
