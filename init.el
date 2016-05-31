@@ -393,8 +393,8 @@ Use in `isearch-mode-end-hook'."
       (goto-char isearch-other-end)))
   (add-hook 'isearch-mode-end-hook #'endless/goto-match-beginning))
 
-(require 'slime)
-(slime-setup '(slime-fancy))
+(with-eval-after-load "slime"
+  (slime-setup '(slime-fancy)))
 
 (setf slime-lisp-implementations
       (eval-when-compile
@@ -601,6 +601,8 @@ abort completely with `C-g'."
 
 (define-key projectile-mode-map (kbd "C-c p d") #'projectile-dired)
 (define-key projectile-mode-map (kbd "C-c p D") #'projectile-find-dir)
+
+(autoload 'slime-repl-eval-string "slime")
 
 (defun projectile-jack-in ()
   "Attempt to jack-in to the project."
@@ -810,6 +812,7 @@ lines have identical symbols at identical goal columns as the symbol at point."
   (backward-char)
   (run-hooks 'post-self-insert-hook))
 
+(autoload 'slime-switch-to-output-buffer "slime")
 (autoload 'sh-show-shell "sh-script" "Pop the shell interaction buffer." t)
 (autoload 'elpy-shell-switch-to-shell "elpy" "Switch to inferior Python process buffer.")
 
@@ -1274,6 +1277,8 @@ appropriate."
 	  (backward-kill-sexp)
 	  (forward-char destination-distance)))))
 
+(autoload 'slime-scratch "slime")
+
 (with-eval-after-load "lisp-mode"
   (font-lock-add-keywords 'lisp-mode
 			  '(("(\\(iter\\(ate\\)?\\|defmacro-\\(driver\\|clause\\)\\)" 1 'font-lock-keyword-face)
@@ -1311,8 +1316,11 @@ appropriate."
     (call-interactively #'next-line)))
 
 (with-eval-after-load "slime-repl"
+  (defvar slime-auto-start)
   (setq slime-auto-start 'always)
+  (defvar slime-repl-history-size)
   (setq slime-repl-history-size 500)
+  (defvar slime-repl-mode-map)
   (define-key slime-repl-mode-map (kbd "C-c C-s") #'slime-scratch)
   (define-key slime-repl-mode-map (kbd "C-c e") #'slime-eval-and-replace)
   (define-key slime-repl-mode-map (kbd "<up>") #'slime-repl-previous-if-eobp-else-up)
