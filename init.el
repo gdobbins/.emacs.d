@@ -379,19 +379,27 @@ appropriate."
   (defvar reb-re-syntax)
   (setq reb-re-syntax 'string))
 
-(with-eval-after-load "isearch"
+(defun lazy-require-isearch+ ()
+  "Since isearch is loaded by default, this function is added to
+`isearch-mode-hook' to require isearch+ when isearch is first
+used."
   (require 'isearch+)
-  (defvar isearch-mode-map)
-  (define-key isearch-mode-map [remap ace-window] #'isearchp-open-recursive-edit)
-  (defun endless/goto-match-beginning ()
-    "Go to the start of current isearch match.
+  (remove-hook 'isearch-mode-hook #'lazy-require-isearch+))
+
+(add-hook 'isearch-mode-hook #'lazy-require-isearch+)
+
+(autoload #'isearchp-open-recursive-edit "isearch+")
+(define-key isearch-mode-map [remap ace-window] #'isearchp-open-recursive-edit)
+
+(defun endless/goto-match-beginning ()
+  "Go to the start of current isearch match.
 Use in `isearch-mode-end-hook'."
-    (when (and isearch-forward
-	       (number-or-marker-p isearch-other-end)
-	       (not mark-active)
-	       (not isearch-mode-end-hook-quit))
-      (goto-char isearch-other-end)))
-  (add-hook 'isearch-mode-end-hook #'endless/goto-match-beginning))
+  (when (and isearch-forward
+	     (number-or-marker-p isearch-other-end)
+	     (not mark-active)
+	     (not isearch-mode-end-hook-quit))
+    (goto-char isearch-other-end)))
+(add-hook 'isearch-mode-end-hook #'endless/goto-match-beginning)
 
 (with-eval-after-load "slime"
   (slime-setup '(slime-fancy)))
