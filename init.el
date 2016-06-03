@@ -296,6 +296,7 @@ appropriate."
 		   (mode . package-menu-mode)
 		   (mode . finder-mode)
 		   (mode . Custom-mode)
+		   (name . "^\\*Backtrace\\*$")
 		   (mode . apropos-mode)
 		   (mode . ioccur-mode)
 		   (mode . occur-mode)
