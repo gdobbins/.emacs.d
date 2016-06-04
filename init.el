@@ -1055,6 +1055,10 @@ point reaches the beginning or end of the buffer, stop there."
 (setq avy-keys aw-keys)
 (setq avy-style 'de-bruijn)
 
+(with-eval-after-load 'avy-zap
+  (defvar avy-zap-dwim-prefer-avy)
+  (setq avy-zap-dwim-prefer-avy nil))
+
 (define-prefix-command 'my-other-window-map)
 (make-last-key-repeating-function duplicate-other-window-buffer my-other-window-map t)
 (define-key my-other-window-map (kbd "C-c s") #'other-window-imenu)
@@ -1122,6 +1126,7 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "M-n") #'smartscan-symbol-go-forward)
 (global-set-key (kbd "M-p") #'smartscan-symbol-go-backward)
 (global-set-key (kbd "C-o") #'avy-goto-char)
+(global-set-key (kbd "M-z") #'avy-zap-up-to-char-dwim)
 (global-set-key (kbd "M-SPC") #'cycle-spacing)
 (global-set-key (kbd "H-SPC") #'er/expand-region)
 (global-set-key (kbd "C-z") #'repeat)
