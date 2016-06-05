@@ -564,6 +564,20 @@ abort completely with `C-g'."
 	     (file-directory-p default-directory))
     (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
+(defun copy-current-file-path (arg)
+  "Copy the current file path to the `kill-ring'. With C-u prefix
+then copy without directory."
+  (interactive "P")
+  (let ((temp
+	 (if (string-match "/sudo:root@localhost:" buffer-file-name)
+	     (substring buffer-file-name 21)
+	   buffer-file-name)))
+    (if (consp arg)
+	(kill-new (file-name-nondirectory temp))
+      (kill-new temp))))
+
+(global-set-key (kbd "C-c C-f") #'copy-current-file-path)
+
 (global-set-key (kbd "M-/") #'hippie-expand)
 
 (setq hippie-expand-try-functions-list
