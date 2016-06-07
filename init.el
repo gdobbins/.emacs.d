@@ -602,6 +602,19 @@ then copy without directory."
 
 (setq tab-always-indent 'complete)
 
+(defun adjust-tab-width ()
+  "Cycle `tab-width' through the values 2 4 and 8. This function
+can be repeated by pressing the last key used to call the
+function."
+  (interactive)
+  (setq tab-width (mod (* tab-width 2) 16))
+  (when (= 0 tab-width)
+    (setq tab-width 2))
+  (message (format "Tab width set to %d" tab-width))
+  (last-key-repeating adjust-tab-width))
+
+(global-set-key (kbd "C-c TAB") #'adjust-tab-width)
+
 (require 'projectile)
 
 (defun projectile-ignored-project-function (file)
