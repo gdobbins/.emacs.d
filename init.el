@@ -117,6 +117,14 @@ multiple functions can call each other in repetition."
 		(define-key map (vector last-input-event) #',func)
 		map)))))))
 
+(defmacro last-key-repeating (function)
+  "Make the command repeat FUNCTION by repeated pressing of
+`last-input-event'."
+  `(set-transient-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map (vector last-input-event) #',function)
+      map)))
+
 (defun smarter-mark-sexp ()
   "Like `mark-sexp' except go `backward-sexp' first if
 appropriate."
