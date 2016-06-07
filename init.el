@@ -728,7 +728,7 @@ then copy without directory."
 	    (setf s (+ s (if (= 0 (skip-chars-backward " \n\t")) 1 0)))
 	    (kill-sexp -1)
 	    (condition-case nil
-		(prin1 (eval (read (current-kill 0)))
+		(prin1 (eval (read (current-kill 0)) t)
 		       (current-buffer))
 	      (user-error "Invalid expression")
 	      (insert (current-kill 0)))
@@ -740,7 +740,7 @@ then copy without directory."
 	    (while (< y 0)
 	      (kill-sexp 1)
 	      (condition-case nil
-		  (prin1 (eval (read (current-kill 0)))
+		  (prin1 (eval (read (current-kill 0)) t)
 			 (current-buffer))
 		(user-error "Invalid expression")
 		(insert (current-kill 0)))
