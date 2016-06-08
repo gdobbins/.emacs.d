@@ -8,7 +8,30 @@
   (tooltip-mode -1))
 
 (setq gc-cons-threshold 100000000)
-(add-hook 'after-init-hook (lambda () (setq gc-cons-threshold 800000)))
+
+(defun delayed-initialization ()
+  "Return `gc-cons-threshold' to it's original value and perform
+some other initialization operations which slow startup time."
+  (defun delayed-initialization ()
+    (garbage-collect))
+  (require 'magit)
+  (require 'avy)
+  (require 'expand-region)
+  (remove-hook 'focus-out-hook #'delayed-initialization)
+  (setq gc-cons-threshold 800000)
+  (garbage-collect)
+  (message "Finished delayed initialization."))
+
+(defun setup-delayed-initialization ()
+  "Setup `delayed-initialization' to run when emacs is idle or
+  loses focus."
+  (run-with-idle-timer
+   60
+   nil
+   #'delayed-initialization)
+  (add-hook 'focus-out-hook #'delayed-initialization))
+
+(add-hook 'emacs-startup-hook #'setup-delayed-initialization)
 
 (setq ring-bell-function #'ignore)
 (setq ad-redefinition-action 'accept)
