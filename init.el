@@ -638,6 +638,15 @@ function."
 
 (global-set-key (kbd "C-c TAB") #'adjust-tab-width)
 
+(defun indent-tabs-mode ()
+  "Toggle whether `indent-tabs-mode' is true."
+  (interactive)
+  (setq indent-tabs-mode (not indent-tabs-mode))
+  (message (format "Indent-tabs-mode set to %s" indent-tabs-mode))
+  (last-key-repeating indent-tabs-mode))
+
+(global-set-key (kbd "C-c C-<tab>") #'indent-tabs-mode)
+
 (require 'projectile)
 
 (defun projectile-ignored-project-function (file)
