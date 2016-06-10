@@ -1195,7 +1195,6 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "C-o") #'avy-goto-char)
 (global-set-key (kbd "M-z") #'avy-zap-up-to-char-dwim)
 (global-set-key (kbd "M-SPC") #'cycle-spacing)
-(global-set-key (kbd "H-SPC") #'er/expand-region)
 (global-set-key (kbd "C-z") #'repeat)
 (global-set-key (kbd "<f5>") #'egg-timer)
 (global-set-key (kbd "C-x c") #'server-edit)
@@ -1221,6 +1220,10 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "C-c m l") #'mpc-prev)
 (make-last-key-repeating-function mpc-prev mpc-repeating-map)
 (global-set-key (kbd "C-c m w") #'woman)
+
+(autoload #'er/contract-region "expand-region")
+(global-set-key (kbd "H-(") #'er/expand-region)
+(global-set-key (kbd "H-)") #'er/contract-region)
 
 (global-set-key (kbd "<mouse-8>") #'previous-buffer)
 (global-set-key (kbd "<mouse-9>") #'next-buffer)
