@@ -1417,15 +1417,22 @@ appropriate."
   (unless (/= 1 (point))
     (unless (looking-at ".")
       (insert ";; This buffer is for notes you don't want to save, and for Common Lisp evaluation.\n\n"))))
+(defun paredit-or-smartparens ()
+  "Enable either paredit or smartparens strict mode."
+  (if (member major-mode '(emacs-lisp-mode
+			   lisp-interaction-mode
+			   lisp-mode
+			   slime-repl-mode
+			   eshell-mode
+			   ielm-mode
+			   scheme-mode))
+      (enable-paredit-mode)
+    (smartparens-strict-mode)))
 
-(add-hook 'emacs-lisp-mode-hook				#'enable-paredit-mode)
+(add-hook 'prog-mode-hook #'paredit-or-smartparens)
+
 (add-hook 'eval-expression-minibuffer-setup-hook	#'enable-paredit-mode)
-(add-hook 'ielm-mode-hook				#'enable-paredit-mode)
-(add-hook 'lisp-mode-hook				#'enable-paredit-mode)
-(add-hook 'lisp-interaction-mode-hook			#'enable-paredit-mode)
-(add-hook 'scheme-mode-hook				#'enable-paredit-mode)
 (add-hook 'slime-repl-mode-hook				#'enable-paredit-mode)
-(add-hook 'eshell-mode-hook				#'enable-paredit-mode)
 
 (defun electrify-return-if-match (arg)
   "If the text after the cursor matches \"[\]\)}]\" then
@@ -1499,12 +1506,10 @@ appropriate."
   (defvar inferior-python-mode-map)
   (define-key inferior-python-mode-map (kbd "C-d") #'comint-delchar-or-eof-or-kill-buffer)
   (define-key inferior-python-mode-map (kbd "C-c M-o") #'python-repl-clear-buffer)
-  (add-to-list 'safe-local-variable-values '(python-shell-interpreter . "python2"))
-  (add-hook 'python-mode-hook #'smartparens-strict-mode)
-  (add-hook 'inferior-python-mode-hook #'smartparens-strict-mode)
-  (require 'smartparens-python))
+  (add-to-list 'safe-local-variable-values '(python-shell-interpreter . "python2")))
 
 (with-eval-after-load "smartparens"
+  (require 'smartparens-config)
   (sp-use-paredit-bindings)
   (with-no-warnings
     (defun sp-paredit-like-close-round ()
@@ -1523,16 +1528,6 @@ appropriate."
   (define-key elpy-mode-map (kbd "M-,") #'pop-tag-mark)
   (define-key elpy-mode-map (kbd "C-c C-c") 'python-shell-send-defun)
   (define-key elpy-mode-map (kbd "C-c C-k") 'elpy-shell-send-region-or-buffer))
-
-(with-eval-after-load "lua-mode"
-  (require 'smartparens-lua)
-  (add-hook 'lua-mode-hook #'smartparens-strict-mode))
-
-(with-eval-after-load "c-mode"
-  (add-hook 'c-mode-hook #'smartparens-strict-mode))
-
-(with-eval-after-load "c++-mode"
-  (add-hook 'c++-mode-hook #'smartparens-strict-mode))
 
 (defvar flymake-no-changes-timeout)
 (defun set-flymake-no-changes-timeout-to-one-hour ()
