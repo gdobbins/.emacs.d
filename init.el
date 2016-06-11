@@ -1159,6 +1159,7 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "C-c w m") #'calc)
 (global-set-key (kbd "C-c w w") #'message-current-time)
 (global-set-key (kbd "C-c w p") #'package-list-packages)
+(global-set-key (kbd "C-c w (") #'smartparens-strict-mode)
 (global-set-key (kbd "C-c d") #'duplicate-other-window-buffer)
 (global-set-key (kbd "C-c C-z") #'smart-switch-to-output-buffer)
 (global-set-key (kbd "C-c z") #'smart-switch-to-output-buffer)
