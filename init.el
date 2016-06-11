@@ -937,10 +937,10 @@ on the location of the new git directory."
 (setq vc-follow-symlinks t)
 
 (defun ioccur-follow-next ()
-       "Move to the next line and follow in the connected buffer."
-       (interactive)
-       (ioccur-next-line)
-       (ioccur-jump-without-quit))
+  "Move to the next line and follow in the connected buffer."
+  (interactive)
+  (ioccur-next-line)
+  (ioccur-jump-without-quit))
 
 (defun ioccur-follow-previous ()
   "Move to the previous line and follow in the connected buffer."
