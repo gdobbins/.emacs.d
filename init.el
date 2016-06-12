@@ -1302,6 +1302,8 @@ point reaches the beginning or end of the buffer, stop there."
 (add-hook 'LaTeX-mode-hook #'LaTeX-math-mode)
 (add-hook 'LaTeX-mode-hook #'latex-preview-pane-mode)
 
+(add-to-list 'auto-mode-alist '("README$" . text-mode))
+
 (defun fix-capitalization->paren ()
   "Search backward and replace a capital letter with (<lowercase letter>"
   (interactive)
