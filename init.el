@@ -1202,6 +1202,7 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "C-x #") nil)
 (global-set-key (kbd "C-a") #'smarter-move-beginning-of-line)
 (global-set-key (kbd "C-;") (kbd "M-;"))
+(global-set-key (kbd "C-x C-a") #'align-regexp)
 
 (autoload 'mpc-resume "mpc")
 (autoload 'mpc-pause "mpc")
