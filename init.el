@@ -1354,6 +1354,8 @@ appropriate."
 	     (not (looking-back "\\([\n\s-(],@\\)\\|\\(#.=?\\)" 3)))
 	    (t t))))
 
+(autoload 'slime-eval-print-last-expression "slime")
+
 (defun slime-eval-and-replace ()
   "Replace the preceding sexp with its common-lisp value."
   (interactive)
