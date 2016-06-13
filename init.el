@@ -1455,15 +1455,14 @@ appropriate."
   (if (member major-mode '(emacs-lisp-mode
 			   lisp-interaction-mode
 			   lisp-mode
-			   slime-repl-mode
-			   eshell-mode
-			   ielm-mode
 			   scheme-mode))
       (enable-paredit-mode)
     (smartparens-strict-mode)))
 
 (add-hook 'prog-mode-hook #'paredit-or-smartparens)
 
+(add-hook 'eshell-mode					#'enable-paredit-mode)
+(add-hook 'ielm-mode					#'enable-paredit-mode)
 (add-hook 'eval-expression-minibuffer-setup-hook	#'enable-paredit-mode)
 (add-hook 'slime-repl-mode-hook				#'enable-paredit-mode)
 
