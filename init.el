@@ -351,6 +351,7 @@ appropriate."
   (define-key ibuffer-mode-map (kbd "k") #'ibuffer-do-delete)
   (define-key ibuffer-mode-map (kbd "C-k") #'ibuffer-mark-and-kill-lines)
   (define-key ibuffer-mode-map (kbd "M-o") nil)
+  (define-key ibuffer-mode-map (kbd "C-o") nil)
   (defadvice ibuffer (around ibuffer-point-to-most-recent compile activate)
 	     "Open ibuffer with cursor pointed to most recent buffer name"
 	     (let ((recent-buffer-name (buffer-name)))
