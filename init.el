@@ -1467,7 +1467,6 @@ appropriate."
 (add-hook 'prog-mode-hook #'paredit-or-smartparens)
 
 (add-hook 'eshell-mode					#'enable-paredit-mode)
-(add-hook 'ielm-mode					#'enable-paredit-mode)
 (add-hook 'eval-expression-minibuffer-setup-hook	#'enable-paredit-mode)
 (add-hook 'slime-repl-mode-hook				#'enable-paredit-mode)
 
@@ -1558,6 +1557,8 @@ appropriate."
 	    (forward-char 1)
 	  (call-interactively #'self-insert-command))))
     (define-key smartparens-mode-map (kbd ")") #'sp-paredit-like-close-round)))
+
+(add-hook 'comint-mode-hook #'smartparens-strict-mode)
 
 (with-eval-after-load "elpy"
   (add-hook 'elpy-mode-hook #'set-flymake-no-changes-timeout-to-one-hour)
