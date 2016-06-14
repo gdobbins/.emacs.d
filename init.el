@@ -1444,7 +1444,12 @@ appropriate."
   (define-key slime-repl-mode-map (kbd "<up>") #'slime-repl-previous-if-eobp-else-up)
   (define-key slime-repl-mode-map (kbd "<down>") #'slime-repl-next-if-eobp-else-down)
   (define-key slime-repl-mode-map (kbd "C-c C-z") #'slime-return-to-lisp-file)
-  (define-key slime-repl-mode-map (kbd "C-c C-q") #'slime-quit-lisp))
+  (define-key slime-repl-mode-map (kbd "DEL") nil)
+  (define-key slime-repl-mode-map (kbd "M-r") nil)
+  (with-no-warnings
+    (define-key slime-repl-mode-map (kbd "C-M-r") #'slime-repl-previous-matching-input)
+    (define-key slime-repl-mode-map (kbd "C-c q") #'slime-disconnect)
+    (define-key slime-repl-mode-map (kbd "C-c C-q") #'slime-quit-lisp)))
 
 (defadvice slime-scratch (after slime-scratch-add-top-line-comment compile activate)
   (when (and (bobp) (not (looking-at ".")))
