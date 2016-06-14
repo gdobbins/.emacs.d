@@ -1447,9 +1447,9 @@ appropriate."
   (define-key slime-repl-mode-map (kbd "C-c C-q") #'slime-quit-lisp))
 
 (defadvice slime-scratch (after slime-scratch-add-top-line-comment compile activate)
-  (unless (/= 1 (point))
-    (unless (looking-at ".")
-      (insert ";; This buffer is for notes you don't want to save, and for Common Lisp evaluation.\n\n"))))
+  (when (and (bobp) (not (looking-at ".")))
+    (insert ";; This buffer is for notes you don't want to save, and for Common Lisp evaluation.\n\n")))
+
 (defun paredit-or-smartparens ()
   "Enable either paredit or smartparens strict mode."
   (if (member major-mode '(emacs-lisp-mode
