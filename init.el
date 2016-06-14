@@ -1289,10 +1289,10 @@ point reaches the beginning or end of the buffer, stop there."
       (kill-buffer)
     (comint-delchar-or-maybe-eof arg)))
 
+(define-key comint-mode-map (kbd "C-d") #'comint-delchar-or-eof-or-kill-buffer)
+
 (with-eval-after-load "shell"
-  (add-hook 'shell-mode-hook #'truncate-lines->t)
-  (defvar shell-mode-map)
-  (define-key shell-mode-map (kbd "C-d") #'comint-delchar-or-eof-or-kill-buffer))
+  (add-hook 'shell-mode-hook #'truncate-lines->t))
 
 (with-eval-after-load "em-term"
   (defvar eshell-visual-commands)
@@ -1540,7 +1540,6 @@ appropriate."
 (with-eval-after-load "python"
   (elpy-enable)
   (defvar inferior-python-mode-map)
-  (define-key inferior-python-mode-map (kbd "C-d") #'comint-delchar-or-eof-or-kill-buffer)
   (define-key inferior-python-mode-map (kbd "C-c M-o") #'python-repl-clear-buffer)
   (add-to-list 'safe-local-variable-values '(python-shell-interpreter . "python2")))
 
