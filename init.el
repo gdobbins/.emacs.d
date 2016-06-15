@@ -424,6 +424,8 @@ used."
 (autoload #'isearchp-open-recursive-edit "isearch+")
 (define-key isearch-mode-map [remap ace-window] #'isearchp-open-recursive-edit)
 
+(setq search-whitespace-regexp ".*")
+
 (defun endless/goto-match-beginning ()
   "Go to the start of current isearch match.
 Use in `isearch-mode-end-hook'."
