@@ -1383,6 +1383,33 @@ appropriate."
 	     (not (looking-back "\\([\n\s-(],@\\)\\|\\(#.=?\\)" 3)))
 	    (t t))))
 
+(defun make-new-quicklisp-project (name description)
+  "Make a new project in the quicklisp local-projects directory
+entitled NAME with DESCRIPTION. Create an asd file for the
+project."
+  (interactive "sProject name: \nsDescription: ")
+  (let ((project-dir
+	 (concat (expand-file-name "~/quicklisp/local-projects/") name "/")))
+    (make-directory project-dir)
+    (with-temp-file (concat project-dir name ".asd")
+      (insert (concat "(in-package :asdf-user)\n\n"
+		      "(defsystem :" name "\n    "
+		      ":description \"" description "\"\n    "
+		      ":version \"0.0.1\"\n    "
+		      ":author \"" user-full-name " <" user-mail-address ">\"\n    "
+		      ":depends-on (\"iterate\" \"alexandria\")\n    "
+		      ":components ((:file \"" name "\")))\n")))
+    (with-temp-file (concat project-dir name ".lisp")
+      (insert (concat ";;; Copyright " (format-time-string "%Y") " " user-full-name "\n"
+		      "(in-package :cl-user)\n"
+		      "(defpackage :" name "\n  "
+		      "(:use :common-lisp :iterate :alexandria))\n"
+		      "(in-package :" name ")\n\n")))
+    (find-file (concat project-dir name ".lisp"))
+    (goto-char (point-max))))
+
+(global-set-key (kbd "C-c p n") #'make-new-quicklisp-project)
+
 (autoload 'slime-eval-print-last-expression "slime")
 
 (defun slime-eval-and-replace ()
