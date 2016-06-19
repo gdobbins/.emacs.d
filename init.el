@@ -1625,6 +1625,7 @@ project."
 (put 'erase-buffer	'disabled nil)
 (put 'downcase-region	'disabled nil)
 (put 'upcase-region	'disabled nil)
+(put 'narrow-to-region  'disabled nil)
 
 (defun add-delete-trailing-whitespace-hook ()
   (add-hook 'before-save-hook #'delete-trailing-whitespace nil t))
