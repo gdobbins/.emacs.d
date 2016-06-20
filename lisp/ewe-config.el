@@ -66,6 +66,8 @@
 (add-to-list 'edit-server-url-major-mode-alist '("/r/\\(lisp\\|common_lisp\\)" . lisp-mode))
 (add-to-list 'edit-server-url-major-mode-alist '("/r/emacs" . emacs-lisp-mode))
 
+(add-hook 'edit-server-start-hook #'writegood-mode)
+(add-hook 'edit-server-start-hook #'flyspell-mode)
 (add-hook 'edit-server-start-hook (lambda () (setq indent-tabs-mode nil)))
 (add-hook 'edit-server-start-hook #'end-of-buffer)
 
