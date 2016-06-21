@@ -1627,10 +1627,13 @@ project."
 (put 'upcase-region	'disabled nil)
 (put 'narrow-to-region  'disabled nil)
 
-(defun add-delete-trailing-whitespace-hook ()
-  (add-hook 'before-save-hook #'delete-trailing-whitespace nil t))
+(defun maybe-delete-trailing-whitespace ()
+  "Call `delete-trailing-whitespace' if the `major-mode' is
+derived from prog-mode."
+  (when (derived-mode-p 'prog-mode)
+    (delete-trailing-whitespace)))
 
-(add-hook 'prog-mode-hook #'add-delete-trailing-whitespace-hook)
+(add-hook 'before-save-hook #'maybe-delete-trailing-whitespace)
 
 (defun byte-compile-current-buffer ()
   "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
