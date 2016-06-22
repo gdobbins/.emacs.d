@@ -1230,6 +1230,28 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "H-(") #'er/expand-region)
 (global-set-key (kbd "H-)") #'er/contract-region)
 
+(defun er/mark-indented-line ()
+  (interactive)
+  (end-of-line 1)
+  (set-mark (point))
+  (back-to-indentation))
+
+(defun er/mark-whole-line ()
+  (interactive)
+  (end-of-thing 'line)
+  (set-mark (point))
+  (forward-line -1))
+
+(with-eval-after-load "expand-region"
+  (defvar er/try-expand-list)
+  (setf (nthcdr (1- (length er/try-expand-list)) er/try-expand-list)
+	(cons #'er/mark-indented-line
+	      (cons #'er/mark-whole-line
+		    (append (last er/try-expand-list)
+			    (list #'mark-paragraph)))))
+  (setf expand-region-contract-fast-key ")"
+	expand-region-reset-fast-key "SPC"))
+
 (global-set-key (kbd "<mouse-8>") #'previous-buffer)
 (global-set-key (kbd "<mouse-9>") #'next-buffer)
 
