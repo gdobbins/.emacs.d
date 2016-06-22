@@ -1315,6 +1315,10 @@ point reaches the beginning or end of the buffer, stop there."
 
 (define-key comint-mode-map (kbd "C-d") #'comint-delchar-or-eof-or-kill-buffer)
 
+(when (and (string-match "zsh$" (getenv "SHELL"))
+	   (not (getenv "HISTFILE")))
+  (setenv "HISTFILE" (expand-file-name "~/.histfile")))
+
 (with-eval-after-load "shell"
   (add-hook 'shell-mode-hook #'truncate-lines->t))
 
