@@ -301,6 +301,7 @@ appropriate."
 	 ("Dired" (or
 		   (mode . dired-mode)
 		   (mode . wdired-mode)
+		   (name . "^\\*Dired log\\*$")
 		   (mode . archive-mode)
 		   (mode . proced-mode)))
 	 ("Git" (or (derived-mode . magit-mode)
