@@ -1059,18 +1059,24 @@ Don't mess with special buffers."
   (interactive)
   (find-file user-init-file))
 
-(defun find-first-agenda-file ()
-  "Edit the first file in `org-agenda-files'"
-  (interactive)
+(defun find-first-agenda-file (arg)
+  "Edit the first file in `org-agenda-files'. With `prefix-arg'
+open last agenda file."
+  (interactive "P")
   (require 'org)
   (defvar org-agenda-files)
-  (defun find-first-agenda-file ()
-    "Edit the first file in `org-agenda-files'"
-    (interactive)
+  (defun find-first-agenda-file (arg)
+    "Edit the first file in `org-agenda-files'. With `prefix-arg'
+open last agenda file."
+    (interactive "P")
     (if (and org-agenda-files (listp org-agenda-files))
-	(find-file (first org-agenda-files))
+	(find-file
+	 (first
+	  (if (consp arg)
+	      (last org-agenda-files)
+	    org-agenda-files)))
       (user-error "No agenda files")))
-  (find-first-agenda-file))
+  (find-first-agenda-file arg))
 
 (defun-other-window-do other-window-imenu
   ((call-interactively #'imenu)))
