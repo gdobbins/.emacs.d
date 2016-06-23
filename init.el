@@ -241,7 +241,6 @@ appropriate."
 
 (with-eval-after-load 'wdired
   (defvar wdired-mode-map)
-  (define-key wdired-mode-map (kbd "C-c C-g") 'wdired-abort-changes)
   (define-key wdired-mode-map (kbd "C-o") nil)
   (defvar wdired-allow-to-change-permissions)
   (setq wdired-allow-to-change-permissions t))
@@ -408,7 +407,7 @@ appropriate."
 
 (with-eval-after-load "re-builder"
   (defvar reb-mode-map)
-  (define-key reb-mode-map (kbd "C-c C-g") 'reb-quit)
+  (define-key reb-mode-map (kbd "C-c C-k") 'reb-quit)
   (defvar reb-re-syntax)
   (setq reb-re-syntax 'string))
 
