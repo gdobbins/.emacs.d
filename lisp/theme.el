@@ -20,6 +20,8 @@
 (custom-theme-set-faces
  'solarized-dark
  '(show-paren-match
-   ((t (:foreground "#073642" :background "#00736f" :weight bold))) t))
+   ((t (:foreground "#073642" :background "#00736f" :weight bold))))
+ '(comint-highlight-prompt
+   ((t (:foreground "#dc322f" :weight bold)))))
 
 (provide 'theme)
