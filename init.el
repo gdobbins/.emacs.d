@@ -1206,6 +1206,7 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "M-z") #'avy-zap-up-to-char-dwim)
 (global-set-key (kbd "M-SPC") #'cycle-spacing)
 (global-set-key (kbd "C-z") #'repeat)
+(global-set-key (kbd "C-x z") #'repeat-complex-command)
 (global-set-key (kbd "<f5>") #'egg-timer)
 (global-set-key (kbd "C-x c") #'server-edit)
 (global-set-key (kbd "C-x #") nil)
