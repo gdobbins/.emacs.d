@@ -1321,6 +1321,7 @@ point reaches the beginning or end of the buffer, stop there."
     (comint-delchar-or-maybe-eof arg)))
 
 (define-key comint-mode-map (kbd "C-d") #'comint-delchar-or-eof-or-kill-buffer)
+(define-key comint-mode-map (kbd "C-r") #'comint-history-isearch-backward)
 
 (when (and (string-match "zsh$" (getenv "SHELL"))
 	   (not (getenv "HISTFILE")))
