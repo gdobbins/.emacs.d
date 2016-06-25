@@ -1682,6 +1682,6 @@ derived from prog-mode."
 (add-hook 'emacs-lisp-mode-hook #'add-byte-compile-hook)
 
 (font-lock-add-keywords 'emacs-lisp-mode
-			'(("(\\(\\(unless\\|defun\\)-[^ ]*\\)[ \t\n]" 1 'font-lock-keyword-face)
-			  ("(\\(\\(make-last-key-repeating\\|defset\\)-function\\)[ \t\n]" 1 'font-lock-keyword-face))
+			'(("(\\(\\(unless\\|defun\\)-[^[:space:]]*\\)[ \t\n]" 1 'font-lock-keyword-face)
+			  ("(\\(\\(\\(make-\\)?last-key-repeating\\|defset\\)\\(-function\\)?\\)[ \t\n]" 1 'font-lock-keyword-face))
 			t)
