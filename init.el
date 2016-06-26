@@ -1655,6 +1655,9 @@ project."
   (with-no-warnings
     (yas-reload-all)))
 
+(with-eval-after-load "wttrin"
+  (advice-add 'wttrin :after #'truncate-lines->t))
+
 (put 'set-goal-column	'disabled nil)
 (put 'erase-buffer	'disabled nil)
 (put 'downcase-region	'disabled nil)
