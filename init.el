@@ -1164,7 +1164,7 @@ is already narrowed."
   (declare (interactive-only))
   (with-no-warnings
     (cond ((and (buffer-narrowed-p) (not p)) (widen))
-	  ((region-active-p)
+	  ((use-region-p)
 	   (narrow-to-region (region-beginning)
 			     (region-end)))
 	  ((derived-mode-p 'org-mode)
