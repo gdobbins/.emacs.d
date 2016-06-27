@@ -1601,10 +1601,15 @@ project."
 	  (forward-char diff)
 	(goto-char (point-max))))))
 
+(defun python-setup-history ()
+  (setq-local comint-input-ring-file-name (expand-file-name "~/.python_history"))
+  (comint-read-input-ring t))
+
 (with-eval-after-load "python"
   (elpy-enable)
   (defvar inferior-python-mode-map)
   (define-key inferior-python-mode-map (kbd "C-c M-o") #'python-repl-clear-buffer)
+  (add-hook 'inferior-python-mode-hook #'python-setup-history)
   (add-to-list 'safe-local-variable-values '(python-shell-interpreter . "python2")))
 
 (with-eval-after-load "smartparens"
