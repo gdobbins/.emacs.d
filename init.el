@@ -1150,6 +1150,35 @@ point reaches the beginning or end of the buffer, stop there."
       (call-interactively #'count-words-region)
     (count-lines-page)))
 
+(defun narrow-or-widen-dwim (p)
+  "Widen if buffer is narrowed, narrow-dwim otherwise.
+Dwim means: region, org-src-block, org-subtree, or
+defun, whichever applies first. Narrowing to
+org-src-block actually calls `org-edit-src-code'.
+
+With prefix P, don't widen, just narrow even if buffer
+is already narrowed."
+  (interactive "P")
+  (declare (interactive-only))
+  (with-no-warnings
+    (cond ((and (buffer-narrowed-p) (not p)) (widen))
+	  ((region-active-p)
+	   (narrow-to-region (region-beginning)
+			     (region-end)))
+	  ((derived-mode-p 'org-mode)
+	   ;; `org-edit-src-code' is not a real narrowing
+	   ;; command. Remove this first conditional if
+	   ;; you don't want it.
+	   (cond ((ignore-errors (org-edit-src-code) t)
+		  (delete-other-windows))
+		 ((ignore-errors (org-narrow-to-block) t))
+		 (t (org-narrow-to-subtree))))
+	  ((derived-mode-p 'latex-mode)
+	   (LaTeX-narrow-to-environment))
+	  (t (narrow-to-defun)))))
+
+(define-key ctl-x-map "n" #'narrow-or-widen-dwim)
+
 (setq aw-keys (list ?h ?t ?n ?s ?a ?o ?e ?u))
 (setq avy-keys aw-keys)
 (setq avy-style 'de-bruijn)
@@ -1384,10 +1413,12 @@ Interactively also sends a terminating newline."
   (define-key compilation-mode-map key
     #'endless/send-self))
 
-(autoload 'LaTeX-math-mode "latex" "A minor mode with easy access to TeX math macros.")
-(add-hook 'LaTeX-mode-hook #'flyspell-mode)
-(add-hook 'LaTeX-mode-hook #'LaTeX-math-mode)
-(add-hook 'LaTeX-mode-hook #'latex-preview-pane-mode)
+(with-eval-after-load "latex"
+  (add-hook 'LaTeX-mode-hook #'flyspell-mode)
+  (add-hook 'LaTeX-mode-hook #'latex-preview-pane-mode)
+  (with-no-warnings
+    (add-hook 'LaTeX-mode-hook #'LaTeX-math-mode)
+    (define-key LaTeX-mode-map (kbd "C-x n") nil)))
 
 (add-to-list 'auto-mode-alist '("README$" . text-mode))
 
