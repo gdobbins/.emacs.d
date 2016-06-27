@@ -460,7 +460,9 @@ Use in `isearch-mode-end-hook'."
 (add-hook 'isearch-mode-end-hook #'endless/goto-match-beginning)
 
 (with-eval-after-load "slime"
-  (slime-setup '(slime-fancy)))
+  (slime-setup '(slime-fancy))
+  (defvar slime-mode-map)
+  (define-key slime-mode-map (kbd "C-c C-k") nil))
 
 (setf slime-lisp-implementations
       (eval-when-compile
@@ -1627,9 +1629,16 @@ project."
   (require 'org-habit)
   (defvar org-mode-map)
   (define-key org-mode-map (kbd "C-c i") #'interleave)
+  (define-key org-mode-map (kbd "C-c '") nil)
   (with-no-warnings
     (define-key org-mode-map (kbd "M-n") #'outline-next-visible-heading)
     (define-key org-mode-map (kbd "M-p") #'outline-previous-visible-heading))
+  (with-eval-after-load 'org-src
+    (with-no-warnings
+      (setq org-edit-src-persistent-message nil)
+      (define-key org-src-mode-map (kbd "C-c '") nil)
+      (define-key org-src-mode-map (kbd "C-x c") #'org-edit-src-exit)
+      (define-key org-src-mode-map (kbd "C-x C-s") #'org-edit-src-exit)))
   (defvar org-agenda-sticky)
   (setq org-agenda-sticky t))
 
