@@ -148,18 +148,41 @@ multiple functions can call each other in repetition."
       (define-key map (vector last-input-event) #',function)
       map)))
 
-(defun smarter-mark-sexp ()
-  "Like `mark-sexp' except go `backward-sexp' first if
-appropriate."
-  (interactive)
-  (if (and (or (looking-at "[) \t\n]") (eobp)) (not (use-region-p)))
-      (progn
-	(backward-sexp)
-	(call-interactively #'mark-sexp)
-	(exchange-point-and-mark))
-    (call-interactively #'mark-sexp)))
+(defmacro defun-smarter-movement (original backward forward key &optional no-use-region no-repeat map look-string)
+  "Define a new function which operates better than ORIGINAL. If
+`looking-at' LOOK-STRING or `eobp' first go BACKWARD then
+`call-interactively' ORIGINAL then go FORWARD. Bind the new
+function to KEY in MAP. If NO-USE-REGION then only do this when
+`not' `use-region-p'. If NO-REPEAT then only when the new command
+hasn't been repeated."
+  (declare (indent 1))
+  (let ((new-func (intern (concat "smarter-" (symbol-name original)))))
+    `(progn
+       (defun ,new-func ()
+	 (interactive)
+	 (if (and (or (looking-at ,(or look-string
+				       "\\(\\s)\\|[[:space:]\n]\\)"))
+		      (eobp))
+		  ,(if no-use-region
+		       '(not (use-region-p))
+		     t)
+		  ,(if no-repeat
+		       '(not (eq this-command last-command))
+		     t))
+	     (progn
+	       ,backward
+	       (call-interactively #',original)
+	       ,forward)
+	   (call-interactively #',original)))
+       ,(when key
+	  `(define-key ,(or map 'global-map) (kbd ,key) #',new-func)))))
 
-(global-set-key (kbd "C-M-SPC") #'smarter-mark-sexp)
+(defun-smarter-movement capitalize-word (backward-word) nil "M-c" nil t)
+(defun-smarter-movement downcase-word	(backward-word) nil "M-l" nil t)
+(defun-smarter-movement upcase-word	(backward-word) nil "M-u" nil t)
+
+(defun-smarter-movement mark-sexp
+  (backward-sexp) (exchange-point-and-mark) "C-M-SPC" t)
 
 (defadvice pop-to-mark-command (around ensure-new-mark-position compile activate)
   (let ((p (point)))
@@ -1379,21 +1402,12 @@ Interactively also sends a terminating newline."
     (backward-char 1)
     (run-hooks 'post-self-insert-hook)))
 
-(defun smarter-paredit-wrap-round ()
-  "Like `paredit-wrap-round' except move `paredit-backward' when
-appropriate."
-  (interactive)
-  (with-no-warnings
-    (if (or (looking-at "[) \t\n]") (eobp))
-	(progn
-	  (paredit-backward)
-	  (call-interactively #'paredit-wrap-round)
-	  (paredit-forward))
-      (call-interactively #'paredit-wrap-round))))
 
 (with-eval-after-load "paredit"
   (define-key paredit-mode-map (kbd "C-c (") #'fix-capitalization->paren)
-  (define-key paredit-mode-map (kbd "M-(") #'smarter-paredit-wrap-round)
+  (with-no-warnings
+    (defun-smarter-movement paredit-wrap-round
+      (paredit-backward) (paredit-forward) "M-(" nil nil paredit-mode-map))
   (add-to-list 'paredit-space-for-delimiter-predicates
 	       #'paredit-space-for-predicates-cl))
 
