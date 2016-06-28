@@ -1382,6 +1382,9 @@ is already narrowed."
   (setenv "HISTFILE" (expand-file-name "~/.histfile")))
 
 (with-eval-after-load "shell"
+  (defvar shell-mode-syntax-table)
+  (when (string-match "zsh$" (getenv "SHELL"))
+    (modify-syntax-entry ?\> " " shell-mode-syntax-table))
   (add-hook 'shell-mode-hook #'truncate-lines->t))
 
 (with-eval-after-load "em-term"
