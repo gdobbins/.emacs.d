@@ -54,6 +54,8 @@ some other initialization operations which slow startup time."
       '(("gnu" . "https://elpa.gnu.org/packages/")
 	("melpa" . "https://melpa.org/packages/")))
 
+(setq load-prefer-newer t)
+
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
 
 (package-initialize)
