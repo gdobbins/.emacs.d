@@ -1440,9 +1440,19 @@ Interactively also sends a terminating newline."
     (backward-char 1)
     (run-hooks 'post-self-insert-hook)))
 
+(global-set-key (kbd "C-c (") #'fix-capitalization->paren)
+
+(defun paredit-space-for-predicates-cl (endp delimiter)
+  "Do not add a space when \" is preceded by #. reader macro or (
+  is preceded by [ (],@ or #.=?"
+  (or endp
+      (cond ((eq (char-syntax delimiter) ?\")
+	     (not (looking-back "#." 2)))
+	    ((eq (char-syntax delimiter) ?\()
+	     (not (looking-back "\\([\n\s-(],@\\)\\|\\(#.=?\\)" 3)))
+	    (t t))))
 
 (with-eval-after-load "paredit"
-  (define-key paredit-mode-map (kbd "C-c (") #'fix-capitalization->paren)
   (with-no-warnings
     (defun-smarter-movement paredit-wrap-round
       (paredit-backward) (paredit-forward) "M-(" nil nil paredit-mode-map))
@@ -1459,15 +1469,6 @@ Interactively also sends a terminating newline."
     (goto-char (+ 1 pointer-position))))
 
 (defset-function insert-earmuffs "*")
-
-(defun paredit-space-for-predicates-cl (endp delimiter)
-  "Do not add a space when \" is preceded by #. reader macro or ( is preceded by [ (],@ or #.=?"
-  (or endp
-      (cond ((eq (char-syntax delimiter) ?\")
-	     (not (looking-back "#." 2)))
-	    ((eq (char-syntax delimiter) ?\()
-	     (not (looking-back "\\([\n\s-(],@\\)\\|\\(#.=?\\)" 3)))
-	    (t t))))
 
 (defun make-new-quicklisp-project (name description)
   "Make a new project in the quicklisp local-projects directory
