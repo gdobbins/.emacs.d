@@ -150,6 +150,13 @@ multiple functions can call each other in repetition."
       (define-key map (vector last-input-event) #',function)
       map)))
 
+(defmacro defkey (key def &optional keymap)
+  "Convenience macro for defining keybindings."
+  (let ((map (if keymap
+		 (intern (concat (symbol-name keymap) "-map"))
+	       'global-map)))
+    `(define-key ,map (kbd ,key) #',def)))
+
 (defmacro defun-smarter-movement (original backward forward key &optional no-use-region no-repeat map look-string)
   "Define a new function which operates better than ORIGINAL. If
 `looking-at' LOOK-STRING or `eobp' first go BACKWARD then
