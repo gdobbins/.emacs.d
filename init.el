@@ -1679,19 +1679,19 @@ project."
   (add-hook 'inferior-python-mode-hook #'python-setup-history)
   (add-to-list 'safe-local-variable-values '(python-shell-interpreter . "python2")))
 
+(defun sp-paredit-like-close-round ()
+  "If the next character is a closing delimiter skip it,
+otherwise self-insert."
+  (interactive)
+  (if (and (not (eobp)) (looking-at "\\s)"))
+      (forward-char 1)
+    (call-interactively #'self-insert-command)))
+
 (with-eval-after-load "smartparens"
   (require 'smartparens-config)
   (sp-use-paredit-bindings)
-  (with-no-warnings
-    (defun sp-paredit-like-close-round ()
-      "If the next character is a closing character as according to smartparens skip it, otherwise insert `last-input-event'"
-      (interactive)
-      (let ((pt (point)))
-	(if (and (< pt (point-max))
-		 (sp--char-is-part-of-closing (buffer-substring-no-properties pt (1+ pt))))
-	    (forward-char 1)
-	  (call-interactively #'self-insert-command))))
-    (define-key smartparens-mode-map (kbd ")") #'sp-paredit-like-close-round)))
+  (defvar smartparens-mode-map)
+  (defkey ")" sp-paredit-like-close-round smartparens-mode))
 
 (add-hook 'comint-mode-hook #'smartparens-strict-mode)
 
