@@ -1198,6 +1198,14 @@ is already narrowed."
   (defvar avy-zap-dwim-prefer-avy)
   (setq avy-zap-dwim-prefer-avy nil))
 
+(defun smarter-delete-other-windows (arg)
+  (interactive "P")
+  (when arg
+    (ace-window nil))
+  (delete-other-windows))
+
+(defkey "C-x t" smarter-delete-other-windows)
+
 (define-prefix-command 'my-other-window-map)
 (make-last-key-repeating-function duplicate-other-window-buffer my-other-window-map t)
 (define-key my-other-window-map (kbd "C-c s") #'other-window-imenu)
