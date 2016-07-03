@@ -1467,10 +1467,36 @@ Interactively also sends a terminating newline."
 	     (not (looking-back "\\([\n\s-(],@\\)\\|\\(#.=?\\)" 3)))
 	    (t t))))
 
+(defun paredit-uncomment-or-comment-sexp ()
+  "If there is an active region call `paredit-comment-dwim',
+otherwise if within a comment then uncomment, else call
+`smarter-mark-sexp' and comment."
+  (interactive)
+  (unless (use-region-p)
+    (if (save-excursion
+  	  (back-to-indentation)
+  	  (looking-at "\\s<"))
+  	(progn
+  	  (beginning-of-line)
+  	  (while (looking-at "[[:space:]]*\\s<")
+  	    (forward-line))
+  	  (forward-line -1)
+  	  (end-of-line)
+  	  (push-mark (point) t t)
+  	  (beginning-of-line)
+  	  (while (looking-at "[[:space:]]*\\s<")
+  	    (forward-line -1))
+  	  (forward-line)
+  	  (back-to-indentation))
+  	(smarter-mark-sexp)))
+  (with-no-warnings
+    (paredit-comment-dwim)))
+
 (with-eval-after-load "paredit"
   (with-no-warnings
     (defun-smarter-movement paredit-wrap-round
       (paredit-backward) (paredit-forward) "M-(" nil nil paredit-mode-map))
+  (define-key paredit-mode-map (kbd "C-;") #'paredit-uncomment-or-comment-sexp)
   (add-to-list 'paredit-space-for-delimiter-predicates
 	       #'paredit-space-for-predicates-cl))
 
