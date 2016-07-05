@@ -218,6 +218,9 @@ hasn't been repeated."
 
 (setq sentence-end-double-space nil)
 
+(when user-mail-address
+  (setq epa-file-encrypt-to user-mail-address))
+
 (with-eval-after-load 'warnings
   (defvar warning-suppress-types)
   (add-to-list 'warning-suppress-types '(undo discard-info)))
