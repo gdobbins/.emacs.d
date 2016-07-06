@@ -1405,6 +1405,7 @@ is already narrowed."
 (add-hook 'emacs-lisp-mode-hook #'turn-on-elisp-slime-nav-mode)
 
 (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
+(add-hook 'ielm-mode-hook #'eldoc-mode)
 
 (defadvice he-substitute-string (after he-paredit-fix compile activate)
   "remove extra paren when expanding line in paredit"
