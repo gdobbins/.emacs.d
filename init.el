@@ -153,9 +153,18 @@ multiple functions can call each other in repetition."
 (defmacro defkey (key def &optional keymap)
   "Convenience macro for defining keybindings."
   (let ((map (if keymap
-		 (intern (concat (symbol-name keymap) "-map"))
-	       'global-map)))
-    `(define-key ,map (kbd ,key) #',def)))
+		 (let ((symbol-name (symbol-name keymap)))
+		   (intern
+		    (if (string-match "-map$" symbol-name)
+			symbol-name
+		      (concat symbol-name "-map"))))
+	       '(current-global-map))))
+    `(define-key ,map
+       ,(if (stringp key) `(kbd ,key) key)
+       ,(cond
+	 ((symbolp def) `#',def)
+	 ((stringp def) `(kbd ,def))
+	 (t def)))))
 
 (defmacro defun-smarter-movement (original backward forward key &optional no-use-region no-repeat map look-string)
   "Define a new function which operates better than ORIGINAL. If
