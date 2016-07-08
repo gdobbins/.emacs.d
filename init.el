@@ -1439,10 +1439,21 @@ is already narrowed."
 	   (not (getenv "HISTFILE")))
   (setenv "HISTFILE" (expand-file-name "~/.histfile")))
 
+(defun add-mode-line-dirtrack ()
+  "Add the abbreviated directory to the end of the mode line."
+  (add-to-list 'mode-line-format
+	       '(:propertize
+		 (" "
+		  (:eval (abbreviate-file-name default-directory))
+		  " ")
+		 face dired-directory)
+	       t))
+
 (with-eval-after-load "shell"
   (defvar shell-mode-syntax-table)
   (when (string-match "zsh$" (getenv "SHELL"))
     (modify-syntax-entry ?\> " " shell-mode-syntax-table))
+  (add-hook 'shell-mode-hook #'add-mode-line-dirtrack)
   (add-hook 'shell-mode-hook #'truncate-lines->t))
 
 (with-eval-after-load "em-term"
