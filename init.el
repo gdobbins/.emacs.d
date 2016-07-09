@@ -1607,10 +1607,12 @@ project."
 (autoload 'slime-scratch "slime")
 
 (with-eval-after-load "lisp-mode"
-  (font-lock-add-keywords 'lisp-mode
-			  '(("(\\(iter\\(ate\\)?\\|defmacro-\\(driver\\|clause\\)\\)" 1 'font-lock-keyword-face)
-			    ("(define-constant[ \n\r\t]+\\(\\(\\sw\\|\\s_\\)*\\)" 1 'font-lock-variable-name-face))
-			  t)
+  (font-lock-add-keywords
+   'lisp-mode
+   '(("(\\(iter\\(ate\\)?\\|defmacro-\\(driver\\|clause\\)\\)[ \t\n]" 1 'font-lock-keyword-face)
+     ("(\\(for\\|generate\\|while\\|until\\|repeat\\|finally\\|finish\\|leave\\|next-iteration\\|if-first-time\\|with\\|initially\\)[ \t\n]" 1 'font-lock-keyword-face)
+     ("(define-constant[ \n\r\t]+\\(\\(\\sw\\|\\s_\\)*\\)" 1 'font-lock-variable-name-face))
+   t)
   (define-key lisp-mode-map (kbd "C-c e") #'slime-eval-and-replace)
   (define-key lisp-mode-map (kbd "C-c C-s") #'slime-scratch))
 
