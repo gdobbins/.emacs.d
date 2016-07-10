@@ -298,7 +298,7 @@ hasn't been repeated."
 		  (mode . lisp-mode)
 		  (mode . slime-repl-mode)
 		  (mode . slime-inspector-mode)
-		  (name . "^\\*slime-\\(description\\|compilation\\|xref\\)\\*$")
+		  (name . "^\\*slime-\\(description\\|compilation\\|xref\\|error\\)\\*$")
 		  (name . "^\\*sldb .*\\*$")
 		  (filename . "^/usr/local/doc/HyperSpec/")))
 	 ("Python" (or
