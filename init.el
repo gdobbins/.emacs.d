@@ -1231,9 +1231,37 @@ is already narrowed."
 
 (define-key ctl-x-map "n" #'narrow-or-widen-dwim)
 
-(setq aw-keys (list ?h ?t ?n ?s ?a ?o ?e ?u))
-(setq avy-keys aw-keys)
-(setq avy-style 'de-bruijn)
+(defun my/avy-action-mark (pt)
+  "See `avy-action-mark'"
+  (goto-char pt)
+  (smarter-mark-sexp))
+
+(defun my/avy-action-kill-move (pt)
+  "See `avy-action-kill-move'"
+  (my/avy-action-mark pt)
+  (kill-region pt (mark) t))
+
+(defun my/avy-action-kill-stay (pt)
+  "See `avy-action-kill-stay'"
+  (save-excursion
+    (my/avy-action-kill-move pt)
+    (when (and (bolp) (eolp))
+      (delete-blank-lines))))
+
+(with-eval-after-load 'avy
+  (defvar avy-keys)
+  (setq avy-keys (list ?h ?t ?n ?s ?a ?o ?e ?u))
+  (defvar avy-style)
+  (setq avy-style 'de-bruijn)
+  (defvar avy-dispatch-alist)
+  (setq avy-dispatch-alist
+	'((?k . my/avy-action-kill-stay)
+	  (? . my/avy-action-kill-move)
+	  (?m . my/avy-action-mark)
+	  (?w . avy-action-copy)
+	  (?c . avy-action-ispell)))
+  (defvar aw-keys)
+  (setq aw-keys avy-keys))
 
 (with-eval-after-load 'avy-zap
   (defvar avy-zap-dwim-prefer-avy)
