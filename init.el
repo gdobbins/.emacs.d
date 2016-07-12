@@ -1421,6 +1421,39 @@ is already narrowed."
 
 (add-hook 'tty-setup-hook #'setup-input-decode-map)
 
+
+(defun help-go-to-definition (temp/command-history n start-buffer)
+  "When called after a help describe function, go to the
+definition of that thing instead."
+  (interactive (list command-history
+		     0
+		     (current-buffer)))
+  (catch 'not-help-command
+    (funcall
+     (prog1
+	 (case (first (first temp/command-history))
+	   (describe-function #'find-function)
+	   (describe-variable #'find-variable)
+	   (describe-key #'find-function-on-key)
+	   (t (throw 'not-help-command
+		     (if (< n 60)
+			 (help-go-to-definition
+			  (rest temp/command-history)
+			  (1+ n)
+			  start-buffer)
+		       (user-error
+			"No applicable help command in recent history")))))
+       (unless (eq (first (first temp/command-history))
+		   #'describe-key)
+	 (pop-to-buffer (help-buffer))))
+     (let ((temp (second (first temp/command-history))))
+       (if (consp temp)
+	   (second temp)
+	 temp)))
+    (pop-to-buffer start-buffer)))
+
+(global-set-key (kbd "s-h") #'help-go-to-definition)
+
 (with-eval-after-load 'help-mode
   (define-key help-mode-map (kbd "<mouse-8>") #'help-go-back)
   (define-key help-mode-map (kbd "<mouse-9>") #'help-go-forward)
