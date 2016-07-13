@@ -142,12 +142,16 @@ multiple functions can call each other in repetition."
 		(define-key map (vector last-input-event) #',func)
 		map)))))))
 
-(defmacro last-key-repeating (function)
-  "Make the command repeat FUNCTION by repeated pressing of
-`last-input-event'."
+(defmacro last-key-repeating (&optional function)
+  "Make the command call FUNCTION by the pressing of
+`last-input-event'. If nil repeat `this-command'."
   `(set-transient-map
     (let ((map (make-sparse-keymap)))
-      (define-key map (vector last-input-event) #',function)
+      (define-key map (vector last-input-event)
+	,(cond
+	  ((null function) 'this-command)
+	  ((symbolp function) `#',function)
+	  (t function)))
       map)))
 
 (defmacro defkey (key def &optional keymap)
@@ -683,7 +687,7 @@ function."
   (when (= 0 tab-width)
     (setq tab-width 2))
   (message (format "Tab width set to %d" tab-width))
-  (last-key-repeating adjust-tab-width))
+  (last-key-repeating))
 
 (global-set-key (kbd "C-c TAB") #'adjust-tab-width)
 
@@ -692,7 +696,7 @@ function."
   (interactive)
   (setq indent-tabs-mode (not indent-tabs-mode))
   (message (format "Indent-tabs-mode set to %s" indent-tabs-mode))
-  (last-key-repeating indent-tabs-mode))
+  (last-key-repeating))
 
 (global-set-key (kbd "C-c C-<tab>") #'indent-tabs-mode)
 
@@ -1908,5 +1912,5 @@ derived from prog-mode."
 
 (font-lock-add-keywords 'emacs-lisp-mode
 			'(("(\\(\\(unless\\|defun\\)-[^[:space:]]*\\)[ \t\n]" 1 'font-lock-keyword-face)
-			  ("(\\(\\(\\(make-\\)?last-key-repeating\\|defset\\)\\(-function\\)?\\)[ \t\n]" 1 'font-lock-keyword-face))
+			  ("(\\(\\(\\(make-\\)?last-key-repeating\\|defset\\)\\(-function\\)?\\)[[:space:])\n]" 1 'font-lock-keyword-face))
 			t)
