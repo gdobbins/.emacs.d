@@ -595,17 +595,19 @@ abort completely with `C-g'."
 (ido-ubiquitous-mode)
 (global-set-key (kbd "M-x") #'smex)
 
-(defmacro defset-function (function key-string &optional keymap)
-  "Create a function which sets set-function to bind (kbd key-string) to function either locally, or optionally in keymap."
+(defmacro defset-function (function key &optional keymap)
+  "Create a function which sets set-function to bind KEY to
+FUNCTION either locally, or optionally in KEYMAP"
   (let ((function-symbol (intern (concat "set-" (symbol-name function)))))
     `(defun ,function-symbol ()
-       ,(if keymap
-	    (concat "Set the key " key-string " to `" (symbol-name function) "' in `" (symbol-name keymap) "'")
-	  (concat "Set the key " key-string " to `" (symbol-name function) "' locally."))
+       ,(concat "Set the key " key " to `" (symbol-name function) "' "
+		(if keymap
+		    (concat "in `" (symbol-name keymap) "'")
+		  "locally."))
        (interactive)
        ,(if keymap
-	    `(define-key ,keymap (kbd ,key-string) #',function)
-	  `(local-set-key (kbd ,key-string) #',function)))))
+	    `(define-key ,keymap (kbd ,key) #',function)
+	  `(local-set-key (kbd ,key) #',function)))))
 
 (defun pathname->~->home ()
   (interactive)
