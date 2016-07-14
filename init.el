@@ -678,6 +678,11 @@ then copy without directory."
 	try-complete-file-name-partially
 	try-complete-file-name))
 
+(defun my/dabbrev-friend-buffer (other-buffer)
+  (< (buffer-size other-buffer) 1048576))
+
+(setq dabbrev-friend-buffer-function #'my/dabbrev-friend-buffer)
+
 (setq tab-always-indent 'complete)
 
 (defun adjust-tab-width ()
