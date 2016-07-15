@@ -277,10 +277,9 @@ hasn't been repeated."
   (setq dired-listing-switches "-alhv")
   (defvar dired-omit-files)
   (setq dired-omit-files "^\\.\\|^#.#$\\|.~$")
-  (defvar dired-mode-map)
-  (define-key dired-mode-map (kbd "C-o") nil)
   (with-no-warnings
     (define-key dired-mode-map (kbd "M-p") #'dired-up-directory))
+  (defvar dired-mode-map)
   (define-key dired-mode-map (kbd "M-n") #'quit-window)
   (define-key dired-mode-map (kbd "/") #'dired-narrow-fuzzy)
   (with-no-warnings
@@ -288,8 +287,6 @@ hasn't been repeated."
   (define-key dired-mode-map (kbd "e") #'read-only-mode))
 
 (with-eval-after-load 'wdired
-  (defvar wdired-mode-map)
-  (define-key wdired-mode-map (kbd "C-o") nil)
   (defvar wdired-allow-to-change-permissions)
   (setq wdired-allow-to-change-permissions t))
 
@@ -399,7 +396,6 @@ hasn't been repeated."
   (define-key ibuffer-mode-map (kbd "k") #'ibuffer-do-delete)
   (define-key ibuffer-mode-map (kbd "C-k") #'ibuffer-mark-and-kill-lines)
   (define-key ibuffer-mode-map (kbd "M-o") nil)
-  (define-key ibuffer-mode-map (kbd "C-o") nil)
   (defadvice ibuffer (around ibuffer-point-to-most-recent compile activate)
 	     "Open ibuffer with cursor pointed to most recent buffer name"
 	     (let ((recent-buffer-name (buffer-name)))
@@ -1274,6 +1270,90 @@ is already narrowed."
   (defvar aw-keys)
   (setq aw-keys avy-keys))
 
+(define-prefix-command 'my/avy-passthrough-map)
+(defkey "C-o" my/avy-passthrough-map)
+
+(defun my/avy-goto-char ()
+  (interactive)
+  (let ((defining-kbd-macro nil)
+	(executing-kbd-macro nil))
+    (avy-goto-char
+     last-input-event
+     current-prefix-arg)))
+
+(defkey [t] my/avy-goto-char my/avy-passthrough)
+
+(defun smarter-open-line (arg)
+  (interactive "*p")
+  (open-line arg)
+  (save-excursion
+    (forward-line)
+    (indent-according-to-mode))
+  (when paredit-mode
+    (paredit-reindent-defun)))
+
+(defkey "C-o" smarter-open-line my/avy-passthrough)
+
+(defmacro passthrough-move-key (key package &optional package-map no-defvar)
+  "Create an `eval-after-load' for PACKAGE to move KEY in
+PACKAGE-MAP to KEY on the prefix map at KEY in the
+`current-global-map' then remove the former keybinding. If
+PACKAGE-MAP is not specified assume it has the form
+PACKAGE-mode-map. Insert a `defvar' for PACKAGE-MAP unless
+NO-DEFVAR in order to pacify the byte compiler."
+  (let ((package-map
+	 (or package-map
+	     (intern
+	      (concat (symbol-name package)
+		      "-mode-map"))))
+	(key (kbd key)))
+    `(with-eval-after-load ',package
+       ,(unless no-defvar `(defvar ,package-map))
+       (define-key ,package-map
+	 (vector 'remap
+		 (lookup-key
+		  (lookup-key (current-global-map)
+			      ,key)
+		  ,key))
+	 (lookup-key ,package-map ,key))
+       (define-key ,package-map ,key nil))))
+
+(passthrough-move-key "C-o" ibuffer)
+(passthrough-move-key "C-o" dired)
+(passthrough-move-key "C-o" wdired)
+
+(defkey "C-s" join-line my/avy-passthrough)
+(defkey "C-x" ace-window my/avy-passthrough)
+(defkey "C-l" avy-goto-line my/avy-passthrough)
+
+(defun close-line ()
+  (interactive "*")
+  (forward-line)
+  (join-line)
+  (when paredit-mode
+    (paredit-reindent-defun)))
+
+(defkey "C-c" close-line my/avy-passthrough)
+
+(defun open-previous-line (arg)
+  (interactive "*p")
+  (beginning-of-line)
+  (open-line arg)
+  (indent-according-to-mode)
+  (last-key-repeating))
+
+(defkey "C-p" open-previous-line my/avy-passthrough)
+
+(defun open-next-line (arg)
+  (interactive "*p")
+  (end-of-line)
+  (open-line arg)
+  (forward-line)
+  (indent-according-to-mode)
+  (last-key-repeating))
+
+(defkey "C-n" open-next-line my/avy-passthrough)
+
 (with-eval-after-load 'avy-zap
   (defvar avy-zap-dwim-prefer-avy)
   (setq avy-zap-dwim-prefer-avy nil))
@@ -1352,7 +1432,6 @@ is already narrowed."
 (global-set-key (kbd "M-o") #'ace-window)
 (global-set-key (kbd "M-n") #'smartscan-symbol-go-forward)
 (global-set-key (kbd "M-p") #'smartscan-symbol-go-backward)
-(global-set-key (kbd "C-o") #'avy-goto-char)
 (global-set-key (kbd "M-z") #'avy-zap-up-to-char-dwim)
 (global-set-key (kbd "M-SPC") #'cycle-spacing)
 (global-set-key (kbd "C-z") #'repeat)
