@@ -804,7 +804,8 @@ function."
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
-(require 'saveplace)
+
+(load "~/.emacs.d/lisp/saveplace-patch" nil t)
 (setq-default save-place t)
 
 (defun undo-tree-save-history-ignore-file (orig &rest args)
