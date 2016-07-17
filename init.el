@@ -483,6 +483,7 @@ Use in `isearch-mode-end-hook'."
 (with-eval-after-load "slime"
   (slime-setup '(slime-fancy))
   (defvar slime-mode-map)
+  (defkey "C-c C-d DEL" (lookup-key slime-mode-map (kbd "C-c C-d h")) slime-mode)
   (define-key slime-mode-map (kbd "C-c C-k") nil))
 
 (setf slime-lisp-implementations
