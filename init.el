@@ -1444,6 +1444,7 @@ NO-DEFVAR in order to pacify the byte compiler."
 (global-set-key (kbd "C-a") #'smarter-move-beginning-of-line)
 (global-set-key (kbd "C-;") (kbd "M-;"))
 (global-set-key (kbd "C-x C-a") #'align-regexp)
+(defkey "H-k" kill-whole-line)
 
 (autoload 'mpc-resume "mpc")
 (autoload 'mpc-pause "mpc")
