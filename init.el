@@ -244,7 +244,7 @@ hasn't been repeated."
 
 (setf browse-url-browser-function '(("." . browse-url-default-browser)))
 
-(with-eval-after-load "eww"
+(with-eval-after-load 'eww
   (defvar eww-mode-map)
   (define-key eww-mode-map (kbd "<mouse-8>") 'eww-back-url)
   (define-key eww-mode-map (kbd "<mouse-9>") 'eww-forward-url)
@@ -391,7 +391,7 @@ hasn't been repeated."
   (ibuffer-mark-forward 1)
   (ibuffer-do-kill-lines))
 
-(with-eval-after-load "ibuffer"
+(with-eval-after-load 'ibuffer
   (define-key ibuffer-mode-map (kbd "H") nil)
   (define-key ibuffer-mode-map (kbd "k") #'ibuffer-do-delete)
   (define-key ibuffer-mode-map (kbd "C-k") #'ibuffer-mark-and-kill-lines)
@@ -423,7 +423,7 @@ hasn't been repeated."
               (name 16 -1)
               " " filename))))
 
-(with-eval-after-load "ibuf-ext"
+(with-eval-after-load 'ibuf-ext
   (add-to-list 'ibuffer-never-show-predicates "^\\*slime-events\\*$")
   (add-to-list 'ibuffer-never-show-predicates "^\\*inferior-lisp\\*\\(<[0-9]>\\)?$")
   (add-to-list 'ibuffer-never-show-predicates "^\\*Compile-Log\\*$")
@@ -450,7 +450,7 @@ hasn't been repeated."
               (lambda ()
                 (ibuffer-switch-to-saved-filter-groups "default")))
 
-(with-eval-after-load "re-builder"
+(with-eval-after-load 're-builder
   (defvar reb-mode-map)
   (define-key reb-mode-map (kbd "C-c C-k") 'reb-quit)
   (defvar reb-re-syntax)
@@ -480,7 +480,7 @@ Use in `isearch-mode-end-hook'."
     (goto-char isearch-other-end)))
 (add-hook 'isearch-mode-end-hook #'endless/goto-match-beginning)
 
-(with-eval-after-load "slime"
+(with-eval-after-load 'slime
   (slime-setup '(slime-fancy))
   (defvar slime-mode-map)
   (defkey "C-c C-d DEL" (lookup-key slime-mode-map (kbd "C-c C-d h")) slime-mode)
@@ -823,7 +823,7 @@ function."
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo/")))
   (advice-add 'undo-tree-save-history :around #'undo-tree-save-history-ignore-file))
 
-(with-eval-after-load "x86-lookup"
+(with-eval-after-load 'x86-lookup
   (let ((location "/usr/local/doc/64-ia-32-architectures-software-developer-manual-325462.pdf"))
     (when (file-exists-p location)
       (defvar x86-lookup-pdf)
@@ -980,7 +980,7 @@ on the location of the new git directory."
 (defvar magit-no-message '("Turning on magit-auto-revert-mode..."))
 
 (autoload 'magit-ido-completing-read "magit-utils" "Ido-based `completing-read' almost-replacement.")
-(with-eval-after-load "magit"
+(with-eval-after-load 'magit
   (advice-add 'magit-init :around #'magit-auto-create-gitattributes&ignore)
   (defvar magit-completing-read-function)
   (setq magit-completing-read-function #'magit-ido-completing-read))
@@ -1006,7 +1006,7 @@ on the location of the new git directory."
   (ioccur-precedent-line)
   (ioccur-jump-without-quit))
 
-(with-eval-after-load "ioccur"
+(with-eval-after-load 'ioccur
   (defvar ioccur-mode-map)
   (define-key ioccur-mode-map (kbd "M-n") #'ioccur-follow-next)
   (define-key ioccur-mode-map (kbd "M-p") #'ioccur-follow-previous)
@@ -1058,7 +1058,7 @@ Don't mess with special buffers."
   (interactive)
   (message (format-time-string "%T %A %B %e, %Y")))
 
-(with-eval-after-load "alert"
+(with-eval-after-load 'alert
   (defvar alert-default-style)
   (setq alert-default-style 'libnotify))
 
@@ -1482,7 +1482,7 @@ NO-DEFVAR in order to pacify the byte compiler."
   (set-mark (point))
   (forward-line -1))
 
-(with-eval-after-load "expand-region"
+(with-eval-after-load 'expand-region
   (defvar er/try-expand-list)
   (setf (nthcdr (1- (length er/try-expand-list)) er/try-expand-list)
 	(cons #'er/mark-indented-line
@@ -1562,7 +1562,7 @@ definition of that thing instead."
     (recenter-top-bottom 0)))
 
 (autoload 'elisp-slime-nav-mode "elisp-slime-nav")
-(with-eval-after-load "elisp-slime-nav"
+(with-eval-after-load 'elisp-slime-nav
   (define-key elisp-slime-nav-mode-map (kbd "C-c M-e") #'macrostep-expand)
   (define-key elisp-slime-nav-mode-map (kbd "C-c C-d") #'elisp-slime-nav-describe-elisp-thing-at-point)
   (define-key elisp-slime-nav-mode-map (kbd "C-c C-c") #'eval-defun))
@@ -1604,14 +1604,14 @@ definition of that thing instead."
 		 face dired-directory)
 	       t))
 
-(with-eval-after-load "shell"
+(with-eval-after-load 'shell
   (defvar shell-mode-syntax-table)
   (when (string-match "zsh$" (getenv "SHELL"))
     (modify-syntax-entry ?\> " " shell-mode-syntax-table))
   (add-hook 'shell-mode-hook #'add-mode-line-dirtrack)
   (add-hook 'shell-mode-hook #'truncate-lines->t))
 
-(with-eval-after-load "em-term"
+(with-eval-after-load 'em-term
   (defvar eshell-visual-commands)
   (add-to-list 'eshell-visual-commands "htop"))
 
@@ -1642,7 +1642,7 @@ Interactively also sends a terminating newline."
   (define-key compilation-mode-map key
     #'endless/send-self))
 
-(with-eval-after-load "latex"
+(with-eval-after-load 'latex
   (add-hook 'LaTeX-mode-hook #'flyspell-mode)
   (add-hook 'LaTeX-mode-hook #'latex-preview-pane-mode)
   (with-no-warnings
@@ -1699,7 +1699,7 @@ otherwise if within a comment then uncomment, else call
   (with-no-warnings
     (paredit-comment-dwim)))
 
-(with-eval-after-load "paredit"
+(with-eval-after-load 'paredit
   (with-no-warnings
     (defun-smarter-movement paredit-wrap-round
       (paredit-backward) (paredit-forward) "M-(" nil nil paredit-mode-map))
@@ -1761,7 +1761,7 @@ project."
 
 (autoload 'slime-scratch "slime")
 
-(with-eval-after-load "lisp-mode"
+(with-eval-after-load 'lisp-mode
   (font-lock-add-keywords
    'lisp-mode
    '(("(\\(iter\\(ate\\)?\\|defmacro-\\(driver\\|clause\\)\\)[ \t\n]" 1 'font-lock-keyword-face)
@@ -1799,7 +1799,7 @@ project."
 	(slime-repl-next-input))
     (call-interactively #'next-line)))
 
-(with-eval-after-load "slime-repl"
+(with-eval-after-load 'slime-repl
   (defvar slime-auto-start)
   (setq slime-auto-start 'always)
   (defvar slime-repl-history-size)
@@ -1859,7 +1859,7 @@ project."
 
 (add-to-list 'auto-mode-alist '("\\.[pP][dD][fF]\\'" . lazy-pdf-tools-install))
 
-(with-eval-after-load "pdf-tools"
+(with-eval-after-load 'pdf-tools
   (with-no-warnings
     (define-key pdf-view-mode-map (kbd "a") #'image-bol)
     (define-key pdf-view-mode-map (kbd "e") #'image-eol)))
@@ -1879,7 +1879,7 @@ project."
 
 (add-hook 'pdf-view-mode-hook #'set-mode-line-numbers-at-front)
 
-(with-eval-after-load "org"
+(with-eval-after-load 'org
   (defvar org-modules)
   (add-to-list 'org-modules 'org-habit)
   (require 'org-habit)
@@ -1916,7 +1916,7 @@ project."
   (setq-local comint-input-ring-file-name (expand-file-name "~/.python_history"))
   (comint-read-input-ring t))
 
-(with-eval-after-load "python"
+(with-eval-after-load 'python
   (elpy-enable)
   (defvar inferior-python-mode-map)
   (define-key inferior-python-mode-map (kbd "C-c M-o") #'python-repl-clear-buffer)
@@ -1931,7 +1931,7 @@ otherwise self-insert."
       (forward-char 1)
     (call-interactively #'self-insert-command)))
 
-(with-eval-after-load "smartparens"
+(with-eval-after-load 'smartparens
   (require 'smartparens-config)
   (sp-use-paredit-bindings)
   (defvar smartparens-mode-map)
@@ -1939,7 +1939,7 @@ otherwise self-insert."
 
 (add-hook 'comint-mode-hook #'smartparens-strict-mode)
 
-(with-eval-after-load "elpy"
+(with-eval-after-load 'elpy
   (add-hook 'elpy-mode-hook #'set-flymake-no-changes-timeout-to-one-hour)
   (defvar elpy-mode-map)
   (define-key elpy-mode-map (kbd "M-,") #'pop-tag-mark)
@@ -1951,8 +1951,8 @@ otherwise self-insert."
   (interactive)
   (set (make-local-variable 'flymake-no-changes-timeout) 3600))
 
-(with-eval-after-load "company"
-  (with-eval-after-load "yasnippet"
+(with-eval-after-load 'company
+  (with-eval-after-load 'yasnippet
     (defvar company-active-map)
     (substitute-key-definition
      'company-complete-common
@@ -1967,11 +1967,11 @@ otherwise self-insert."
 	(with-no-warnings
 	  (yas-expand))))))
 
-(with-eval-after-load "yasnippet"
+(with-eval-after-load 'yasnippet
   (with-no-warnings
     (yas-reload-all)))
 
-(with-eval-after-load "wttrin"
+(with-eval-after-load 'wttrin
   (advice-add 'wttrin :after #'truncate-lines->t))
 
 (put 'set-goal-column	'disabled nil)
