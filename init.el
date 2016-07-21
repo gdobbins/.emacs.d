@@ -1464,7 +1464,6 @@ NO-DEFVAR in order to pacify the byte compiler."
 (make-last-key-repeating-function mpc-next mpc-repeating-map)
 (global-set-key (kbd "C-c m l") #'mpc-prev)
 (make-last-key-repeating-function mpc-prev mpc-repeating-map)
-(global-set-key (kbd "C-c m w") #'woman)
 
 (autoload #'er/contract-region "expand-region")
 (global-set-key (kbd "H-(") #'er/expand-region)
