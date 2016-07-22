@@ -1543,7 +1543,8 @@ definition of that thing instead."
        (if (consp temp)
 	   (second temp)
 	 temp)))
-    (pop-to-buffer start-buffer)))
+    (unless (eq (buffer-name start-buffer) (help-buffer))
+      (pop-to-buffer start-buffer))))
 
 (global-set-key (kbd "s-h") #'help-go-to-definition)
 
