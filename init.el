@@ -1356,6 +1356,10 @@ NO-DEFVAR in order to pacify the byte compiler."
 
 (defkey "C-n" open-next-line my/avy-passthrough)
 
+(defkey "C-f" describe-function my/avy-passthrough)
+(defkey "C-v" describe-variable my/avy-passthrough)
+(defkey "C-k" describe-key	my/avy-passthrough)
+
 (with-eval-after-load 'avy-zap
   (defvar avy-zap-dwim-prefer-avy)
   (setq avy-zap-dwim-prefer-avy nil))
@@ -1547,6 +1551,7 @@ definition of that thing instead."
       (pop-to-buffer start-buffer))))
 
 (global-set-key (kbd "s-h") #'help-go-to-definition)
+(defkey "DEL" help-go-to-definition my/avy-passthrough)
 
 (with-eval-after-load 'help-mode
   (define-key help-mode-map (kbd "<mouse-8>") #'help-go-back)
