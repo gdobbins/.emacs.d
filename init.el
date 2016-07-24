@@ -638,8 +638,6 @@ FUNCTION either locally, or optionally in KEYMAP"
 (setq ido-file-extensions-order '(".el" ".org" ".lisp" ".py" ".pdf" t))
 (setq ido-use-filename-at-point 'guess)
 
-(setq password-cache-expiry 300)
-
 (defadvice ido-find-file (after find-file-sudo compile activate)
   "Find file as root if necessary."
   (when (and buffer-file-name
@@ -1594,6 +1592,39 @@ definition of that thing instead."
 
 (define-key comint-mode-map (kbd "C-d") #'comint-delchar-or-eof-or-kill-buffer)
 (define-key comint-mode-map (kbd "C-r") #'comint-history-isearch-backward)
+
+(autoload #'auth-source-search "auth-source")
+
+(defun comint-watch-for-password-prompt (string)
+  "Prompt in the minibuffer for password and send without echoing.
+This function uses `send-invisible' to read and send a password to the buffer's
+process if STRING contains a password prompt defined by
+`comint-password-prompt-regexp'.
+
+Check if the password can be found in the auth file.
+
+This function could be in the list `comint-output-filter-functions'."
+  (when (let ((case-fold-search t))
+	  (string-match comint-password-prompt-regexp string))
+    (when (string-match "^[ \n\r\t\v\f\b\a]+" string)
+      (setq string (replace-match "" t t string)))
+    (if (string-match
+	 "^\\[sudo\\] password for \\([a-z_][a-z0-9_]\\{0,30\\}\\):"
+	 string)
+	(let ((pass
+	       (plist-get
+		(first
+		 (auth-source-search :host "localhost" :port "sudo"
+				     :user (match-string 1 string)
+				     :require '(:secret)))
+		:secret)))
+	  (if pass
+	      (funcall comint-input-sender (get-buffer-process (current-buffer))
+		       (if (functionp pass)
+			   (funcall pass)
+			 pass))
+	    (send-invisible string)))
+      (send-invisible string))))
 
 (when (and (string-match "zsh$" (getenv "SHELL"))
 	   (not (getenv "HISTFILE")))
