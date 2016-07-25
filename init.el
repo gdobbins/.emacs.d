@@ -1278,7 +1278,9 @@ is already narrowed."
   (let ((defining-kbd-macro nil)
 	(executing-kbd-macro nil))
     (avy-goto-char
-     last-input-event
+     (if (integerp last-command-event)
+	 last-input-event
+       (get last-input-event 'ascii-character))
      current-prefix-arg)))
 
 (defkey [t] my/avy-goto-char my/avy-passthrough)
