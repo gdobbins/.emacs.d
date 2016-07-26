@@ -1292,7 +1292,8 @@ is already narrowed."
     (forward-line)
     (indent-according-to-mode))
   (when paredit-mode
-    (paredit-reindent-defun)))
+    (paredit-reindent-defun))
+  (last-key-repeating))
 
 (defkey "C-o" smarter-open-line my/avy-passthrough)
 
