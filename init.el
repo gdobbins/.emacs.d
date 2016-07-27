@@ -1361,6 +1361,8 @@ NO-DEFVAR in order to pacify the byte compiler."
 (defkey "C-v" describe-variable my/avy-passthrough)
 (defkey "C-k" describe-key	my/avy-passthrough)
 
+(defkey "C-a" align-regexp my/avy-passthrough)
+
 (with-eval-after-load 'avy-zap
   (defvar avy-zap-dwim-prefer-avy)
   (setq avy-zap-dwim-prefer-avy nil))
@@ -1448,7 +1450,6 @@ NO-DEFVAR in order to pacify the byte compiler."
 (global-set-key (kbd "C-x #") nil)
 (global-set-key (kbd "C-a") #'smarter-move-beginning-of-line)
 (global-set-key (kbd "C-;") (kbd "M-;"))
-(global-set-key (kbd "C-x C-a") #'align-regexp)
 (defkey "H-k" kill-whole-line)
 (defkey "C-c h" man)
 
