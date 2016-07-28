@@ -33,6 +33,26 @@ some other initialization operations which slow startup time."
 
 (add-hook 'emacs-startup-hook #'setup-delayed-initialization)
 
+(defun setup-input-decode-map ()
+  (define-key input-decode-map (kbd "C-t") (kbd "C-x"))
+  (define-key input-decode-map (kbd "C-x") (kbd "C-t"))
+  (define-key input-decode-map (kbd "M-t") (kbd "M-x"))
+  (define-key input-decode-map (kbd "M-x") (kbd "M-t"))
+  (define-key input-decode-map (kbd "C-M-t") (kbd "C-M-x"))
+  (define-key input-decode-map (kbd "C-M-x") (kbd "C-M-t"))
+
+  (when (display-graphic-p)
+    (define-key input-decode-map (kbd "C-m") (kbd "C-SPC"))
+    (define-key input-decode-map (kbd "C-M-m") (kbd "C-M-SPC")))
+
+  (define-key input-decode-map (kbd "C-h") (kbd "DEL"))
+  (define-key input-decode-map (kbd "M-h") (kbd "M-DEL"))
+  (define-key input-decode-map (kbd "H-h") (kbd "C-h")))
+
+(setup-input-decode-map)
+
+(add-hook 'tty-setup-hook #'setup-input-decode-map)
+
 (setq ring-bell-function #'ignore)
 (setq ad-redefinition-action 'accept)
 
@@ -1499,27 +1519,6 @@ NO-DEFVAR in order to pacify the byte compiler."
 
 (global-set-key (kbd "<mouse-8>") #'previous-buffer)
 (global-set-key (kbd "<mouse-9>") #'next-buffer)
-
-(defun setup-input-decode-map ()
-  (define-key input-decode-map (kbd "C-t") (kbd "C-x"))
-  (define-key input-decode-map (kbd "C-x") (kbd "C-t"))
-  (define-key input-decode-map (kbd "M-t") (kbd "M-x"))
-  (define-key input-decode-map (kbd "M-x") (kbd "M-t"))
-  (define-key input-decode-map (kbd "C-M-t") (kbd "C-M-x"))
-  (define-key input-decode-map (kbd "C-M-x") (kbd "C-M-t"))
-
-  (when (display-graphic-p)
-    (define-key input-decode-map (kbd "C-m") (kbd "C-SPC"))
-    (define-key input-decode-map (kbd "C-M-m") (kbd "C-M-SPC")))
-
-  (define-key input-decode-map (kbd "C-h") (kbd "DEL"))
-  (define-key input-decode-map (kbd "M-h") (kbd "M-DEL"))
-  (define-key input-decode-map (kbd "H-h") (kbd "C-h")))
-
-(setup-input-decode-map)
-
-(add-hook 'tty-setup-hook #'setup-input-decode-map)
-
 
 (defun help-go-to-definition (temp/command-history n start-buffer)
   "When called after a help describe function, go to the
