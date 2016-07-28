@@ -775,8 +775,8 @@ function."
 (setq projectile-mode-line
       '(:eval
 	(if (file-remote-p default-directory)
-	    " Proj"
-	  (format " Proj[%s]"
+	    " "
+	  (format " [%s]"
 		  (projectile-project-name)))))
 
 (autoload 'dired-read-shell-command "dired-aux")
