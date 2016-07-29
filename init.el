@@ -1616,6 +1616,7 @@ sudo_askpass.sh"
 
 (define-key comint-mode-map (kbd "C-d") #'comint-delchar-or-eof-or-kill-buffer)
 (define-key comint-mode-map (kbd "C-r") #'comint-history-isearch-backward)
+(defkey "C-c C-z" nil comint-mode)
 
 (when (and (string-match "zsh$" (getenv "SHELL"))
 	   (not (getenv "HISTFILE")))
