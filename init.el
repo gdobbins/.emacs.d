@@ -1639,6 +1639,46 @@ sudo_askpass.sh"
   (add-hook 'shell-mode-hook #'add-mode-line-dirtrack)
   (add-hook 'shell-mode-hook #'truncate-lines->t))
 
+(with-eval-after-load 'term
+  (add-hook 'term-mode-hook #'add-mode-line-dirtrack))
+
+(with-eval-after-load 'multi-term
+  (defvar term-unbind-key-list)
+  (setq term-unbind-key-list
+	'("C-o" "C-g" "C-z" "C-x" "C-c" "C-h" "C-y" "<ESC>"))
+  (defvar term-bind-key-alist)
+  (setq term-bind-key-alist
+	'(("C-c C-c" . term-interrupt-subjob)
+	  ("C-c C-e" . term-send-esc)
+	  ("C-p" . previous-line)
+	  ("C-n" . next-line)
+	  ("C-s" . isearch-forward)
+	  ("C-r" . term-send-reverse-search-history)
+	  ("C-m" . term-send-return)
+	  ("M-f" . term-send-forward-word)
+	  ("M-b" . term-send-backward-word)
+	  ("M-p" . term-send-up)
+	  ("M-n" . term-send-down)
+	  ("M-M" . term-send-forward-kill-word)
+	  ("M-N" . term-send-backward-kill-word)
+	  ("<C-backspace>" . term-send-backward-kill-word)
+	  ("M-r" . term-send-reverse-search-history)
+	  ("M-d" . term-send-delete-word)
+	  ("M-," . term-send-raw)
+	  ("M-." . comint-dynamic-complete)))
+  (with-no-warnings
+    (defun multi-term-switch-internal (direction offset)
+      (if multi-term-buffer-list
+	  (let ((buffer-list-len (length multi-term-buffer-list))
+		(my-index (position (current-buffer) multi-term-buffer-list)))
+	    (if my-index
+		(let ((target-index (if (eq direction 'NEXT)
+					(mod (+ my-index offset) buffer-list-len)
+				      (mod (- my-index offset) buffer-list-len))))
+		  (pop-to-buffer (nth target-index multi-term-buffer-list)))
+	      (pop-to-buffer (car multi-term-buffer-list))))
+	nil))))
+
 (with-eval-after-load 'em-term
   (defvar eshell-visual-commands)
   (add-to-list 'eshell-visual-commands "htop"))
