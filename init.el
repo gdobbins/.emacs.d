@@ -968,13 +968,40 @@ lines have identical symbols at identical goal columns as the symbol at point."
 (autoload 'sh-show-shell "sh-script" "Pop the shell interaction buffer." t)
 (autoload 'elpy-shell-switch-to-shell "elpy" "Switch to inferior Python process buffer.")
 
+(defun my/check-for-process (process)
+  "Check that PROCESS is running and it is not in the
+`current-buffer'."
+  (let ((process (get-process process)))
+    (and process
+	 (not
+	  (eq process
+	      (get-buffer-process
+	       (current-buffer)))))))
+
 (defun smart-switch-to-output-buffer ()
+  "Attempt to switch to an output buffer, prefering in order
+lisp, shell, multi-term, then python. Don't include
+`current-buffer' as a possible target."
   (interactive)
   (cond
-   ((get-process "inferior-lisp") (slime-switch-to-output-buffer))
-   ((get-process "shell") (sh-show-shell))
-   ((get-process "Python") (elpy-shell-switch-to-shell))
-   (t (user-error "No available process to switch to."))))
+   ((and (get-process "inferior-lisp")
+	 (not (eq major-mode
+		  'slime-repl-mode)))
+    (slime-switch-to-output-buffer))
+   ((my/check-for-process "shell")
+    (sh-show-shell))
+   ((with-no-warnings
+      (and (featurep 'multi-term)
+	   multi-term-buffer-list
+	   (or
+	    (rest multi-term-buffer-list)
+	    (not (eq (current-buffer)
+		     (first multi-term-buffer-list))))))
+    (multi-term-next))
+   ((my/check-for-process "Python")
+    (elpy-shell-switch-to-shell))
+   (t
+    (user-error "No available process to switch to."))))
 
 (defun magit-auto-create-gitattributes&ignore (orig &rest args)
   "Create .gitattributes and .gitignore files if they do not
