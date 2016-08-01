@@ -1499,6 +1499,8 @@ NO-DEFVAR in order to pacify the byte compiler."
 (global-set-key (kbd "C-;") (kbd "M-;"))
 (defkey "H-k" kill-whole-line)
 (defkey "C-c h" man)
+(defkey "H-," "M-<")
+(defkey "H-." "M->")
 
 (autoload 'mpc-resume "mpc")
 (autoload 'mpc-pause "mpc")
