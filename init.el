@@ -1647,6 +1647,10 @@ sudo_askpass.sh"
 (define-key comint-mode-map (kbd "C-r") #'comint-history-isearch-backward)
 (defkey "C-c C-z" nil comint-mode)
 
+(with-eval-after-load 'man
+  (defvar Man-width)
+  (setq Man-width 80))
+
 (when (and (string-match "zsh$" (getenv "SHELL"))
 	   (not (getenv "HISTFILE")))
   (setenv "HISTFILE" (expand-file-name "~/.histfile")))
