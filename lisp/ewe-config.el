@@ -3,6 +3,13 @@
 (edit-server-start)
 
 (defun markdown-codify-region (x)
+  "If in `transient-mark-mode' and the region is not active call
+the appropriate region marking command. Then modify the region as
+appropriate for markdown, including removing tabs. With
+\\[universal-argument] create a block quoted region, otherwise a
+code block. Ensure there is a blank line before the modified
+region and that the last line of the region is not the last line
+of the buffer."
   (interactive "p")
   (if (or (use-region-p) (not transient-mark-mode))
       (save-excursion
@@ -21,22 +28,23 @@
 		   (point)))
 	      (pre (cond
 		    ((= x 1) "    ")
-		    ((= x 4) ">"))))
+		    ((= x 4) ">")))
+	      (blank "[[:space:]]*$"))
 	  (string-rectangle p m pre)
 	  (goto-char p)
 	  (when (and (= p (point-min))
-		     (not (looking-at "[ \t]*$")))
+		     (not (looking-at blank)))
 	    (newline))
-	  (unless (looking-at "[ \t]*$")
+	  (unless (looking-at blank)
 	    (forward-line -1)
-	    (unless (looking-at "[ \t]*$")
+	    (unless (looking-at blank)
 	      (forward-line 1)
 	      (newline)))
 	  (let ((m (mark)))
 	    (goto-char m)
 	    (forward-line)
 	    (when (eql (point) m)
-	      (move-end-of-line 1)
+	      (end-of-line 1)
 	      (newline)))))
     (save-excursion
       (cond
