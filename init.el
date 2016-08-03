@@ -1159,6 +1159,13 @@ Don't mess with special buffers."
   (interactive)
   (find-file user-init-file))
 
+(defun pop-to-scratch ()
+  "Pop to the scratch buffer."
+  (interactive)
+  (pop-to-buffer "*scratch*"))
+
+(defkey "C-c w ;" pop-to-scratch)
+
 (defun find-first-agenda-file (arg)
   "Edit the first file in `org-agenda-files'. With `prefix-arg'
 open last agenda file."
