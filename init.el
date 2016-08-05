@@ -400,6 +400,7 @@ hasn't been repeated."
 		   (mode . calendar-mode)
 		   (mode . calc-mode)
 		   (mode . calc-trail-mode)
+		   (mode . browse-kill-ring-mode)
 		   (mode . messages-buffer-mode))))))
 
 (setq ibuffer-show-empty-filter-groups nil)
