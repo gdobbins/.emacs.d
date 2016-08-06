@@ -368,6 +368,7 @@ hasn't been repeated."
 		   (mode . wdired-mode)
 		   (name . "^\\*Dired log\\*$")
 		   (mode . archive-mode)
+		   (mode . tar-mode)
 		   (mode . proced-mode)))
 	 ("Git" (or (derived-mode . magit-mode)
 		    (filename . "\\.git\\(ignore\\|attributes\\)$")))
