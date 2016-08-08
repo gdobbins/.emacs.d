@@ -797,7 +797,7 @@ function."
 (setq projectile-mode-line
       '(:eval
 	(if (file-remote-p default-directory)
-	    " "
+	    " [--]"
 	  (format " [%s]"
 		  (projectile-project-name)))))
 
