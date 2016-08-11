@@ -769,6 +769,7 @@ function."
 	       (dired root))
 	     (if cl-package
 		 (progn
+		   (require 'slime)
 		   (slime-repl-eval-string
 		    (format "(when (ql:quickload :%s :silent t) (in-package :%s))"
 			    cl-package
