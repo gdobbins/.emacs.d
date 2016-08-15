@@ -1229,32 +1229,34 @@ point reaches the beginning or end of the buffer, stop there."
     (when (= orig-point (point))
       (move-beginning-of-line 1))))
 
-(defun back-to-end-of-sexp ()
-  "Move to the end of the line and the backwards over any
-whitespace or closing delimeters. When there is whitespace leave
-point in front of one character of it."
-  (interactive "^")
-  (end-of-line 1)
-  (unless (bolp)
-    (backward-char 1)
-    (while (looking-at "\\(\\s)\\|[[:space:]]\\)")
-      (backward-char 1))
-    (forward-char 1)
-    (when (looking-at "[[:space:]]")
-      (forward-char 1))))
+(defun back-to-end-of-sexp (arg)
+  "Move backwards to the end of the sexp. Always stay on the
+current line. Repeat ARG times."
+  (dotimes (_ arg)
+    (if (bolp)
+	(move-end-of-line 1)
+      (let ((eolp (eolp)))
+	(backward-char 1)
+	(while (looking-at "[[:space:]]")
+	  (backward-char 1))
+	(if (and eolp (looking-back "\\s)" 1))
+	    (progn
+	      (while (looking-at "\\s)")
+		(backward-char 1))
+	      (forward-char 1))
+	  (while (not (looking-at "\\s(\\|\\s)\\|\n"))
+	    (backward-char 1)))
+	(when (looking-at "[[:space:]]\\|\n")
+	  (forward-char 1))))))
 
 (defun smarter-move-end-of-line (arg)
-  "Like `move-end-of-line' except alternate between the regular
-case and `back-to-end-of-sexp'."
+  "Like `move-end-of-line' except when repeated or at eol call
+`back-to-end-of-sexp' instead."
   (interactive "^p")
-  (setq arg (or arg 1))
-  (when (/= arg 1)
-    (let ((line-move-visual nil))
-      (forward-line (1- arg))))
-  (let ((orig-point (point)))
-    (move-end-of-line 1)
-    (when (= orig-point (point))
-      (back-to-end-of-sexp))))
+  (if (or (eq last-command this-command)
+	  (eolp))
+      (back-to-end-of-sexp arg)
+    (move-end-of-line arg)))
 
 (defkey "C-e" smarter-move-end-of-line)
 
