@@ -188,6 +188,9 @@ multiple functions can call each other in repetition."
        ,(cond
 	 ((symbolp def) `#',def)
 	 ((stringp def) `(kbd ,def))
+	 ((and (listp def)
+	       (eq (first def) 'quote))
+	  (second def))
 	 (t def)))))
 
 (defmacro defun-smarter-movement (original backward forward key &optional no-use-region no-repeat map look-string)
