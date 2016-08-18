@@ -563,6 +563,10 @@ Use in `isearch-mode-end-hook'."
  kept-old-versions 2
  version-control t)			; use versioned backups
 
+(setq
+ auto-save-file-name-transforms
+ '((".*" "~/.emacs.d/saves-auto/" t)))
+
 (defun endless/simple-get-word ()
   (car-safe (save-excursion (ispell-get-word nil))))
 
