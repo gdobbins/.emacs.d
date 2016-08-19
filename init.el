@@ -776,7 +776,7 @@ function."
 			 root)
 	   (let ((cl-package (match-string 1 root)))
 	     (if (directory-files root nil ".*\\.lisp$" t)
-		 (find-file (concat root "*.lisp") t)
+		 (find-file (concat root "[!.]*.lisp") t)
 	       (dired root))
 	     (if cl-package
 		 (progn
