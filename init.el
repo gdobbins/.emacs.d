@@ -126,10 +126,19 @@ FLAG is then removed if found."
 (add-hook 'after-change-major-mode-hook #'purge-minor-modes)
 
 (defun command-line-diff (switch)
+  "For use with `command-switch-alist'. When emacs is passed the
+flag SWITCH followed by two or three file names, call `ediff' on
+those files."
   (ignore switch)
   (let ((file1 (pop command-line-args-left))
-	(file2 (pop command-line-args-left)))
-    (ediff file1 file2)))
+	(file2 (pop command-line-args-left))
+	(file3 (and
+		command-line-args-left
+		(file-readable-p (car command-line-args-left))
+		(pop command-line-args-left))))
+    (if file3
+	(ediff3 file1 file2 file3)
+      (ediff file1 file2))))
 
 (setq ediff-split-window-function #'split-window-horizontally)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
