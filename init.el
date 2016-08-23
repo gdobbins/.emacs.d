@@ -1121,6 +1121,14 @@ Don't mess with special buffers."
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
 
+(defun ediff-current-buffer-file-with-auto-save ()
+  "Call `ediff' on the current buffer file with its auto save file."
+  (interactive)
+  (let ((auto-save-file (make-auto-save-file-name)))
+    (if (file-exists-p auto-save-file)
+	(ediff buffer-file-name auto-save-file)
+      (user-error "Current buffer has no auto-save file"))))
+
 (defun message-current-time ()
   "Print the current time in the mini-buffer."
   (interactive)
