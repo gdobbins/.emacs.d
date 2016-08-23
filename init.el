@@ -1147,9 +1147,11 @@ Don't mess with special buffers."
 		   (let ((visible-bell t)
 			 (ring-bell-function nil))
 		     (ding t)
-		     (alert (concat time " minutes timer has finished.")
+		     (alert (concat time " minutes timer has finished at "
+				    (format-time-string "%T"))
 			    :category 'egg-timer))))
-    (message (concat "Timer set for " time " minutes."))))
+    (message (concat "Timer set for " time " minutes starting at "
+		     (format-time-string "%T")))))
 
 (with-no-warnings
  (defun duplicate-other-window-buffer ()
