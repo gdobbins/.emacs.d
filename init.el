@@ -921,6 +921,10 @@ function."
 	       (set-window-start w2 s1)
 	       (setq i (1+ i))))))))
 
+(define-prefix-command 'my/window-map)
+
+(defkey "C-r" rotate-windows my/window)
+
 (defun toggle-window-split ()
   (interactive)
   (if (= (count-windows) 2)
@@ -945,6 +949,8 @@ function."
 	  (set-window-buffer (next-window) next-win-buffer)
 	  (select-window first-win)
 	  (if this-win-2nd (other-window 1))))))
+
+(defkey "C-t" toggle-window-split my/window)
 
 (defun activate-word-column-region ()
   "Look at the symbol at point, search backward and place the point before a
@@ -1090,10 +1096,14 @@ on the location of the new git directory."
   (revert-buffer t t t)
   (message (concat "Reverted buffer " (buffer-name))))
 
+(defkey "C-u" revert-this-buffer my/window)
+
 (defun really-desktop-clear ()
   (interactive)
   (when (yes-or-no-p "Really clear the desktop? ")
     (desktop-clear)))
+
+(defkey "k" really-desktop-clear my/window)
 
 (defun kill-other-buffers ()
   "Kill all buffers but the current one.
@@ -1103,6 +1113,8 @@ Don't mess with special buffers."
     (dolist (buffer (buffer-list))
       (unless (or (eql buffer (current-buffer)) (not (buffer-file-name buffer)))
 	(kill-buffer buffer)))))
+
+(defkey "C-k" kill-other-buffers my/window)
 
 (defun rename-current-buffer-file ()
   "Renames current buffer and file it is visiting."
@@ -1121,6 +1133,8 @@ Don't mess with special buffers."
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
 
+(defkey "C-f" rename-current-buffer-file my/window)
+
 (defun ediff-current-buffer-file-with-auto-save ()
   "Call `ediff' on the current buffer file with its auto save file."
   (interactive)
@@ -1133,6 +1147,8 @@ Don't mess with special buffers."
   "Print the current time in the mini-buffer."
   (interactive)
   (message (format-time-string "%T %A %B %e, %Y")))
+
+(defkey "C-w" message-current-time my/window)
 
 (with-eval-after-load 'alert
   (defvar alert-default-style)
@@ -1192,12 +1208,14 @@ Don't mess with special buffers."
   (interactive)
   (find-file user-init-file))
 
+(defkey "C-i" find-user-init-file my/window)
+
 (defun pop-to-scratch ()
   "Pop to the scratch buffer."
   (interactive)
   (pop-to-buffer "*scratch*"))
 
-(defkey "C-c w ;" pop-to-scratch)
+(defkey "C-;" pop-to-scratch my/window)
 
 (defun find-first-agenda-file (arg)
   "Edit the first file in `org-agenda-files'. With `prefix-arg'
@@ -1217,6 +1235,8 @@ open last agenda file."
 	    org-agenda-files)))
       (user-error "No agenda files")))
   (find-first-agenda-file arg))
+
+(defkey "C-a" find-first-agenda-file my/window)
 
 (defun-other-window-do other-window-imenu
   ((call-interactively #'imenu)))
@@ -1480,24 +1500,15 @@ NO-DEFVAR in order to pacify the byte compiler."
 (global-set-key (kbd "C-c t") #'sh-show-shell)
 (global-set-key (kbd "C-x C-b") #'ibuffer)
 (global-set-key (kbd "C-x C-k") #'kill-this-buffer)
-(global-set-key (kbd "C-c w r") #'rotate-windows)
-(global-set-key (kbd "C-c w t") #'toggle-window-split)
-(global-set-key (kbd "C-c w C-k") #'really-desktop-clear)
-(global-set-key (kbd "C-c w k") #'kill-other-buffers)
-(global-set-key (kbd "C-c w u") #'revert-this-buffer)
-(global-set-key (kbd "C-c w l") #'linum-mode)
-(global-set-key (kbd "C-c w f") #'rename-current-buffer-file)
-(global-set-key (kbd "C-c w d") #'duplicate-other-window-buffer)
-(global-set-key (kbd "C-c w c") #'emacs-uptime)
-(global-set-key (kbd "C-c w i") #'find-user-init-file)
-(global-set-key (kbd "C-c w a") #'find-first-agenda-file)
-(global-set-key (kbd "C-c w e") #'erase-buffer)
-(global-set-key (kbd "C-c w s") #'delete-trailing-whitespace)
-(global-set-key (kbd "C-c w n") #'column-number-mode)
-(global-set-key (kbd "C-c w m") #'calc)
-(global-set-key (kbd "C-c w w") #'message-current-time)
-(global-set-key (kbd "C-c w p") #'package-list-packages)
-(global-set-key (kbd "C-c w (") #'smartparens-strict-mode)
+(defkey "C-l" linum-mode			my/window)
+(defkey "C-c" emacs-uptime			my/window)
+(defkey "C-e" erase-buffer			my/window)
+(defkey "C-s" delete-trailing-whitespace	my/window)
+(defkey "C-n" column-number-mode		my/window)
+(defkey "C-m" calc				my/window)
+(defkey "C-p" package-list-packages		my/window)
+(defkey "C-(" smartparens-strict-mode		my/window)
+(defkey "C-w" my/window-map my/avy-passthrough)
 (global-set-key (kbd "C-c d") #'duplicate-other-window-buffer)
 (global-set-key (kbd "C-c C-z") #'smart-switch-to-output-buffer)
 (global-set-key (kbd "C-c z") #'smart-switch-to-output-buffer)
