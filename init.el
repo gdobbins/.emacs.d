@@ -303,6 +303,9 @@ hasn't been repeated."
 (global-set-key (kbd "C-x C-d") #'dired-jump)
 (global-set-key (kbd "C-x 4 C-d") #'dired-jump-other-window)
 
+(defvar dired-bind-jump nil)
+(defvar dired-x-hands-off-my-keys t)
+
 (with-eval-after-load 'dired
   (require 'dired-x)
   (setq-default dired-omit-files-p t)
