@@ -816,8 +816,6 @@ function."
   (let ((projectile-switch-project-action #'projectile-jack-in))
     (projectile-switch-project)))
 
-(define-key projectile-mode-map (kbd "H-p") #'projectile-direct-jack-in)
-
 (setq projectile-mode-line
       '(:eval
 	(if (file-remote-p default-directory)
@@ -839,6 +837,8 @@ function."
 (define-key projectile-mode-map (kbd "C-c p x !") #'projectile-dired-command-files)
 
 (projectile-global-mode)
+
+(defkey "H-p" projectile-command-map)
 
 (defun truncate-lines->t ()
   (interactive)
@@ -1438,7 +1438,6 @@ NO-DEFVAR in order to pacify the byte compiler."
 (passthrough-move-key "C-o" wdired)
 
 (defkey "C-s" join-line my/avy-passthrough)
-(defkey "C-x" ace-window my/avy-passthrough)
 (defkey "C-l" avy-goto-line my/avy-passthrough)
 
 (defun close-line ()
@@ -1474,6 +1473,7 @@ NO-DEFVAR in order to pacify the byte compiler."
 (defkey "C-k" describe-key	my/avy-passthrough)
 
 (defkey "C-a" align-regexp my/avy-passthrough)
+(defkey "C-x" projectile-direct-jack-in my/avy-passthrough)
 
 (with-eval-after-load 'avy-zap
   (defvar avy-zap-dwim-prefer-avy)
