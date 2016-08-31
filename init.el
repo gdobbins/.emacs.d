@@ -1956,11 +1956,18 @@ project."
 	(slime-repl-next-input))
     (call-interactively #'next-line)))
 
+(defun add-paredit-to-list (orig &rest args)
+  "For use with `advice-add', add `paredit-mode' to the beginning
+  of the list returned by ORIG."
+  (cons #'paredit-mode
+	(apply orig args)))
+
 (with-eval-after-load 'slime-repl
   (defvar slime-auto-start)
   (setq slime-auto-start 'always)
   (defvar slime-repl-history-size)
   (setq slime-repl-history-size 500)
+  (advice-add 'slime-minibuffer-setup-hook :around #'add-paredit-to-list)
   (defvar slime-repl-mode-map)
   (define-key slime-repl-mode-map (kbd "C-c C-s") #'slime-scratch)
   (define-key slime-repl-mode-map (kbd "C-c e") #'slime-eval-and-replace)
