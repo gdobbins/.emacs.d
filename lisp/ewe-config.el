@@ -66,6 +66,8 @@ of the buffer."
 	(forward-char 1))
     (call-interactively #'self-insert-command)))
 
+(setq edit-server-new-frame nil)
+
 (define-key edit-server-edit-mode-map (kbd "C-x c") #'edit-server-done)
 (define-key edit-server-edit-mode-map (kbd "C-c C-k") #'edit-server-abort)
 (define-key edit-server-edit-mode-map (kbd "C-c SPC") #'markdown-codify-region)
