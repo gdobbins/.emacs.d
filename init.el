@@ -1436,6 +1436,7 @@ NO-DEFVAR in order to pacify the byte compiler."
 (passthrough-move-key "C-o" ibuffer)
 (passthrough-move-key "C-o" dired)
 (passthrough-move-key "C-o" wdired)
+(passthrough-move-key "C-o" rect rectangle-mark-mode-map)
 
 (defkey "C-s" join-line my/avy-passthrough)
 (defkey "C-l" avy-goto-line my/avy-passthrough)
