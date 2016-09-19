@@ -105,6 +105,17 @@ FLAG is then removed if found."
   (unless (or (server-running-p) (string= user-login-name "root"))
     (add-hook 'emacs-startup-hook #'server-start)))
 
+(unless-command-flag
+    "--no-pinentry"
+  (when (eval-when-compile
+	  (>= emacs-major-version 25))
+    (require 'pinentry)
+    (pinentry-start t)))
+
+(with-eval-after-load 'pinentry
+  (defvar pinentry-popup-prompt-window)
+  (setq pinentry-popup-prompt-window nil))
+
 (defvar hidden-minor-modes
   '(undo-tree-mode
     guide-key-mode
