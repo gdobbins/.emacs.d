@@ -153,7 +153,8 @@ those files."
 
 (add-to-list 'command-switch-alist '("-magit" . command-line-magit))
 
-(eval-and-compile (require 'cl))
+(with-no-warnings
+  (eval-and-compile (require 'cl)))
 
 (cl-defmacro make-last-key-repeating-function (func &optional trans-map (keep-map t))
   "Add advice to to the function such that repeating the
@@ -436,7 +437,9 @@ hasn't been repeated."
 (defun ibuffer-mark-and-kill-lines ()
   "Mark the current line, then kill all marked lines."
   (interactive)
-  (ibuffer-mark-forward 1)
+  (if (eval-when-compile (< emacs-major-version 25))
+      (ibuffer-mark-forward 1)
+    (ibuffer-mark-forward nil nil 1))
   (ibuffer-do-kill-lines))
 
 (with-eval-after-load 'ibuffer
@@ -862,7 +865,9 @@ function."
 (setq uniquify-buffer-name-style 'forward)
 
 (load "~/.emacs.d/lisp/saveplace-patch" nil t)
-(setq-default save-place t)
+(if (eval-when-compile (< emacs-major-version 25))
+    (setq-default save-place t)
+  (save-place-mode 1))
 
 (defun undo-tree-save-history-ignore-file (orig &rest args)
   "Ignore files matching the regex, otherwise save history"
@@ -1638,8 +1643,11 @@ definition of that thing instead."
 			  start-buffer)
 		       (user-error
 			"No applicable help command in recent history")))))
-       (unless (eq (first (first temp/command-history))
-		   #'describe-key)
+       (unless (and
+		(eval-when-compile (< emacs-major-version 25))
+		;; Prior to version 25 find-function-on-key used other-window
+		(eq (first (first temp/command-history))
+		    #'describe-key))
 	 (pop-to-buffer (help-buffer))))
      (let ((temp (second (first temp/command-history))))
        (if (consp temp)
@@ -1671,8 +1679,9 @@ definition of that thing instead."
   (define-key elisp-slime-nav-mode-map (kbd "C-c C-c") #'eval-defun))
 (add-hook 'emacs-lisp-mode-hook #'turn-on-elisp-slime-nav-mode)
 
-(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
-(add-hook 'ielm-mode-hook #'eldoc-mode)
+(when (eval-when-compile (< emacs-major-version 25))
+  (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
+  (add-hook 'ielm-mode-hook #'eldoc-mode))
 
 (defadvice he-substitute-string (after he-paredit-fix compile activate)
   "remove extra paren when expanding line in paredit"
