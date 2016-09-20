@@ -1496,9 +1496,11 @@ NO-DEFVAR in order to pacify the byte compiler."
 
 (defkey "C-n" open-next-line my/avy-passthrough)
 
-(defkey "C-f" describe-function my/avy-passthrough)
-(defkey "C-v" describe-variable my/avy-passthrough)
-(defkey "C-k" describe-key	my/avy-passthrough)
+(defkeys my/avy-passthrough
+  "C-f" describe-function
+  "C-v" describe-variable
+  "C-k" describe-key
+  "C-h" describe-prefix-bindings)
 
 (defkey "C-a" align-regexp my/avy-passthrough)
 (defkey "C-x" projectile-direct-jack-in my/avy-passthrough)
