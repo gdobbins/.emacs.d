@@ -1086,8 +1086,6 @@ on the location of the new git directory."
 (autoload 'magit-ido-completing-read "magit-utils" "Ido-based `completing-read' almost-replacement.")
 (with-eval-after-load 'magit
   (advice-add 'magit-init :around #'magit-auto-create-gitattributes&ignore)
-  (defvar magit-git-environment)
-  (add-to-list 'magit-git-environment (format "INSIDE_EMACS=%s,magit" emacs-version))
   (defvar magit-completing-read-function)
   (setq magit-completing-read-function #'magit-ido-completing-read))
 
