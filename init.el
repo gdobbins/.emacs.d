@@ -118,12 +118,10 @@ FLAG is then removed if found."
 
 (defvar hidden-minor-modes
   '(undo-tree-mode
-    guide-key-mode
     abbrev-mode
     auto-revert-mode
     paredit-mode
     smartparens-mode
-    elisp-slime-nav-mode
     yas-minor-mode
     eldoc-mode))
 
