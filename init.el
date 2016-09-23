@@ -1699,7 +1699,7 @@ definition of that thing instead."
   (if (and paredit-mode (equal (substring str -1) ")"))
       (progn (backward-delete-char 1) (forward-char))))
 
-(add-to-list 'default-frame-alist '(font . "Linux Libertine Mono:pixelsize=14"))
+(add-to-list 'default-frame-alist '(font . "Linux Libertine Mono:pixelsize=13"))
 (setq split-width-threshold 100)
 
 (autoload #'auth-source-search "auth-source")
