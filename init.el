@@ -77,6 +77,8 @@ some other initialization operations which slow startup time."
 (setq load-prefer-newer t)
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
+(when (eval-when-compile (file-exists-p "~/home-row-numbers"))
+  (add-to-list 'load-path (expand-file-name "~/home-row-numbers")))
 
 (package-initialize)
 
@@ -1632,6 +1634,31 @@ NO-DEFVAR in order to pacify the byte compiler."
 
 (global-set-key (kbd "<mouse-8>") #'previous-buffer)
 (global-set-key (kbd "<mouse-9>") #'next-buffer)
+
+(defun control-number->self-insert (arg)
+  (interactive "p")
+  (let* ((char
+	  (if (integerp last-command-event)
+	      last-command-event
+	    (get last-command-event 'ascii-character)))
+	 (digit (number-to-string (- (logand char ?\177) ?0))))
+    (dotimes (_i arg)
+      (insert digit))
+    (run-hooks 'post-self-insert-hook)))
+
+(dotimes (k 10)
+  (let ((num-string (number-to-string (1- k)))
+	(num-char (+ 47 k)))
+    (put (intern (concat "C-kp-" num-string)) 'ascii-character num-char)
+    (put (intern (concat "M-kp-" num-string)) 'ascii-character num-char)))
+
+(when (eval-when-compile (or (file-exists-p "~/home-row-numbers")
+			     (package-installed-p 'home-row-numbers)))
+
+  (eval-when-compile (require 'home-row-numbers))
+  (home-row-numbers :layout 'dvorak)
+
+  (global-set-key [remap digit-argument] #'control-number->self-insert))
 
 (defun help-go-to-definition (temp/command-history n start-buffer)
   "When called after a help describe function, go to the
