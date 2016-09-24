@@ -392,7 +392,8 @@ hasn't been repeated."
 		   (mode . tex-shell)
 		   (mode . TeX-output-mode)
 		   (name . "^\\*\\(Latex Preview Pane \\(Welcome\\|Errors\\)\\|pdflatex-buffer\\)\\*$")))
-	 ("Text" (mode . text-mode))
+	 ("Text" (or (mode . text-mode)
+		     (mode . change-log-mode)))
 	 ("Books" (or
 		   (mode . pdf-view-mode)
 		   (filename . ,(concat "^" (expand-file-name "~/Books")))))
@@ -435,6 +436,7 @@ hasn't been repeated."
 		   (mode . apropos-mode)
 		   (mode . ioccur-mode)
 		   (mode . occur-mode)
+		   (mode . grep-mode)
 		   (mode . reb-mode)
 		   (mode . calendar-mode)
 		   (mode . calc-mode)
