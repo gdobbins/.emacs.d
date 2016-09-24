@@ -1462,10 +1462,23 @@ NO-DEFVAR in order to pacify the byte compiler."
 	 (lookup-key ,package-map ,key))
        (define-key ,package-map ,key nil))))
 
-(passthrough-move-key "C-o" ibuffer)
-(passthrough-move-key "C-o" dired)
-(passthrough-move-key "C-o" wdired)
-(passthrough-move-key "C-o" rect rectangle-mark-mode-map)
+(defmacro passthrough-move-keys (key &rest args)
+  "Call `passthrough-move-key' with KEY as the argument. ARGS is
+either a symbol denoting the package or a list of the remaining
+arguments for each call with the package listed first."
+  (declare (indent 1))
+  `(progn
+     ,@(cl-loop
+	for a in args collect
+	(let ((b (if (consp a) a (cons a nil))))
+	  `(passthrough-move-key ,key ,@b)))))
+
+(passthrough-move-keys "C-o"
+  ibuffer
+  dired
+  wdired
+  (rect rectangle-mark-mode-map)
+  grep)
 
 (defkey "C-s" join-line my/avy-passthrough)
 (defkey "C-l" avy-goto-line my/avy-passthrough)
