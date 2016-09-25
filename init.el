@@ -2237,8 +2237,3 @@ derived from prog-mode."
   (add-hook 'after-save-hook #'byte-compile-current-buffer nil t))
 
 (add-hook 'emacs-lisp-mode-hook #'add-byte-compile-hook)
-
-(font-lock-add-keywords 'emacs-lisp-mode
-			'(("(\\(\\(unless\\|defun\\)-[^[:space:]]*\\)[ \t\n]" 1 'font-lock-keyword-face)
-			  ("(\\(\\(\\(make-\\)?last-key-repeating\\|defset\\)\\(-function\\)?\\)[[:space:])\n]" 1 'font-lock-keyword-face))
-			t)
