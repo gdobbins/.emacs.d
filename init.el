@@ -1725,12 +1725,9 @@ definition of that thing instead."
     (search-forward "Major Mode Bindings:" nil t)
     (recenter-top-bottom 0)))
 
-(autoload 'elisp-slime-nav-mode "elisp-slime-nav")
-(with-eval-after-load 'elisp-slime-nav
-  (define-key elisp-slime-nav-mode-map (kbd "C-c M-e") #'macrostep-expand)
-  (define-key elisp-slime-nav-mode-map (kbd "C-c C-d") #'elisp-slime-nav-describe-elisp-thing-at-point)
-  (define-key elisp-slime-nav-mode-map (kbd "C-c C-c") #'eval-defun))
-(add-hook 'emacs-lisp-mode-hook #'turn-on-elisp-slime-nav-mode)
+(defkeys emacs-lisp-mode
+  "C-c C-c" eval-defun
+  "C-c M-e" macrostep-expand)
 
 (when (eval-when-compile (< emacs-major-version 25))
   (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
