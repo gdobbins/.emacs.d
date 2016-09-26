@@ -16,7 +16,6 @@ some other initialization operations which slow startup time."
     (garbage-collect))
   (require 'magit)
   (require 'avy)
-  (require 'expand-region)
   (remove-hook 'focus-out-hook #'delayed-initialization)
   (setq gc-cons-threshold 800000)
   (garbage-collect)
