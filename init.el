@@ -1930,6 +1930,9 @@ otherwise if within a comment then uncomment, else call
   (with-no-warnings
     (defun-smarter-movement paredit-wrap-round
       (paredit-backward) (paredit-forward) "M-(" nil nil paredit-mode-map))
+  (defkeys paredit-mode
+    "C-M-)" "C-)"
+    "C-M-(" "C-(")
   (define-key paredit-mode-map (kbd "C-;") #'paredit-uncomment-or-comment-sexp)
   (add-to-list 'paredit-space-for-delimiter-predicates
 	       #'paredit-space-for-predicates-cl))
