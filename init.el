@@ -150,8 +150,10 @@ those files."
 	(ediff3 file1 file2 file3)
       (ediff file1 file2))))
 
-(setq ediff-split-window-function #'split-window-horizontally)
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(with-eval-after-load 'ediff
+  (with-no-warnings
+    (setq ediff-split-window-function #'split-window-horizontally)
+    (setq ediff-window-setup-function #'ediff-setup-windows-plain)))
 
 (add-to-list 'command-switch-alist '("-diff" . command-line-diff))
 
