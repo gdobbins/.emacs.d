@@ -1284,11 +1284,14 @@ open last agenda file."
      (call-interactively #'isearch-backward)
      (recursive-edit))))
 
-(defun other-window-quit ()
-  "Run `quit-window' in the window selected by `ace-window'."
-  (interactive)
-  (ace-window 1)
-  (quit-window))
+(defun other-window-quit (arg)
+  "Run `quit-window' in the window selected by `ace-window'.
+With \\[universal-argument] switch to that window after quitting."
+  (interactive "P")
+  (let ((target (ace-window 1)))
+    (quit-window)
+    (when (and arg (window-live-p target))
+      (select-window target))))
 
 (global-set-key (kbd "H-q") #'other-window-quit)
 
