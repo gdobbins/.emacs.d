@@ -1303,17 +1303,18 @@ If point is already there, move to the beginning of the line.
 Effectively toggle between the first non-whitespace character and
 the beginning of the line.
 
-If ARG is not nil or 1, move forward ARG - 1 lines first.  If
-point reaches the beginning or end of the buffer, stop there."
+If ARG is not 1, move forward ARG - 1 lines first. If point
+reaches the beginning or end of the buffer, stop there."
   (interactive "^p")
-  (setq arg (or arg 1))
   (when (/= arg 1)
-    (let ((line-move-visual nil))
+    (let (line-move-visual)
       (forward-line (1- arg))))
   (let ((orig-point (point)))
     (back-to-indentation)
     (when (= orig-point (point))
       (move-beginning-of-line 1))))
+
+(defkey "C-a" smarter-move-beginning-of-line)
 
 (defun back-to-end-of-sexp (arg)
   "Move backwards to the end of the sexp. Always stay on the
@@ -1600,7 +1601,6 @@ arguments for each call with the package listed first."
 (global-set-key (kbd "<f5>") #'egg-timer)
 (global-set-key (kbd "C-x c") #'server-edit)
 (global-set-key (kbd "C-x #") nil)
-(global-set-key (kbd "C-a") #'smarter-move-beginning-of-line)
 (global-set-key (kbd "C-;") (kbd "M-;"))
 (defkey "H-k" kill-whole-line)
 (defkey "C-c h" man)
