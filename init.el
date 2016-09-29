@@ -2073,7 +2073,7 @@ project."
 
 (add-hook 'prog-mode-hook #'paredit-or-smartparens)
 
-(add-hook 'eshell-mode					#'enable-paredit-mode)
+(add-hook 'eshell-mode-hook				#'enable-paredit-mode)
 (add-hook 'eval-expression-minibuffer-setup-hook	#'enable-paredit-mode)
 (add-hook 'slime-repl-mode-hook				#'enable-paredit-mode)
 
