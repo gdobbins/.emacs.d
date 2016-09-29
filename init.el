@@ -1485,9 +1485,6 @@ arguments for each call with the package listed first."
   (rect rectangle-mark-mode-map)
   grep)
 
-(defkey "C-s" join-line my/avy-passthrough)
-(defkey "C-l" avy-goto-line my/avy-passthrough)
-
 (defun close-line ()
   (interactive "*")
   (forward-line)
@@ -1495,16 +1492,12 @@ arguments for each call with the package listed first."
   (when paredit-mode
     (paredit-reindent-defun)))
 
-(defkey "C-c" close-line my/avy-passthrough)
-
 (defun open-previous-line (arg)
   (interactive "*p")
   (beginning-of-line)
   (open-line arg)
   (indent-according-to-mode)
   (last-key-repeating))
-
-(defkey "C-p" open-previous-line my/avy-passthrough)
 
 (defun open-next-line (arg)
   (interactive "*p")
@@ -1514,16 +1507,22 @@ arguments for each call with the package listed first."
   (indent-according-to-mode)
   (last-key-repeating))
 
-(defkey "C-n" open-next-line my/avy-passthrough)
+(defkeys  my/avy-passthrough
+  "C-c" close-line
+  "C-p" open-previous-line
+  "C-n" open-next-line
 
-(defkeys my/avy-passthrough
+  "C-z" join-line
+  "C-l" avy-goto-line
+
   "C-f" describe-function
   "C-v" describe-variable
   "C-k" describe-key
-  "C-h" describe-prefix-bindings)
+  "C-h" describe-prefix-bindings
 
-(defkey "C-a" align-regexp my/avy-passthrough)
-(defkey "C-x" projectile-direct-jack-in my/avy-passthrough)
+  "C-a" align-regexp
+  "C-x" projectile-direct-jack-in
+  "C-s" "C-c C-z")
 
 (with-eval-after-load 'avy-zap
   (defvar avy-zap-dwim-prefer-avy)
