@@ -128,7 +128,8 @@ FLAG is then removed if found and added to `used-command-flags'."
     (when (eval-when-compile
 	    (>= emacs-major-version 25))
       (require 'pinentry)
-      (pinentry-start t))))
+      (pinentry-start t)
+      (add-hook 'kill-emacs-hook #'pinentry-stop))))
 
 (with-eval-after-load 'pinentry
   (defvar pinentry-popup-prompt-window)
