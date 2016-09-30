@@ -455,6 +455,7 @@ hasn't been repeated."
 		   (mode . apropos-mode)
 		   (mode . ioccur-mode)
 		   (mode . occur-mode)
+		   (mode . xref--xref-buffer-mode)
 		   (mode . grep-mode)
 		   (mode . reb-mode)
 		   (mode . calendar-mode)
@@ -1501,7 +1502,8 @@ arguments for each call with the package listed first."
   dired
   wdired
   (rect rectangle-mark-mode-map)
-  grep)
+  grep
+  (xref xref--xref-buffer-mode-map))
 
 (defun close-line ()
   (interactive "*")
