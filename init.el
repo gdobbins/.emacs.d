@@ -81,13 +81,28 @@ some other initialization operations which slow startup time."
 
 (package-initialize)
 
+(defvar used-command-flags nil
+  "List of command flags used by `if-command-flag' and related.")
+
+(defmacro if-command-flag (flag then &rest else)
+  "If FLAG is present in `command-line-args' or
+  `used-command-flags' execute THEN , otherwise execute ELSE. If
+  present in `command-line-args', then move it to
+  `used-command-flags'."
+  (declare (indent 1))
+  `(if (or
+	(and (member ,flag command-line-args)
+	     (setf command-line-args (delete ,flag command-line-args))
+	     (push ,flag used-command-flags))
+	(member ,flag used-command-flags))
+       ,then
+     ,@else))
+
 (defmacro unless-command-flag (flag &rest body)
   "Unless FLAG is present in `command-line-args' execute BODY.
-FLAG is then removed if found."
+FLAG is then removed if found and added to `used-command-flags'."
   (declare (indent 1))
-  `(if (member ,flag command-line-args)
-       (setf command-line-args (delete ,flag command-line-args))
-     ,@body))
+  `(if-command-flag ,flag nil ,@body))
 
 (unless-command-flag
     "--no-theme"
@@ -108,10 +123,12 @@ FLAG is then removed if found."
 
 (unless-command-flag
     "--no-pinentry"
-  (when (eval-when-compile
-	  (>= emacs-major-version 25))
-    (require 'pinentry)
-    (pinentry-start t)))
+  (unless-command-flag
+      "--no-server"
+    (when (eval-when-compile
+	    (>= emacs-major-version 25))
+      (require 'pinentry)
+      (pinentry-start t))))
 
 (with-eval-after-load 'pinentry
   (defvar pinentry-popup-prompt-window)
