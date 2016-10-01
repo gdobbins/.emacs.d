@@ -1750,7 +1750,8 @@ definition of that thing instead."
 
 (defkeys emacs-lisp-mode
   "C-c C-c" eval-defun
-  "C-c M-e" macrostep-expand)
+  "C-c M-e" macrostep-expand
+  "C-c C-w C-c" xref-find-references)
 
 (when (eval-when-compile (< emacs-major-version 25))
   (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
