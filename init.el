@@ -235,14 +235,19 @@ multiple functions can call each other in repetition."
 
 (defmacro defkeys (&rest args)
   "Passes args pairwise to `defkey', optional first argument is
-  used as the KEYMAP argument."
-  (let ((keymap
-	 (when (cl-oddp (length args))
-	   (pop args))))
+  used as the KEYMAP argument. If KEYMAP is a list, keys are
+  bound in each keymap in the list."
+  (let* ((keymap
+	  (when (cl-oddp (length args))
+	    (pop args)))
+	 (keymap (if (consp keymap)
+		     keymap
+		   (cons keymap nil))))
     `(progn
-       ,@(cl-loop
-	  for (key def) on args by #'cddr collect
-	  `(defkey ,key ,def ,keymap)))))
+       ,@(cl-loop for map in keymap nconc
+	  (cl-loop
+	   for (key def) on args by #'cddr collect
+	   `(defkey ,key ,def ,map))))))
 
 (defmacro defun-smarter-movement (original backward forward key &optional no-use-region no-repeat map look-string)
   "Define a new function which operates better than ORIGINAL. If
