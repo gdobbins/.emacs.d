@@ -1753,7 +1753,7 @@ definition of that thing instead."
     (search-forward "Major Mode Bindings:" nil t)
     (recenter-top-bottom 0)))
 
-(defkeys emacs-lisp-mode
+(defkeys (emacs-lisp-mode lisp-interaction-mode)
   "C-c C-c" eval-defun
   "C-c M-e" macrostep-expand
   "C-c C-w C-c" xref-find-references)
