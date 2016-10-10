@@ -888,7 +888,7 @@ function."
 
 (define-key projectile-mode-map (kbd "C-c p x !") #'projectile-dired-command-files)
 
-(projectile-global-mode)
+(projectile-mode)
 
 (defkey "H-p" projectile-command-map)
 
