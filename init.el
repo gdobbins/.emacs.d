@@ -384,6 +384,11 @@ hasn't been repeated."
 		  (name . "^\\*slime-\\(description\\|compilation\\|xref\\|error\\)\\*$")
 		  (name . "^\\*sldb .*\\*$")
 		  (filename . "^/usr/local/doc/HyperSpec/")))
+	 ("Sage"
+	  (or
+	   (mode . sage-shell:sage-mode)
+	   (mode . sage-shell-mode)
+	   (mode . sage-mode)))
 	 ("Python" (or
 		    (mode . python-mode)
 		    (mode . inferior-python-mode)
@@ -1084,6 +1089,9 @@ lisp, shell, multi-term, then python. Don't include
 	    (not (eq (current-buffer)
 		     (first multi-term-buffer-list))))))
     (multi-term-next))
+   ((my/check-for-process "Sage")
+    (with-no-warnings
+      (sage-shell-edit:pop-to-process-buffer)))
    ((my/check-for-process "Python")
     (elpy-shell-switch-to-shell))
    (t
@@ -2165,6 +2173,11 @@ project."
       (define-key org-src-mode-map (kbd "C-x C-s") #'org-edit-src-exit)))
   (defvar org-agenda-sticky)
   (setq org-agenda-sticky t))
+
+(defalias 'run-sage #'sage-shell:run-sage)
+
+(with-eval-after-load 'sage-shell-mode
+  (sage-shell:define-alias))
 
 (defun python-repl-clear-buffer ()
   (interactive)
