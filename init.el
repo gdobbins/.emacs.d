@@ -1060,34 +1060,68 @@ lines have identical symbols at identical goal columns as the symbol at point."
 (autoload 'elpy-shell-switch-to-shell "elpy" "Switch to inferior Python process buffer.")
 
 (defun my/check-for-process (process)
-  "Check that PROCESS is running and it is not in the
-`current-buffer'."
+  "Return a list, the first element is t if PROCESS exists,
+second if PROCESS does not belong to the `current-buffer'."
   (let ((process (get-process process)))
-    (and process
-	 (not
-	  (eq process
-	      (get-buffer-process
-	       (current-buffer)))))))
+    (list process
+	  (not
+	   (eq process
+	       (get-buffer-process
+		(current-buffer)))))))
+
+(defmacro my/do-next-cond (&rest clauses)
+  "Like `cond' except conditions evaluate to a list of two
+elements. A clause is only eligible if the first element in the
+list is t. The second eligible clause with the second condition t
+is executed. Clause tests may be executed twice. A condition of a
+lone t is treated specially."
+  (let ((do-next (cl-gensym))
+	(top (cl-gensym))
+	(second-time (cl-gensym))
+	(otherwise (cdr (assoc t clauses)))
+	(temp (cl-gensym)))
+    `(let ((,do-next nil)
+	   (,second-time nil))
+       (cl-tagbody
+	,top
+	(cond
+	 ,@(cl-loop for clause in clauses
+		    unless (eq t (car clause)) collect
+		    (cons
+		     `(let ((,temp ,(car clause)))
+			(and (car ,temp)
+			     (if (cadr ,temp)
+				 ,do-next
+			       (setq ,do-next t)
+			       nil)))
+		     (cdr clause)))
+	 (t
+	  (if ,second-time
+	      (progn ,@otherwise)
+	    (setq ,second-time t
+		  ,do-next t)
+	    (go ,top))))))))
 
 (defun smart-switch-to-output-buffer ()
-  "Attempt to switch to an output buffer, prefering in order
-lisp, shell, multi-term, then python. Don't include
-`current-buffer' as a possible target."
+  "Attempt to switch to an output buffer, cycling in order
+through lisp, shell, multi-term, sage, then python.
+Make `last-key-repeating'."
   (interactive)
-  (cond
-   ((and (get-process "inferior-lisp")
-	 (not (eq major-mode
-		  'slime-repl-mode)))
+  (my/do-next-cond
+   ((list (get-process "inferior-lisp")
+	  (not (eq major-mode
+		   'slime-repl-mode)))
     (slime-switch-to-output-buffer))
    ((my/check-for-process "shell")
     (sh-show-shell))
    ((with-no-warnings
       (and (featurep 'multi-term)
-	   multi-term-buffer-list
-	   (or
-	    (rest multi-term-buffer-list)
-	    (not (eq (current-buffer)
-		     (first multi-term-buffer-list))))))
+	   (list
+	    multi-term-buffer-list
+	    (or
+	     (rest multi-term-buffer-list)
+	     (not (eq (current-buffer)
+		      (car multi-term-buffer-list)))))))
     (multi-term-next))
    ((my/check-for-process "Sage")
     (with-no-warnings
@@ -1095,7 +1129,8 @@ lisp, shell, multi-term, then python. Don't include
    ((my/check-for-process "Python")
     (elpy-shell-switch-to-shell))
    (t
-    (user-error "No available process to switch to."))))
+    (user-error "No available process to switch to.")))
+  (last-key-repeating))
 
 (defun magit-auto-create-gitattributes&ignore (orig &rest args)
   "Create .gitattributes and .gitignore files if they do not
@@ -1555,7 +1590,7 @@ arguments for each call with the package listed first."
 
   "C-a" align-regexp
   "C-x" projectile-direct-jack-in
-  "C-s" "C-c C-z")
+  "C-s" smart-switch-to-output-buffer)
 
 (with-eval-after-load 'avy-zap
   (defvar avy-zap-dwim-prefer-avy)
