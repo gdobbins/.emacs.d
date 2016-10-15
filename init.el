@@ -1553,10 +1553,11 @@ arguments for each call with the package listed first."
   grep
   (xref xref--xref-buffer-mode-map))
 
-(defun close-line ()
-  (interactive "*")
-  (forward-line)
-  (join-line)
+(defun close-line (arg)
+  (interactive "*p")
+  (dotimes (_ arg)
+    (forward-line)
+    (join-line))
   (when paredit-mode
     (paredit-reindent-defun)))
 
