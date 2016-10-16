@@ -388,6 +388,7 @@ hasn't been repeated."
 	  (or
 	   (mode . sage-shell:sage-mode)
 	   (mode . sage-shell-mode)
+	   (mode . sage-shell:help-mode)
 	   (mode . sage-mode)))
 	 ("Python" (or
 		    (mode . python-mode)
