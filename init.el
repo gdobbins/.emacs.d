@@ -249,11 +249,11 @@ multiple functions can call each other in repetition."
 	   for (key def) on args by #'cddr collect
 	   `(defkey ,key ,def ,map))))))
 
-(defmacro defun-smarter-movement (original backward forward key &optional no-use-region no-repeat map look-string)
+(defmacro defun-smarter-movement (original backward forward key &optional not-use-region no-repeat map look-string)
   "Define a new function which operates better than ORIGINAL. If
 `looking-at' LOOK-STRING or `eobp' first go BACKWARD then
 `call-interactively' ORIGINAL then go FORWARD. Bind the new
-function to KEY in MAP. If NO-USE-REGION then only do this when
+function to KEY in MAP. If NOT-USE-REGION then only do this when
 `not' `use-region-p'. If NO-REPEAT then only when the new command
 hasn't been repeated."
   (declare (indent 1))
@@ -262,9 +262,9 @@ hasn't been repeated."
        (defun ,new-func ()
 	 (interactive)
 	 (if (and (or (looking-at ,(or look-string
-				       "\\(\\s)\\|[[:space:]\n]\\)"))
+				       "\\(\\s)\\|[[:space:]\n]\\|\\s\"\\)"))
 		      (eobp))
-		  ,(if no-use-region
+		  ,(if not-use-region
 		       '(not (use-region-p))
 		     t)
 		  ,(if no-repeat
@@ -276,7 +276,8 @@ hasn't been repeated."
 	       ,forward)
 	   (call-interactively #',original)))
        ,(when key
-	  `(define-key ,(or map 'global-map) (kbd ,key) #',new-func)))))
+	  `(defkey ,key ,new-func ,map))
+       #',new-func)))
 
 (defun-smarter-movement capitalize-word (backward-word) nil "M-c" nil t)
 (defun-smarter-movement downcase-word	(backward-word) nil "M-l" nil t)
