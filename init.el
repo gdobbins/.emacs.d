@@ -1578,6 +1578,21 @@ arguments for each call with the package listed first."
   (indent-according-to-mode)
   (last-key-repeating))
 
+(defun C-c-C-z-or-smart-switch-to-output-buffer (arg)
+  "With plain \\[universal-argument] call `smart-switch-to-output-buffer',
+otherwise call whatever is bound to C-c C-z ARG times."
+  (interactive "P")
+  (dotimes (_ (if (consp arg)
+		  (progn
+		    (setq this-command #'smart-switch-to-output-buffer)
+		    (log (or (car-safe arg) 4) 4))
+		(last-key-repeating)
+		(prefix-numeric-value arg)))
+    (call-interactively
+     (if (consp arg)
+	 this-command
+       (key-binding (kbd "C-c C-z"))))))
+
 (defkeys  my/avy-passthrough
   "C-c" close-line
   "C-p" open-previous-line
@@ -1593,7 +1608,7 @@ arguments for each call with the package listed first."
 
   "C-a" align-regexp
   "C-x" projectile-direct-jack-in
-  "C-s" smart-switch-to-output-buffer)
+  "C-s" C-c-C-z-or-smart-switch-to-output-buffer)
 
 (with-eval-after-load 'avy-zap
   (defvar avy-zap-dwim-prefer-avy)
