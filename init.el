@@ -546,11 +546,18 @@ hasn't been repeated."
               (lambda ()
                 (ibuffer-switch-to-saved-filter-groups "default")))
 
+(defun window-dedicated->t (&optional window)
+  (set-window-dedicated-p (or window (selected-window)) t))
+
 (with-eval-after-load 're-builder
+  (add-hook 'reb-mode-hook #'window-dedicated->t)
   (defvar reb-mode-map)
   (define-key reb-mode-map (kbd "C-c C-k") 'reb-quit)
   (defvar reb-re-syntax)
   (setq reb-re-syntax 'string))
+
+(with-eval-after-load 'string-edit
+  (add-hook 'string-edit-mode-hook #'window-dedicated->t))
 
 (defun lazy-require-isearch+ ()
   "Since isearch is loaded by default, this function is added to
