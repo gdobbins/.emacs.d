@@ -1141,6 +1141,99 @@ Make `last-key-repeating'."
     (user-error "No available process to switch to.")))
   (last-key-repeating))
 
+(defun buffer-has-process-p (buffer-or-name &rest _)
+  "True if BUFFER-OR-NAME has a process associated with it or has
+`major-mode' eq to `slime-repl-mode'."
+  (or (get-buffer-process buffer-or-name)
+      (with-current-buffer buffer-or-name
+	(eq major-mode 'slime-repl-mode))))
+
+(defun buffer-derives-from-prog (buffer-or-name &rest _)
+  "True if the `major-mode' of BUFFER-OR-NAME derives from
+  `prog-mode'."
+  (with-current-buffer buffer-or-name
+    (derived-mode-p 'prog-mode)))
+
+(defun my/keep-right-and-inhibit-same (buffer-or-name _)
+  (with-current-buffer buffer-or-name
+    (or (eq major-mode 'magit-status-mode)
+	(string= (buffer-name) (help-buffer)))))
+
+(defun display-buffer-rightmost-window (buffer alist)
+  "For use with `display-buffer-alist'. Display BUFFER in the
+rightmost window of the current frame. Call `split-window-right'
+first if there is only one window. Pop to window if BUFFER is
+already displayed."
+  (window--display-buffer
+   buffer
+   (or
+    (cl-loop for win in (window-list)
+	     when (eq buffer (window-buffer win))
+	     return win)
+    (unless (cdr (window-list))
+      (split-window-right)
+      nil)
+    (let ((inhibit-same (cdr (assq 'inhibit-same-window alist)))
+	  (current-window (selected-window)))
+      (cl-do ((win
+	       (cl-do ((win current-window win2)
+		       (win2 current-window (window-right win2)))
+		   ((null win2) win))
+	       (window-left win)))
+	  ((not (or (window-minibuffer-p win)
+		    (window-dedicated-p win)
+		    (and inhibit-same
+			 (eq win current-window))))
+	   win))))
+   'reuse alist))
+
+(defun display-buffer-leftmost-window (buffer alist)
+  "For use with `display-buffer-alist'. Display BUFFER in the
+leftmost window of the current frame. Call `split-window-right'
+first if there is only one window. Pop to window if BUFFER is
+already displayed."
+  (window--display-buffer
+   buffer
+   (or
+    (cl-loop for win in (window-list)
+	     when (eq buffer (window-buffer win))
+	     return win)
+    (unless (cdr (window-list))
+      (split-window-right)
+      (other-window 1)
+      nil)
+    (let ((inhibit-same (cdr (assq 'inhibit-same-window alist)))
+	  (current-window (selected-window)))
+      (cl-do ((win
+	       (cl-do ((win current-window win2)
+		       (win2 current-window (window-left win2)))
+		   ((null win2) win))
+	       (window-right win)))
+	  ((not (or (window-minibuffer-p win)
+		    (window-dedicated-p win)
+		    (and inhibit-same
+			 (eq win current-window))))
+	   win))))
+   'reuse alist))
+
+(add-to-list 'display-buffer-alist
+	     (cons #'buffer-has-process-p
+		   (cons #'display-buffer-rightmost-window nil)))
+
+(add-to-list 'display-buffer-alist
+	     (cons #'buffer-derives-from-prog
+		   (cons #'display-buffer-leftmost-window
+			 (cons
+			  (cons 'inhibit-same-window t)
+			  nil))))
+
+(add-to-list 'display-buffer-alist
+	     (cons #'my/keep-right-and-inhibit-same
+		   (cons #'display-buffer-rightmost-window
+			 (cons
+			  (cons 'inhibit-same-window t)
+			  nil))))
+
 (defun magit-auto-create-gitattributes&ignore (orig &rest args)
   "Create .gitattributes and .gitignore files if they do not
 already exist and the content of the files can be predicted based
