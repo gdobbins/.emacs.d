@@ -400,6 +400,8 @@ hasn't been repeated."
 	 ("C" (or
 	       (mode . c-mode)
 	       (mode . c++-mode)))
+	 ("Perl" (or
+		  (mode . perl-mode)))
 	 ("Shell" (or
 		   (mode . shell-mode)
 		   (mode . term-mode)
@@ -422,11 +424,14 @@ hasn't been repeated."
 		   (mode . latex-mode)
 		   (mode . tex-shell)
 		   (mode . TeX-output-mode)
+		   (mode . plain-tex-mode)
 		   (name . "^\\*\\(Latex Preview Pane \\(Welcome\\|Errors\\)\\|pdflatex-buffer\\)\\*$")))
 	 ("Text" (or (mode . text-mode)
+		     (mode . nroff-mode)
 		     (mode . change-log-mode)))
 	 ("Books" (or
 		   (mode . pdf-view-mode)
+		   (mode . doc-view-mode)
 		   (filename . ,(concat "^" (expand-file-name "~/Books")))))
 	 ("Web" (or
 		 (mode . w3m-mode)
@@ -444,6 +449,7 @@ hasn't been repeated."
 		    (filename . "\\.git\\(ignore\\|attributes\\)$")))
 	 ("Diff" (or
 		  (mode . ediff-mode)
+		  (mode . diff-mode)
 		  (name . "^\\*[Ee]?[Dd]iff.*\\*$")))
 	 ("Gnus" (or (mode . message-mode)
 		     (mode . bbdb-mode)
