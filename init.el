@@ -1414,7 +1414,11 @@ Don't mess with special buffers."
 (defun find-user-init-file ()
   "Edit the `user-init-file'"
   (interactive)
-  (find-file user-init-file))
+  (cl-loop for win in (window-list)
+	   when (string= user-init-file
+			 (buffer-file-name (window-buffer win)))
+	   return (pop-to-buffer (window-buffer win))
+	   finally (find-file user-init-file)))
 
 (defkey "C-i" find-user-init-file my/window)
 
