@@ -355,6 +355,8 @@ hasn't been repeated."
 (defvar dired-x-hands-off-my-keys t)
 
 (with-eval-after-load 'dired
+  (defvar dired-dwim-target)
+  (setq dired-dwim-target t)
   (require 'dired-x)
   (setq-default dired-omit-files-p t)
   (setq dired-listing-switches "-alhv")
