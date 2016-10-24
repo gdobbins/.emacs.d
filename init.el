@@ -183,6 +183,18 @@ those files."
 
 (add-to-list 'command-switch-alist '("-magit" . command-line-magit))
 
+;; When using StumpWM, starting Emacs in fullscreen removes black
+;; borders, but leaving it fullscreen interferes with windowing
+;; commands. Using this function as a command switch in conjunction
+;; with -fs allows both problems to be fixed.
+(defun de-fullscreen (switch)
+  "When the current frame is fullscreen, `toggle-frame-fullscreen'."
+  (ignore switch)
+  (when (frame-parameter nil 'fullscreen)
+    (run-with-timer 2 nil #'toggle-frame-fullscreen)))
+
+(add-to-list 'command-switch-alist '("-de-fs" . de-fullscreen))
+
 (with-no-warnings
   (eval-and-compile (require 'cl)))
 
