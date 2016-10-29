@@ -1176,8 +1176,11 @@ Make `last-key-repeating'."
 
 (defun my/keep-right-and-inhibit-same (buffer-or-name _)
   (with-current-buffer buffer-or-name
-    (or (eq major-mode 'magit-status-mode)
-	(string= (buffer-name) (help-buffer)))))
+    (derived-mode-p
+     'magit-status-mode
+     'Man-mode
+     'woman-mode
+     'help-mode)))
 
 (defun display-buffer-rightmost-window (buffer alist)
   "For use with `display-buffer-alist'. Display BUFFER in the
