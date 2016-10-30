@@ -261,6 +261,18 @@ multiple functions can call each other in repetition."
 	   for (key def) on args by #'cddr collect
 	   `(defkey ,key ,def ,map))))))
 
+(defun my/push-key (key)
+  "Return an interactive function which simulates pushing KEY.
+  This gets around several problems with binding to a keyboard
+  macro."
+  (declare (pure t))
+  (let* ((key (kbd key))
+	 (event (aref key 0)))
+    (lambda ()
+      (interactive)
+      (let ((last-command-event event))
+	(call-interactively (key-binding key t))))))
+
 (defmacro defun-smarter-movement (original backward forward key &optional not-use-region no-repeat map look-string)
   "Define a new function which operates better than ORIGINAL. If
 `looking-at' LOOK-STRING or `eobp' first go BACKWARD then
@@ -1779,8 +1791,9 @@ otherwise call whatever is bound to C-c C-z ARG times."
 (global-set-key (kbd "C-c C-z") #'smart-switch-to-output-buffer)
 (global-set-key (kbd "C-c z") #'smart-switch-to-output-buffer)
 (global-set-key (kbd "C-c e") #'eval-and-replace)
-(global-set-key (kbd "C-c '") (kbd "`"))
-(global-set-key (kbd "C-c -") (kbd "~"))
+(defkeys
+  "C-c '" (my/push-key "`")
+  "C-c -" (my/push-key "~"))
 (global-set-key (kbd "C-c ,") #'insert-splice)
 (global-set-key (kbd "C-c b") #'previous-buffer)
 (global-set-key (kbd "C-c f") #'next-buffer)
