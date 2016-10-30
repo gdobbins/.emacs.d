@@ -750,11 +750,15 @@ FUNCTION either locally, or optionally in KEYMAP"
 	    `(define-key ,keymap (kbd ,key) #',function)
 	  `(local-set-key (kbd ,key) #',function)))))
 
-(defun pathname->~->home ()
-  (interactive)
-  (if (looking-back "/" 1)
-      (insert "~/")
-    (call-interactively #'self-insert-command)))
+(defun pathname->~->home (arg)
+  (interactive "P")
+  (if (and (not arg) (looking-back "/" 1))
+      (progn
+	(when (looking-at ".")
+	  (kill-line))
+	(insert "~/"))
+    (let (current-prefix-arg)
+      (call-interactively #'self-insert-command))))
 
 (defun pathname->/->root ()
   (interactive)
