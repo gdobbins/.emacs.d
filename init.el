@@ -1768,74 +1768,78 @@ otherwise call whatever is bound to C-c C-z ARG times."
 
 (define-prefix-command 'my-other-window-map)
 (make-last-key-repeating-function duplicate-other-window-buffer my-other-window-map t)
-(define-key my-other-window-map (kbd "C-c s") #'other-window-imenu)
-(define-key my-other-window-map (kbd "C-s") #'other-window-isearch-forward)
-(define-key my-other-window-map (kbd "C-r") #'other-window-isearch-backward)
-(define-key my-other-window-map (kbd "C-v") #'scroll-other-window)
-(define-key my-other-window-map (kbd "C-M-v") #'scroll-other-window)
-(define-key my-other-window-map (kbd "M-v") #'scroll-other-window-down)
+(defkeys my-other-window
+  "C-c s"	 other-window-imenu
+  "C-s"		 other-window-isearch-forward
+  "C-r"		 other-window-isearch-backward
+  "C-v"		 scroll-other-window
+  "C-M-v"	 scroll-other-window
+  "M-v"		 scroll-other-window-down)
 
-(global-set-key (kbd "C-c g") #'magit-status)
-(global-set-key (kbd "C-c o") #'ioccur)
-(global-set-key (kbd "C-c a") #'org-agenda)
-(global-set-key (kbd "C-c l") #'slime-switch-to-output-buffer)
-(global-set-key (kbd "C-c t") #'sh-show-shell)
-(global-set-key (kbd "C-x C-b") #'ibuffer)
-(global-set-key (kbd "C-x C-k") #'kill-this-buffer)
-(defkey "C-l" linum-mode			my/window)
-(defkey "C-c" emacs-uptime			my/window)
-(defkey "C-e" erase-buffer			my/window)
-(defkey "C-s" delete-trailing-whitespace	my/window)
-(defkey "C-n" column-number-mode		my/window)
-(defkey "C-m" calc				my/window)
-(defkey "C-p" package-list-packages		my/window)
-(defkey "C-(" smartparens-strict-mode		my/window)
+(defkeys my/window
+  "C-l" linum-mode
+  "C-c" emacs-uptime
+  "C-e" erase-buffer
+  "C-s" delete-trailing-whitespace
+  "C-n" column-number-mode
+  "C-m" calc
+  "C-p" package-list-packages
+  "C-(" smartparens-strict-mode)
+
 (defkey "C-w" my/window-map my/avy-passthrough)
-(global-set-key (kbd "C-c d") #'duplicate-other-window-buffer)
-(global-set-key (kbd "C-c C-z") #'smart-switch-to-output-buffer)
-(global-set-key (kbd "C-c z") #'smart-switch-to-output-buffer)
-(global-set-key (kbd "C-c e") #'eval-and-replace)
+
 (defkeys
-  "C-c '" (my/push-key "`")
-  "C-c -" (my/push-key "~"))
-(global-set-key (kbd "C-c ,") #'insert-splice)
-(global-set-key (kbd "C-c b") #'previous-buffer)
-(global-set-key (kbd "C-c f") #'next-buffer)
-(global-set-key (kbd "C-c k") #'kmacro-keymap)
-(global-set-key (kbd "C-c s") #'imenu)
-(global-set-key (kbd "C-c y") #'browse-kill-ring)
-(global-set-key (kbd "C-c c") #'endless/ispell-word-then-abbrev)
-(global-set-key (kbd "C-c n") #'gnus)
-(global-set-key (kbd "C-x w b") #'hi-lock-write-interactive-patterns)
-(global-set-key (kbd "C-x w r") #'unhighlight-regexp)
-(global-set-key (kbd "C-x w h") #'highlight-regexp)
-(global-set-key (kbd "C-x w p") #'highlight-phrase)
-(global-set-key (kbd "C-x w l") #'highlight-lines-matching-regexp)
-(global-set-key (kbd "C-x w i") 'hi-lock-find-patterns)
-(global-set-key (kbd "C-x r S") #'activate-word-column-region)
-(global-set-key (kbd "C-x l") #'count-lines-page-or-maybe-region)
-(global-set-key (kbd "C-h x") #'x86-lookup)
-(global-set-key (kbd "C-h r") #'re-builder)
-(global-set-key (kbd "C-h s") #'string-edit-at-point)
-(global-set-key (kbd "C-h C-f") #'find-function)
-(global-set-key (kbd "C-h C-k") #'find-function-on-key)
-(global-set-key (kbd "C-h C-v") #'find-variable)
-(global-set-key (kbd "C-x o") #'ace-window)
-(global-set-key (kbd "M-o") #'ace-window)
-(global-set-key (kbd "M-n") #'smartscan-symbol-go-forward)
-(global-set-key (kbd "M-p") #'smartscan-symbol-go-backward)
-(global-set-key (kbd "M-z") #'avy-zap-up-to-char-dwim)
-(global-set-key (kbd "M-SPC") #'cycle-spacing)
-(global-set-key (kbd "C-z") #'repeat)
-(global-set-key (kbd "C-x z") #'repeat-complex-command)
-(global-set-key (kbd "<f5>") #'egg-timer)
-(global-set-key (kbd "C-x c") #'server-edit)
-(global-set-key (kbd "C-x #") nil)
-(global-set-key (kbd "C-;") (kbd "M-;"))
-(defkey "H-k" kill-whole-line)
-(defkey "C-c h" man)
-(defkey "H-," "M-<")
-(defkey "H-." "M->")
+  "C-c g"	 magit-status
+  "C-c o"	 ioccur
+  "C-c a"	 org-agenda
+  "C-c l"	 slime-switch-to-output-buffer
+  "C-c t"	 sh-show-shell
+  "C-x C-b"	 ibuffer
+  "C-x C-k"	 kill-this-buffer
+  "C-c d"	 duplicate-other-window-buffer
+  "C-c C-z"	 smart-switch-to-output-buffer
+  "C-c z"	 smart-switch-to-output-buffer
+  "C-c e"	 eval-and-replace
+  "C-c '"	 (my/push-key "`")
+  "C-c -"	 (my/push-key "~")
+  "C-c ,"	 insert-splice
+  "C-c b"	 previous-buffer
+  "C-c f"	 next-buffer
+  "C-c k"	 kmacro-keymap
+  "C-c s"	 imenu
+  "C-c y"	 browse-kill-ring
+  "C-c c"	 endless/ispell-word-then-abbrev
+  "C-c n"	 gnus
+  "C-x w b"	 hi-lock-write-interactive-patterns
+  "C-x w r"	 unhighlight-regexp
+  "C-x w h"	 highlight-regexp
+  "C-x w p"	 highlight-phrase
+  "C-x w l"	 highlight-lines-matching-regexp
+  "C-x w i"	 (with-no-warnings #'hi-lock-find-patterns)
+  "C-x r S"	 activate-word-column-region
+  "C-x l"	 count-lines-page-or-maybe-region
+  "C-h x"	 x86-lookup
+  "C-h r"	 re-builder
+  "C-h s"	 string-edit-at-point
+  "C-h C-f"	 find-function
+  "C-h C-k"	 find-function-on-key
+  "C-h C-v"	 find-variable
+  "C-x o"	 ace-window
+  "M-o"		 ace-window
+  "M-n"		 smartscan-symbol-go-forward
+  "M-p"		 smartscan-symbol-go-backward
+  "M-z"		 avy-zap-up-to-char-dwim
+  "M-SPC"	 cycle-spacing
+  "C-z"		 repeat
+  "C-x z"	 repeat-complex-command
+  "<f5>"	 egg-timer
+  "C-x c"	 server-edit
+  "C-x #"	 nil
+  "C-;"		 "M-;"
+  "H-k"		 kill-whole-line
+  "C-c h"	 man
+  "H-,"		 "M-<"
+  "H-."		 "M->")
 
 (autoload 'mpc-resume "mpc")
 (autoload 'mpc-pause "mpc")
