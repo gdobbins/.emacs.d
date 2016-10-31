@@ -3,7 +3,7 @@
 (require 'saveplace)
 
 (cond
- ((eval-when-compile (= emacs-major-version 25))
+ ((eval-when-compile (>= emacs-major-version 25))
   (defun save-place-to-alist ()
     (or save-place-loaded (load-save-place-alist-from-file))
     (let* ((directory (and (derived-mode-p 'dired-mode)
