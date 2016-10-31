@@ -1835,11 +1835,11 @@ otherwise call whatever is bound to C-c C-z ARG times."
   "<f5>"	 egg-timer
   "C-x c"	 server-edit
   "C-x #"	 nil
-  "C-;"		 "M-;"
+  "C-;"		 (my/push-key "M-;")
   "H-k"		 kill-whole-line
   "C-c h"	 man
-  "H-,"		 "M-<"
-  "H-."		 "M->")
+  "H-,"		 (my/push-key "M-<")
+  "H-."		 (my/push-key "M->"))
 
 (autoload 'mpc-resume "mpc")
 (autoload 'mpc-pause "mpc")
