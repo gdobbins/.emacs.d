@@ -267,7 +267,7 @@ multiple functions can call each other in repetition."
   macro."
   (declare (pure t))
   (let* ((key (kbd key))
-	 (event (aref key 0)))
+	 (event (aref key (1- (length key)))))
     (lambda ()
       (interactive)
       (let ((last-command-event event))
