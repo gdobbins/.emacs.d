@@ -1094,12 +1094,17 @@ lines have identical symbols at identical goal columns as the symbol at point."
   (rectangle-mark-mode))
 
 (defun insert-splice ()
-  (interactive)
-  (if (looking-back "[^ \n]" 1)
+  "Insert ,@ into the buffer, with a space before and parens
+after as appropriate. For use in lisp programming languages."
+  (interactive "*")
+  (if (looking-back "[^[:space:]\n]" 1)
       (insert " "))
-  (insert ",@()")
-  (backward-char)
-  (run-hooks 'post-self-insert-hook))
+  (insert ",@")
+  (unless (looking-at "(")
+    (insert "()")
+    (backward-char))
+  (let (smartparens-mode)
+    (run-hooks 'post-self-insert-hook)))
 
 (autoload 'slime-switch-to-output-buffer "slime")
 (autoload 'sh-show-shell "sh-script" "Pop the shell interaction buffer." t)
