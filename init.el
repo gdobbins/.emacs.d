@@ -2462,11 +2462,19 @@ otherwise self-insert."
 (with-eval-after-load 'wttrin
   (advice-add 'wttrin :after #'truncate-lines->t))
 
-(put 'set-goal-column	'disabled nil)
-(put 'erase-buffer	'disabled nil)
-(put 'downcase-region	'disabled nil)
-(put 'upcase-region	'disabled nil)
-(put 'narrow-to-region  'disabled nil)
+(cl-macrolet
+    ((my/undisable (&rest functions)
+		   `(progn
+		      ,@(cl-loop for f in functions
+				 collect `(put ',f 'disabled nil)))))
+
+  (my/undisable
+   set-goal-column
+   erase-buffer
+   downcase-region
+   upcase-region
+   narrow-to-region
+   timer-list))
 
 (defun maybe-delete-trailing-whitespace ()
   "Call `delete-trailing-whitespace' if the `major-mode' is
