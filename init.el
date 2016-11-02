@@ -1103,6 +1103,7 @@ after as appropriate. For use in lisp programming languages."
   (unless (looking-at "(")
     (insert "()")
     (backward-char))
+  (ignore smartparens-mode)
   (let (smartparens-mode)
     (run-hooks 'post-self-insert-hook)))
 
