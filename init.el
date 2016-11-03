@@ -1574,6 +1574,19 @@ current line. Repeat ARG times."
       (call-interactively #'count-words-region)
     (count-lines-page)))
 
+(defun my/kill-this-buffer (arg)
+  "When the current buffer is visiting a file and the buffer has
+been modified, call `save-buffer' unless ARG. Then call
+`kill-this-buffer' or `bury-buffer' if in the scratch buffer."
+  (interactive "P")
+  (when (and (not arg)
+	     (buffer-file-name)
+	     (buffer-modified-p))
+    (save-buffer))
+  (if (string= (buffer-name) "*scratch*")
+      (bury-buffer)
+    (kill-this-buffer)))
+
 (defun narrow-or-widen-dwim (p)
   "Widen if buffer is narrowed, narrow-dwim otherwise.
 Dwim means: region, org-src-block, org-subtree, or
@@ -1801,7 +1814,7 @@ otherwise call whatever is bound to C-c C-z ARG times."
   "C-c l"	 slime-switch-to-output-buffer
   "C-c t"	 sh-show-shell
   "C-x C-b"	 ibuffer
-  "C-x C-k"	 kill-this-buffer
+  "C-x C-k"	 my/kill-this-buffer
   "C-c d"	 duplicate-other-window-buffer
   "C-c C-z"	 smart-switch-to-output-buffer
   "C-c z"	 smart-switch-to-output-buffer
