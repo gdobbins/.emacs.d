@@ -157,7 +157,7 @@ FLAG is then removed if found and added to `used-command-flags'."
   "For use with `command-switch-alist'. When emacs is passed the
 flag SWITCH followed by two or three file names, call `ediff' on
 those files."
-  (ignore switch)
+  (add-to-list 'used-command-flags switch)
   (let ((file1 (pop command-line-args-left))
 	(file2 (pop command-line-args-left))
 	(file3 (and
@@ -176,7 +176,7 @@ those files."
 (add-to-list 'command-switch-alist '("-diff" . command-line-diff))
 
 (defun command-line-magit (switch)
-  (ignore switch)
+  (add-to-list 'used-command-flags switch)
   (let ((git-dir (pop command-line-args-left)))
     (magit-status-internal (expand-file-name git-dir))
     (delete-other-windows)))
@@ -189,7 +189,7 @@ those files."
 ;; with -fs allows both problems to be fixed.
 (defun de-fullscreen (switch)
   "When the current frame is fullscreen, `toggle-frame-fullscreen'."
-  (ignore switch)
+  (add-to-list 'used-command-flags switch)
   (when (frame-parameter nil 'fullscreen)
     (run-with-timer 2 nil #'toggle-frame-fullscreen)))
 
