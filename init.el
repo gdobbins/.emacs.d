@@ -2329,6 +2329,7 @@ project."
 (add-hook 'prog-mode-hook #'paredit-or-smartparens)
 
 (add-hook 'eshell-mode-hook				#'enable-paredit-mode)
+(add-hook 'ielm-mode-hook				#'enable-paredit-mode)
 (add-hook 'eval-expression-minibuffer-setup-hook	#'enable-paredit-mode)
 (add-hook 'slime-repl-mode-hook				#'enable-paredit-mode)
 
@@ -2438,7 +2439,15 @@ otherwise self-insert."
   (defvar smartparens-mode-map)
   (defkey ")" sp-paredit-like-close-round smartparens-mode))
 
-(add-hook 'comint-mode-hook #'smartparens-strict-mode)
+(defun maybe-enable-smartparens ()
+  "Enable `smartparens-strict-mode' unless in `paredit-mode' or
+`smartparens-mode' or in `ielm'."
+  (unless (or paredit-mode smartparens-mode
+	      (member major-mode
+		      '(inferior-emacs-lisp-mode)))
+    (smartparens-strict-mode)))
+
+(add-hook 'comint-mode-hook #'maybe-enable-smartparens)
 
 (with-eval-after-load 'elpy
   (add-hook 'elpy-mode-hook #'set-flymake-no-changes-timeout-to-one-hour)
