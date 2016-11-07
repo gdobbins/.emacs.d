@@ -1315,6 +1315,10 @@ on the location of the new git directory."
 (with-eval-after-load 'message
   (setq message-use-idna 'ask))
 
+(with-eval-after-load 'gnutls
+  (when (< gnutls-min-prime-bits 4096)
+    (setq gnutls-min-prime-bits 4096)))
+
 (setq vc-follow-symlinks t)
 
 (defun ioccur-follow-next ()
