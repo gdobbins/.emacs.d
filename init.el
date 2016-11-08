@@ -2390,7 +2390,7 @@ project."
   (require 'org-habit)
   (defvar org-mode-map)
   (define-key org-mode-map (kbd "M-j") (kbd "M-<return>"))
-  (define-key org-mode-map (kbd "C-c i") #'interleave)
+  (define-key org-mode-map (kbd "C-c i") #'interleave-mode)
   (define-key org-mode-map (kbd "C-c '") nil)
   (with-no-warnings
     (define-key org-mode-map (kbd "M-n") #'outline-next-visible-heading)
