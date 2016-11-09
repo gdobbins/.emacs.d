@@ -617,6 +617,7 @@ Use in `isearch-mode-end-hook'."
 (add-hook 'isearch-mode-end-hook #'endless/goto-match-beginning)
 
 (with-eval-after-load 'imenu
+  (defvar imenu-auto-rescan)
   (setq imenu-auto-rescan t))
 
 (with-eval-after-load 'slime
