@@ -1318,6 +1318,16 @@ on the location of the new git directory."
 (with-eval-after-load 'message
   (setq message-use-idna 'ask))
 
+(with-eval-after-load 'tls
+  (defvar tls-program)
+  (setq tls-program
+	(mapcan
+	 (lambda (x)
+	   (unless
+	       (string-match "--\\(insecure\\|protocols ssl3\\)" x)
+	     (list x)))
+	 tls-program)))
+
 (with-eval-after-load 'gnutls
   (when (< gnutls-min-prime-bits 4096)
     (setq gnutls-min-prime-bits 4096)))
