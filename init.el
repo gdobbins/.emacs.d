@@ -1107,7 +1107,6 @@ after as appropriate. For use in lisp programming languages."
   (unless (looking-at "(")
     (insert "()")
     (backward-char))
-  (eval-when-compile (defvar smartparens-mode))
   (let (smartparens-mode)
     (run-hooks 'post-self-insert-hook)))
 
@@ -2447,6 +2446,10 @@ otherwise self-insert."
   (sp-use-paredit-bindings)
   (defvar smartparens-mode-map)
   (defkey ")" sp-paredit-like-close-round smartparens-mode))
+
+;;; To facilitate functions defined in init which change behavior
+;;; based on smartparens being active or not
+(defvar smartparens-mode)
 
 (defun maybe-enable-smartparens ()
   "Enable `smartparens-strict-mode' unless in `paredit-mode' or
