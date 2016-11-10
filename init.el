@@ -489,6 +489,7 @@ hasn't been repeated."
 		     (mode . newsticker-mode)))
 	 ("Emacs" (or
 		   (mode . emacs-lisp-mode)
+		   (mode . elisp-byte-code-mode)
 		   (mode . lisp-interaction-mode)
 		   (mode . help-mode)
 		   (mode . Info-mode)
