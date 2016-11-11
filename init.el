@@ -977,6 +977,9 @@ function."
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo/")))
   (advice-add 'undo-tree-save-history :around #'undo-tree-save-history-ignore-file))
 
+(setq save-interprogram-paste-before-kill t
+      kill-do-not-save-duplicates t)
+
 (with-eval-after-load 'x86-lookup
   (let ((location "/usr/local/doc/64-ia-32-architectures-software-developer-manual-325462.pdf"))
     (when (file-exists-p location)
