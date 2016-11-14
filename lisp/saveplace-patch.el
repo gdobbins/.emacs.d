@@ -2,6 +2,14 @@
 
 (require 'saveplace)
 
+(eval-when-compile (require 'pdf-view))
+
+(defun my/pdf-view-current-page ()
+  (require 'image-mode)
+  (defun my/pdf-view-current-page ()
+    (pdf-view-current-page))
+  (my/pdf-view-current-page))
+
 (cond
  ((eval-when-compile (>= emacs-major-version 25))
   (defun save-place-to-alist ()
@@ -29,7 +37,7 @@
 				     `((dired-filename . ,filename))
 				   (point))))
 			      ((eq major-mode 'pdf-view-mode)
-			       (pdf-view-current-page))
+			       (my/pdf-view-current-page))
 			      (t (point)))))
 	  (if cell
 	      (setq save-place-alist (delq cell save-place-alist)))
@@ -64,7 +72,7 @@
 				     `((dired-filename . ,filename))
 				   (point))))
 			      ((eq major-mode 'pdf-view-mode)
-			       (pdf-view-current-page))
+			       (my/pdf-view-current-page))
 			      (t (point)))))
 	  (if cell
 	      (setq save-place-alist (delq cell save-place-alist)))
