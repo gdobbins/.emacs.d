@@ -1782,6 +1782,13 @@ otherwise call whatever is bound to C-c C-z ARG times."
 	 this-command
        (key-binding (kbd "C-c C-z"))))))
 
+(define-prefix-command 'my/run-map)
+(defkeys my/run
+  "C-l" slime
+  "C-t" shell
+  "C-p" run-python
+  "C-s" sage-shell:run-sage)
+
 (defkeys  my/avy-passthrough
   "C-c" close-line
   "C-p" open-previous-line
@@ -1794,6 +1801,8 @@ otherwise call whatever is bound to C-c C-z ARG times."
   "C-v" describe-variable
   "C-k" describe-key
   "C-h" describe-prefix-bindings
+
+  "C-r" my/run-map
 
   "C-a" align-regexp
   "C-x" projectile-direct-jack-in
