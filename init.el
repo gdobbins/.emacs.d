@@ -2288,9 +2288,10 @@ project."
 (with-eval-after-load 'lisp-mode
   (font-lock-add-keywords
    'lisp-mode
-   '(("(\\(iter\\(ate\\)?\\|defmacro-\\(driver\\|clause\\)\\)[ \t\n]" 1 'font-lock-keyword-face)
-     ("(\\(for\\|generate\\|while\\|until\\|repeat\\|finally\\|finish\\|leave\\|next-iteration\\|if-first-time\\|with\\|initially\\)[ \t\n]" 1 'font-lock-keyword-face)
-     ("(define-constant[ \n\r\t]+\\(\\(\\sw\\|\\s_\\)*\\)" 1 'font-lock-variable-name-face))
+   '(("(\\(iter\\(ate\\)?\\|defmacro-\\(driver\\|clause\\)\\)[[:space:]\n]" 1 'font-lock-keyword-face)
+     ("(i\\(ter\\(ate\\)?\\|n\\)\\s-+\\([^()\\s-]+\\)" 3 'font-lock-constant-face)
+     ("(\\(f\\(or\\|in\\(ish\\|ally\\(-protected\\)?\\)\\)\\|generate\\|w\\(hile\\|ith\\)\\|until\\|repeat\\|leave\\|next-iteration\\|i\\(n\\(itially\\)?\\|f-first-time\\)\\|after-each\\|else\\)[[:space:]\n)]" 1 'font-lock-keyword-face)
+     ("(define-constant\\s-+\\(\\(\\sw\\|\\s_\\)*\\)" 1 'font-lock-variable-name-face))
    t)
   (define-key lisp-mode-map (kbd "C-c e") #'slime-eval-and-replace)
   (define-key lisp-mode-map (kbd "C-c C-s") #'slime-scratch))
