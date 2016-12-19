@@ -105,12 +105,18 @@ FLAG is then removed if found and added to `used-command-flags'."
   `(if-command-flag ,flag nil ,@body))
 
 (unless-command-flag
-    "--no-theme"
-  (require 'theme))
-
-(unless-command-flag
     "--no-secrets"
   (load "~/.emacs.d/secrets" t t))
+
+(when (and (eval-when-compile (>= emacs-major-version 25))
+	   (not package-selected-packages))
+  (setq package-selected-packages
+	'(ace-window alert auctex avy avy-zap browse-kill-ring dired-narrow edit-server elpy expand-region flycheck ido-hacks ido-sort-mtime ido-ubiquitous ido-yes-or-no interleave ioccur isearch+ latex-preview-pane lua-mode magit multi-term paredit pdf-tools pkgbuild-mode projectile sage-shell-mode slime smartparens smartscan smex solarized-theme string-edit undo-tree writegood-mode wttrin x86-lookup))
+  (package-install-selected-packages))
+
+(unless-command-flag
+    "--no-theme"
+  (require 'theme))
 
 (autoload #'server-running-p "server")
 (autoload #'server-edit "server")
