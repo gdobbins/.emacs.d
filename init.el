@@ -339,7 +339,8 @@ hasn't been repeated."
 	kmacro-counter-format
 	register-alist))
 
-(setq sentence-end-double-space nil)
+(setq sentence-end-double-space nil
+      scroll-conservatively 6)
 
 (when user-mail-address
   (setq epa-file-encrypt-to user-mail-address))
