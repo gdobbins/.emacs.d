@@ -90,17 +90,22 @@ with CONS as its car."
 (defvar used-command-flags nil
   "List of command flags used by `if-command-flag' and related.")
 
+(defun my-cf/check (flag)
+  "Workhorse of `if-command-flag'."
+  (or
+   (and (member flag command-line-args)
+	(setf command-line-args (delete flag command-line-args))
+	(push flag used-command-flags))
+   (member flag used-command-flags)))
+
 (defmacro if-command-flag (flag then &rest else)
   "If FLAG is present in `command-line-args' or
   `used-command-flags' execute THEN , otherwise execute ELSE. If
   present in `command-line-args', then move it to
-  `used-command-flags'."
+  `used-command-flags'. If FLAG is a list of flags then check
+  sequentially with an implicit or."
   (declare (indent 1))
-  `(if (or
-	(and (member ,flag command-line-args)
-	     (setf command-line-args (delete ,flag command-line-args))
-	     (push ,flag used-command-flags))
-	(member ,flag used-command-flags))
+  `(if (or ,@(cl-loop for f in (my/ensure-cons flag) collect `(my-cf/check ,f)))
        ,then
      ,@else))
 
