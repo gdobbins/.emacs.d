@@ -139,14 +139,12 @@ FLAG is then removed if found and added to `used-command-flags'."
     (add-hook 'emacs-startup-hook #'server-start)))
 
 (unless-command-flag
-    "--no-pinentry"
-  (unless-command-flag
-      "--no-server"
-    (when (eval-when-compile
-	    (>= emacs-major-version 25))
-      (unless (server-running-p)
-	(require 'pinentry)
-	(pinentry-start t)))))
+    ("--no-pinentry" "--no-server")
+  (when (eval-when-compile
+	  (>= emacs-major-version 25))
+    (unless (server-running-p)
+      (require 'pinentry)
+      (pinentry-start t))))
 
 (with-eval-after-load 'pinentry
   (defvar pinentry-popup-prompt-window)
