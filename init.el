@@ -81,6 +81,12 @@ some other initialization operations which slow startup time."
 
 (package-initialize)
 
+(eval-and-compile
+  (defun my/ensure-cons (cons)
+    "If CONS is a cons it is returned, else a fresh cons is made
+with CONS as its car."
+    (if (consp cons) cons (list cons))))
+
 (defvar used-command-flags nil
   "List of command flags used by `if-command-flag' and related.")
 
@@ -257,12 +263,9 @@ multiple functions can call each other in repetition."
   bound in each keymap in the list."
   (let* ((keymap
 	  (when (cl-oddp (length args))
-	    (pop args)))
-	 (keymap (if (consp keymap)
-		     keymap
-		   (cons keymap nil))))
+	    (pop args))))
     `(progn
-       ,@(cl-loop for map in keymap nconc
+       ,@(cl-loop for map in (my/ensure-cons keymap) nconc
 	  (cl-loop
 	   for (key def) on args by #'cddr collect
 	   `(defkey ,key ,def ,map))))))
@@ -1740,8 +1743,7 @@ arguments for each call with the package listed first."
   `(progn
      ,@(cl-loop
 	for a in args collect
-	(let ((b (if (consp a) a (cons a nil))))
-	  `(passthrough-move-key ,key ,@b)))))
+	`(passthrough-move-key ,key ,@(my/ensure-cons a)))))
 
 (passthrough-move-keys "C-o"
   ibuffer
