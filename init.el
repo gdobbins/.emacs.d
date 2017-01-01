@@ -2069,11 +2069,22 @@ sudo_askpass.sh"
 
 (setq-default comint-prompt-read-only t)
 
-(defun comint-delchar-or-eof-or-kill-buffer (arg)
-  (interactive "p")
-  (if (null (get-buffer-process (current-buffer)))
-      (kill-buffer)
-    (comint-delchar-or-maybe-eof arg)))
+(defmacro defun-do-when-no-process (name no-process &rest else)
+  "Define an interactive function called NAME with one anaphoric
+argument ARG taking `interactive' parameter p. If the
+`current-buffer' has no process call NO-PROCESS, otherwise call
+ELSE."
+  (declare (indent 1))
+  `(defun ,name (arg)
+     (interactive "p")
+     (if (null (get-buffer-process (current-buffer)))
+	 ,no-process
+       ,@else)))
+
+(defun-do-when-no-process
+    comint-delchar-or-eof-or-kill-buffer
+  (kill-buffer)
+  (comint-delchar-or-maybe-eof arg))
 
 (define-key comint-mode-map (kbd "C-d") #'comint-delchar-or-eof-or-kill-buffer)
 (define-key comint-mode-map (kbd "C-r") #'comint-history-isearch-backward)
@@ -2446,8 +2457,15 @@ project."
 
 (defalias 'run-sage #'sage-shell:run-sage)
 
+(defun-do-when-no-process
+    sage-shell:delchar-or-maybe-eof-or-kill-buffer
+  (kill-buffer)
+  (with-no-warnings
+    (sage-shell:delchar-or-maybe-eof arg)))
+
 (with-eval-after-load 'sage-shell-mode
-  (sage-shell:define-alias))
+  (sage-shell:define-alias)
+  (defkey "C-d" sage-shell:delchar-or-maybe-eof-or-kill-buffer sage-shell-mode))
 
 (defun python-repl-clear-buffer ()
   (interactive)
