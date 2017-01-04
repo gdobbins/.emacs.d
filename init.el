@@ -118,7 +118,10 @@ FLAG is then removed if found and added to `used-command-flags'."
 
 (unless-command-flag
     "--no-secrets"
-  (load "~/.emacs.d/secrets" t t))
+  (or
+   (load "~/.emacs.d/secrets" t t)
+   (copy-file "~/.emacs.d/secrets-skeleton.el"
+	      (setq custom-file "~/.emacs.d/secrets.el"))))
 
 (when (and (eval-when-compile (>= emacs-major-version 25))
 	   (not package-selected-packages))
