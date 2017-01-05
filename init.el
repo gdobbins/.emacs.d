@@ -332,6 +332,9 @@ hasn't been repeated."
 (defun-smarter-movement mark-sexp
   (backward-sexp) (exchange-point-and-mark) "C-M-SPC" t)
 
+(defun-smarter-movement kill-sexp
+  (backward-sexp) nil "C-M-k" t)
+
 (defadvice pop-to-mark-command (around ensure-new-mark-position compile activate)
   (let ((p (point)))
     (dotimes (i 10)
