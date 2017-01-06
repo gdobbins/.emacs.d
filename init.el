@@ -1131,18 +1131,32 @@ lines have identical symbols at identical goal columns as the symbol at point."
 ;;; based on smartparens being active or not
 (defvar smartparens-mode nil)
 
-(defun insert-splice ()
+(defun insert-splice (arg)
   "Insert ,@ into the buffer, with a space before and parens
-after as appropriate. For use in lisp programming languages."
-  (interactive "*")
-  (if (looking-back "[^[:space:]\n]" 1)
-      (insert " "))
-  (insert ",@")
-  (unless (looking-at "(")
-    (insert "()")
-    (backward-char))
-  (let (smartparens-mode)
-    (run-hooks 'post-self-insert-hook)))
+after as appropriate. With \\[universal-argument] or when point
+is not at whitespace splice the containing sexp instead. For use
+in lisp programming languages."
+  (interactive "*P")
+  (let ((move (or arg (not (thing-at-point 'whitespace))))
+	(chars 2))
+    (save-excursion
+      (when move
+	(do () ((looking-back "(" 1) (backward-char))
+	  (forward-thing 'sexp -1)))
+      (when (looking-back "[^[:space:]\n]" 1)
+	(insert " ")
+	(incf chars))
+      (insert ",@")
+      (unless (looking-at "(")
+	(insert "()")
+	(backward-char)
+	(incf chars))
+      (let (smartparens-mode)
+	(run-hooks 'post-self-insert-hook))
+      (when paredit-mode
+	(paredit-reindent-defun)))
+    (unless move
+      (forward-char chars))))
 
 (autoload 'slime-switch-to-output-buffer "slime")
 (autoload 'sh-show-shell "sh-script" "Pop the shell interaction buffer." t)
