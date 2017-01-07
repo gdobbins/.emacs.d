@@ -2492,6 +2492,7 @@ project."
 
 (with-eval-after-load 'sage-shell-mode
   (sage-shell:define-alias)
+  (defvar sage-shell-mode-map)
   (defkey "C-d" sage-shell:delchar-or-maybe-eof-or-kill-buffer sage-shell-mode))
 
 (defun python-repl-clear-buffer ()
