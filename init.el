@@ -533,6 +533,7 @@ hasn't been repeated."
 		   (mode . calc-mode)
 		   (mode . calc-trail-mode)
 		   (mode . browse-kill-ring-mode)
+		   (mode . process-menu-mode)
 		   (mode . messages-buffer-mode))))))
 
 (setq ibuffer-show-empty-filter-groups nil)
