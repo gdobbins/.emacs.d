@@ -251,14 +251,19 @@ multiple functions can call each other in repetition."
 	  (t function)))
       map)))
 
+(eval-and-compile
+  (defun my/maybe-append-map (keymap)
+    "Append -map to the symbol in KEYMAP if not already present."
+    (let ((symbol-name (symbol-name keymap)))
+      (intern
+       (if (string-match "-map$" symbol-name)
+	   symbol-name
+	 (concat symbol-name "-map"))))))
+
 (defmacro defkey (key def &optional keymap)
   "Convenience macro for defining keybindings."
   (let ((map (if keymap
-		 (let ((symbol-name (symbol-name keymap)))
-		   (intern
-		    (if (string-match "-map$" symbol-name)
-			symbol-name
-		      (concat symbol-name "-map"))))
+		 (my/maybe-append-map keymap)
 	       '(current-global-map))))
     `(define-key ,map
        ,(if (stringp key) `(kbd ,key) key)
@@ -273,15 +278,32 @@ multiple functions can call each other in repetition."
 (defmacro defkeys (&rest args)
   "Passes args pairwise to `defkey', optional first argument is
   used as the KEYMAP argument. If KEYMAP is a list, keys are
-  bound in each keymap in the list."
+  bound in each keymap in the list. If the keymaps in said list
+  are a list then the first position denotes the map, the second
+  whether to defvar the map and the third whether to defer
+  binding until after loading."
   (let* ((keymap
 	  (when (cl-oddp (length args))
 	    (pop args))))
     `(progn
-       ,@(cl-loop for map in (my/ensure-cons keymap) nconc
-	  (cl-loop
-	   for (key def) on args by #'cddr collect
-	   `(defkey ,key ,def ,map))))))
+       ,@(cl-loop for map in (my/ensure-cons keymap) collect
+		  (append (if (and (listp map) (third map))
+			      `(with-eval-after-load
+				   ',(if (eq t (third map))
+					 (let ((symbol-name (symbol-name (first map))))
+					   (intern
+					    (if (string-match "-mode$" symbol-name)
+						(substring symbol-name 0 -5)
+					      symbol-name)))
+				       (third map)))
+			    '(progn))
+			  (when (and (listp map) (second map))
+			    `((defvar ,(if (eq (second map) t)
+					   (my/maybe-append-map (first map))
+					 (second map)))))
+			  (cl-loop
+			   for (key def) on args by #'cddr collect
+			   `(defkey ,key ,def ,(if (listp map) (first map) map))))))))
 
 (defun my/push-key (key)
   "Return an interactive function which simulates pushing KEY.
