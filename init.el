@@ -653,9 +653,10 @@ Use in `isearch-mode-end-hook'."
   (defvar slime-mode-map)
   (defvar slime-repl-mode-map)
   (let ((doc-fun (lookup-key slime-mode-map (kbd "C-c C-d h"))))
-    (defkey "C-c C-d DEL" 'doc-fun slime-mode)
-    (defkey "C-c C-d DEL" 'doc-fun slime-repl-mode))
-  (define-key slime-mode-map (kbd "C-c C-k") nil))
+    (defkeys (slime-mode slime-repl-mode)
+      "C-c C-d DEL" 'doc-fun
+      "C-c C-k" nil
+      "M-?" nil)))
 
 (setf slime-lisp-implementations
       (eval-when-compile
