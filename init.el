@@ -1231,7 +1231,7 @@ lone t is treated specially."
 
 (defun smart-switch-to-output-buffer ()
   "Attempt to switch to an output buffer, cycling in order
-through lisp, shell, multi-term, sage, then python.
+through lisp, shell, multi-term, sage, python, then ielm.
 Make `last-key-repeating'."
   (interactive)
   (my/do-next-cond
@@ -1255,6 +1255,8 @@ Make `last-key-repeating'."
       (sage-shell-edit:pop-to-process-buffer)))
    ((my/check-for-process "Python")
     (elpy-shell-switch-to-shell))
+   ((my/check-for-process "ielm")
+    (ielm))
    (t
     (user-error "No available process to switch to.")))
   (last-key-repeating))
@@ -1850,7 +1852,8 @@ otherwise call whatever is bound to C-c C-z ARG times."
   "C-l" slime
   "C-t" shell
   "C-p" run-python
-  "C-s" sage-shell:run-sage)
+  "C-s" sage-shell:run-sage
+  "C-i" ielm)
 
 (defkeys  my/avy-passthrough
   "C-c" close-line
@@ -2080,7 +2083,7 @@ definition of that thing instead."
     (search-forward "Major Mode Bindings:" nil t)
     (recenter-top-bottom 0)))
 
-(defkeys (emacs-lisp-mode lisp-interaction-mode)
+(defkeys (emacs-lisp-mode lisp-interaction-mode (ielm t t))
   "C-c C-c" eval-defun
   "C-c M-e" macrostep-expand
   "C-c C-w C-c" xref-find-references)
