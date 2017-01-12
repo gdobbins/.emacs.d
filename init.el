@@ -673,9 +673,8 @@ Use in `isearch-mode-end-hook'."
 (with-eval-after-load 'slime
   (slime-setup '(slime-fancy))
   (defvar slime-mode-map)
-  (defvar slime-repl-mode-map)
   (let ((doc-fun (lookup-key slime-mode-map (kbd "C-c C-d h"))))
-    (defkeys (slime-mode slime-repl-mode)
+    (defkeys (slime-mode (slime-repl-mode t))
       "C-c C-d DEL" 'doc-fun
       "C-c C-k" nil
       "M-?" nil)))
