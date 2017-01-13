@@ -2298,13 +2298,20 @@ otherwise if within a comment then uncomment, else call
     (paredit-comment-dwim)))
 
 (with-eval-after-load 'paredit
-  (with-no-warnings
-    (defun-smarter-movement paredit-wrap-round
-      (paredit-backward) (paredit-forward) "M-(" nil nil paredit-mode-map))
+  (defvar paredit-mode-map)
+  (defun-smarter-movement paredit-wrap-round
+    (paredit-backward) (paredit-forward) "M-(" nil nil paredit-mode-map)
   (defkeys paredit-mode
     "C-M-)" "C-)"
-    "C-M-(" "C-(")
-  (define-key paredit-mode-map (kbd "C-;") #'paredit-uncomment-or-comment-sexp)
+    "C-M-(" "C-("
+    "C-;" paredit-uncomment-or-comment-sexp
+    "C-d" `(menu-item "" ,(lookup-key paredit-mode-map (kbd "C-d"))
+		      :filter
+		      ,(lambda (cmd)
+			 (unless (and (derived-mode-p 'comint-mode)
+				      (or (eobp)
+					  (not (get-buffer-process (current-buffer)))))
+			   cmd))))
   (add-to-list 'paredit-space-for-delimiter-predicates
 	       #'paredit-space-for-predicates-cl))
 
