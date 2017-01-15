@@ -1281,7 +1281,7 @@ Make `last-key-repeating'."
      'woman-mode
      'help-mode)))
 
-(defun display-buffer-rightmost-window (buffer alist)
+(cl-defun display-buffer-rightmost-window (buffer alist)
   "For use with `display-buffer-alist'. Display BUFFER in the
 rightmost window of the current frame. Call `split-window-right'
 first if there is only one window. Pop to window if BUFFER is
@@ -1301,15 +1301,24 @@ already displayed."
 	       (cl-do ((win current-window win2)
 		       (win2 current-window (window-right win2)))
 		   ((null win2) win))
-	       (window-left win)))
-	  ((not (or (window-minibuffer-p win)
-		    (window-dedicated-p win)
-		    (and inhibit-same
-			 (eq win current-window))))
+	       (or (window-left win)
+		   (when (cdr (assq 'allow-no-window alist))
+		     (cl-return-from display-buffer-rightmost-window))
+		   (if inhibit-same
+		       (cl-loop for w in (window-list)
+				when (not (eq current-window w))
+				return w)
+		     current-window))))
+	  ((not (or
+		 (not (window-live-p win))
+		 (window-minibuffer-p win)
+		 (window-dedicated-p win)
+		 (and inhibit-same
+		      (eq win current-window))))
 	   win))))
    'reuse alist))
 
-(defun display-buffer-leftmost-window (buffer alist)
+(cl-defun display-buffer-leftmost-window (buffer alist)
   "For use with `display-buffer-alist'. Display BUFFER in the
 leftmost window of the current frame. Call `split-window-right'
 first if there is only one window. Pop to window if BUFFER is
@@ -1330,11 +1339,20 @@ already displayed."
 	       (cl-do ((win current-window win2)
 		       (win2 current-window (window-left win2)))
 		   ((null win2) win))
-	       (window-right win)))
-	  ((not (or (window-minibuffer-p win)
-		    (window-dedicated-p win)
-		    (and inhibit-same
-			 (eq win current-window))))
+	       (or (window-right win)
+		   (when (cdr (assq 'allow-no-window alist))
+		     (cl-return-from display-buffer-leftmost-window))
+		   (if inhibit-same
+		       (cl-loop for w in (window-list)
+				when (not (eq current-window w))
+				return w)
+		     current-window))))
+	  ((not (or
+		 (not (window-live-p win))
+		 (window-minibuffer-p win)
+		 (window-dedicated-p win)
+		 (and inhibit-same
+		      (eq win current-window))))
 	   win))))
    'reuse alist))
 
