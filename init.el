@@ -2315,6 +2315,10 @@ otherwise if within a comment then uncomment, else call
   (with-no-warnings
     (paredit-comment-dwim)))
 
+(defun my/save-excursion-advice (orig &rest args)
+  (save-excursion
+    (apply orig args)))
+
 (with-eval-after-load 'paredit
   (defvar paredit-mode-map)
   (defun-smarter-movement paredit-wrap-round
@@ -2331,7 +2335,8 @@ otherwise if within a comment then uncomment, else call
 					  (not (get-buffer-process (current-buffer)))))
 			   cmd))))
   (add-to-list 'paredit-space-for-delimiter-predicates
-	       #'paredit-space-for-predicates-cl))
+	       #'paredit-space-for-predicates-cl)
+  (advice-add 'paredit-reindent-defun :around #'my/save-excursion-advice))
 
 (defun insert-earmuffs ()
   (interactive)
