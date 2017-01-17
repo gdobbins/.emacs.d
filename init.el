@@ -1285,13 +1285,19 @@ Make `last-key-repeating'."
   "For use with `display-buffer-alist'. Display BUFFER in the
 rightmost window of the current frame. Call `split-window-right'
 first if there is only one window. Pop to window if BUFFER is
-already displayed."
+already displayed. If accept-current-with-process has true
+association in ALIST then reuse current window if it is
+displaying a buffer with a process associated with it according
+to `buffer-has-process-p'."
   (window--display-buffer
    buffer
    (or
     (cl-loop for win in (window-list)
 	     when (eq buffer (window-buffer win))
 	     return win)
+    (and (cdr (assq 'accept-current-with-process alist))
+	 (buffer-has-process-p (window-buffer))
+	 (selected-window))
     (unless (cdr (window-list))
       (split-window-right)
       nil)
@@ -1322,13 +1328,19 @@ already displayed."
   "For use with `display-buffer-alist'. Display BUFFER in the
 leftmost window of the current frame. Call `split-window-right'
 first if there is only one window. Pop to window if BUFFER is
-already displayed."
+already displayed. If accept-current-with-process has true
+association in ALIST then reuse current window if it is
+displaying a buffer with a process associated with it according
+to `buffer-has-process-p'."
   (window--display-buffer
    buffer
    (or
     (cl-loop for win in (window-list)
 	     when (eq buffer (window-buffer win))
 	     return win)
+    (and (cdr (assq 'accept-current-with-process alist))
+	 (buffer-has-process-p (window-buffer))
+	 (selected-window))
     (unless (cdr (window-list))
       (split-window-right)
       (other-window 1)
@@ -1358,7 +1370,10 @@ already displayed."
 
 (add-to-list 'display-buffer-alist
 	     (cons #'buffer-has-process-p
-		   (cons #'display-buffer-rightmost-window nil)))
+		   (cons #'display-buffer-rightmost-window
+			 (cons
+			  (cons 'accept-current-with-process t)
+			  nil))))
 
 (add-to-list 'display-buffer-alist
 	     (cons #'buffer-derives-from-prog
