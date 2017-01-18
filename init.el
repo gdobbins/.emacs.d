@@ -59,14 +59,32 @@ some other initialization operations which slow startup time."
 (setq inhibit-startup-echo-area-message "graham")
 (message "Live long and prosper.")
 (setq initial-scratch-message
-      ";;                                     ____
+      (concat
+       ";;                                     ____
 ;;                           __...---~'    `~~~----...__
 ;;                        _===============================
 ;;   ,----------------._/'      `---..._______...---'
 ;;   (_______________||_) . .  ,--'
 ;;       /    /.---'         `/
 ;;      '--------_- - - - - _/
-;;                `--------'\n\n")
+;;                `--------'\n;;\n"
+       (let ((fortune-file "~/.emacs.d/fortunes"))
+	 (when (file-readable-p fortune-file)
+	   (with-temp-buffer
+	     (insert-file-contents fortune-file)
+	     (let ((num-fortunes (prog1 (thing-at-point 'number t)
+				   (forward-line)))
+		   (lines-per (prog1 (thing-at-point 'number t)
+				(forward-line))))
+	       (dotimes (_ (* (random num-fortunes) (1+ lines-per)))
+		 (forward-line))
+	       (apply #'concat
+		      (cl-loop repeat lines-per collect
+			       (concat
+				";;   "
+				(thing-at-point 'line t))
+			       do (forward-line)))))))
+       "\n\n"))
 
 (require 'package)
 
