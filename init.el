@@ -80,10 +80,10 @@ some other initialization operations which slow startup time."
 		 (forward-line))
 	       (apply #'concat
 		      (cl-loop repeat lines-per collect
-			       (concat
-				";;   "
-				(thing-at-point 'line t))
-			       do (forward-line)))))))
+			   (concat
+			    ";;   "
+			    (thing-at-point 'line t))
+			 do (forward-line)))))))
        "\n\n"))
 
 (require 'package)
@@ -250,7 +250,7 @@ multiple functions can call each other in repetition."
     `(defadvice ,func (after ,new-func compile activate)
        ,@(if trans-map
 	     `(,(format "Set the transient map to `%s'" trans-map)
-	       (set-transient-map ,trans-map ,keep-map))
+		(set-transient-map ,trans-map ,keep-map))
 	   `("Set the transient map to one where `last-input-event' repeats the function call"
 	     (set-transient-map
 	      (let ((map (make-sparse-keymap)))
@@ -264,9 +264,9 @@ multiple functions can call each other in repetition."
     (let ((map (make-sparse-keymap)))
       (define-key map (vector last-input-event)
 	,(cond
-	  ((null function) 'this-command)
-	  ((symbolp function) `#',function)
-	  (t function)))
+	   ((null function) 'this-command)
+	   ((symbolp function) `#',function)
+	   (t function)))
       map)))
 
 (eval-and-compile
@@ -284,14 +284,14 @@ multiple functions can call each other in repetition."
 		 (my/maybe-append-map keymap)
 	       '(current-global-map))))
     `(define-key ,map
-       ,(if (stringp key) `(kbd ,key) key)
+	 ,(if (stringp key) `(kbd ,key) key)
        ,(cond
-	 ((symbolp def) `#',def)
-	 ((stringp def) `(kbd ,def))
-	 ((and (listp def)
-	       (eq (first def) 'quote))
-	  (second def))
-	 (t def)))))
+	  ((symbolp def) `#',def)
+	  ((stringp def) `(kbd ,def))
+	  ((and (listp def)
+		(eq (first def) 'quote))
+	   (second def))
+	  (t def)))))
 
 (defmacro defkeys (&rest args)
   "Passes args pairwise to `defkey', optional first argument is
@@ -305,22 +305,22 @@ multiple functions can call each other in repetition."
 	    (pop args))))
     `(progn
        ,@(cl-loop for map in (my/ensure-cons keymap) collect
-		  (append (if (and (listp map) (third map))
-			      `(with-eval-after-load
-				   ',(if (eq t (third map))
-					 (let ((symbol-name (symbol-name (first map))))
-					   (intern
-					    (if (string-match "-mode$" symbol-name)
-						(substring symbol-name 0 -5)
-					      symbol-name)))
-				       (third map)))
-			    '(progn))
-			  (when (and (listp map) (second map))
-			    `((defvar ,(if (eq (second map) t)
-					   (my/maybe-append-map (first map))
-					 (second map)))))
-			  (cl-loop
-			   for (key def) on args by #'cddr collect
+	      (append (if (and (listp map) (third map))
+			  `(with-eval-after-load
+			       ',(if (eq t (third map))
+				     (let ((symbol-name (symbol-name (first map))))
+				       (intern
+					(if (string-match "-mode$" symbol-name)
+					    (substring symbol-name 0 -5)
+					  symbol-name)))
+				   (third map)))
+			'(progn))
+		      (when (and (listp map) (second map))
+			`((defvar ,(if (eq (second map) t)
+				       (my/maybe-append-map (first map))
+				     (second map)))))
+		      (cl-loop
+			 for (key def) on args by #'cddr collect
 			   `(defkey ,key ,def ,(if (listp map) (first map) map))))))))
 
 (defun my/push-key (key)
@@ -593,31 +593,31 @@ hasn't been repeated."
   (define-key ibuffer-mode-map (kbd "C-k") #'ibuffer-mark-and-kill-lines)
   (define-key ibuffer-mode-map (kbd "M-o") nil)
   (defadvice ibuffer (around ibuffer-point-to-most-recent compile activate)
-	     "Open ibuffer with cursor pointed to most recent buffer name"
-	     (let ((recent-buffer-name (buffer-name)))
-	       ad-do-it
-	       (unless (string= recent-buffer-name "*Ibuffer*")
-		 (ibuffer-jump-to-buffer recent-buffer-name))))
+    "Open ibuffer with cursor pointed to most recent buffer name"
+    (let ((recent-buffer-name (buffer-name)))
+      ad-do-it
+      (unless (string= recent-buffer-name "*Ibuffer*")
+	(ibuffer-jump-to-buffer recent-buffer-name))))
   (define-ibuffer-column size-h
-    (:name "Size" :inline t)
+      (:name "Size" :inline t)
     (let ((buf-size (buffer-size)))
       (cond
-       ((> buf-size 1048576)
-	(format "%7.1fM" (/ buf-size 1048576.0)))
-       ((> buf-size 1024)
-	(format "%7.1fk" (/ buf-size 1024.0)))
-       (t (format "%8d" buf-size)))))
+	((> buf-size 1048576)
+	 (format "%7.1fM" (/ buf-size 1048576.0)))
+	((> buf-size 1024)
+	 (format "%7.1fk" (/ buf-size 1024.0)))
+	(t (format "%8d" buf-size)))))
   (setq ibuffer-formats
-      '((mark modified read-only " "
-              (name 18 18 :left :elide)
-              " "
-              (size-h 9 -1 :right)
-              " "
-              (mode 16 16 :left :elide)
-              " " filename-and-process)
-        (mark " "
-              (name 16 -1)
-              " " filename))))
+	'((mark modified read-only " "
+	   (name 18 18 :left :elide)
+	   " "
+	   (size-h 9 -1 :right)
+	   " "
+	   (mode 16 16 :left :elide)
+	   " " filename-and-process)
+	  (mark " "
+	   (name 16 -1)
+	   " " filename))))
 
 (with-eval-after-load 'ibuf-ext
   (add-to-list 'ibuffer-never-show-predicates "^\\*slime-events\\*$")
@@ -643,8 +643,8 @@ hasn't been repeated."
 (add-hook 'ibuffer-mode-hook #'close-hidden-ibuffer-groups)
 
 (add-hook 'ibuffer-mode-hook
-              (lambda ()
-                (ibuffer-switch-to-saved-filter-groups "default")))
+	  (lambda ()
+	    (ibuffer-switch-to-saved-filter-groups "default")))
 
 (defun window-dedicated->t (&optional window)
   (set-window-dedicated-p (or window (selected-window)) t))
@@ -768,7 +768,7 @@ abort completely with `C-g'."
       (while (if (setq bef (endless/simple-get-word))
                  ;; Word was corrected or used quit.
                  (if (ispell-word nil 'quiet)
-                     nil ; End the loop.
+                     nil		; End the loop.
                    ;; Also end if we reach `bob'.
                    (not (bobp)))
                ;; If there's no word at point, keep looking
@@ -781,8 +781,8 @@ abort completely with `C-g'."
         (let ((aft (downcase aft))
               (bef (downcase bef)))
           (define-abbrev
-            (if p local-abbrev-table global-abbrev-table)
-            bef aft)
+	      (if p local-abbrev-table global-abbrev-table)
+	      bef aft)
           (message "\"%s\" now expands to \"%s\" %sally"
                    bef aft (if p "loc" "glob")))
       (user-error "No typo at or before point"))))
@@ -933,21 +933,21 @@ function."
       projectile-ignored-project-function #'projectile-ignored-project-function)
 
 (def-projectile-commander-method ?s
-  "Open a *shell* buffer for the project."
+    "Open a *shell* buffer for the project."
   (shell (get-buffer-create
           (format "*shell %s*"
                   (projectile-project-name)))))
 
 (def-projectile-commander-method ?\C-?
-  "Go back to project selection."
+    "Go back to project selection."
   (projectile-switch-project))
 
 (def-projectile-commander-method ?d
-  "Open project root in dired."
+    "Open project root in dired."
   (projectile-dired))
 
 (def-projectile-commander-method ?D
-  "Find directory in project."
+    "Find directory in project."
   (projectile-find-dir))
 
 (define-key projectile-mode-map (kbd "C-c p d") #'projectile-dired)
@@ -982,7 +982,7 @@ function."
 	     (projectile-vc root)))))
 
 (def-projectile-commander-method ?j
-  "Jack in."
+    "Jack in."
   (projectile-jack-in))
 
 (defun projectile-direct-jack-in ()
@@ -1227,24 +1227,24 @@ lone t is treated specially."
     `(let ((,do-next nil)
 	   (,second-time nil))
        (cl-tagbody
-	,top
-	(cond
-	 ,@(cl-loop for clause in clauses
-		    unless (eq t (car clause)) collect
-		    (cons
-		     `(let ((,temp ,(car clause)))
-			(and (car ,temp)
-			     (if (cadr ,temp)
-				 ,do-next
-			       (setq ,do-next t)
-			       nil)))
-		     (cdr clause)))
-	 (t
-	  (if ,second-time
-	      (progn ,@otherwise)
-	    (setq ,second-time t
-		  ,do-next t)
-	    (go ,top))))))))
+	  ,top
+	  (cond
+	    ,@(cl-loop for clause in clauses
+		 unless (eq t (car clause)) collect
+		   (cons
+		    `(let ((,temp ,(car clause)))
+		       (and (car ,temp)
+			    (if (cadr ,temp)
+				,do-next
+			      (setq ,do-next t)
+			      nil)))
+		    (cdr clause)))
+	    (t
+	     (if ,second-time
+		 (progn ,@otherwise)
+	       (setq ,second-time t
+		     ,do-next t)
+	       (go ,top))))))))
 
 (defun smart-switch-to-output-buffer ()
   "Attempt to switch to an output buffer, cycling in order
@@ -1286,9 +1286,9 @@ and one of them is dedicated to displaying the xref buffer."
        (not (cdr (frame-list)))
        (not (cddr (window-list)))
        (cl-loop for w in (window-list)
-		when (string= (buffer-name (window-buffer w))
-			      (with-no-warnings xref-buffer-name))
-		return (window-dedicated-p w))))
+	  when (string= (buffer-name (window-buffer w))
+			(with-no-warnings xref-buffer-name))
+	  return (window-dedicated-p w))))
 
 (with-eval-after-load 'xref
   (add-to-list 'display-buffer-alist (cons #'my/override-xref-and-reuse-window
@@ -1334,8 +1334,8 @@ to `buffer-has-process-p'."
    buffer
    (or
     (cl-loop for win in (window-list)
-	     when (eq buffer (window-buffer win))
-	     return win)
+       when (eq buffer (window-buffer win))
+       return win)
     (and (cdr (assq 'accept-current-with-process alist))
 	 (buffer-has-process-p (window-buffer))
 	 (selected-window))
@@ -1347,22 +1347,22 @@ to `buffer-has-process-p'."
       (cl-do ((win
 	       (cl-do ((win current-window win2)
 		       (win2 current-window (window-right win2)))
-		   ((null win2) win))
+		      ((null win2) win))
 	       (or (window-left win)
 		   (when (cdr (assq 'allow-no-window alist))
 		     (cl-return-from display-buffer-rightmost-window))
 		   (if inhibit-same
 		       (cl-loop for w in (window-list)
-				when (not (eq current-window w))
-				return w)
+			  when (not (eq current-window w))
+			  return w)
 		     current-window))))
-	  ((not (or
-		 (not (window-live-p win))
-		 (window-minibuffer-p win)
-		 (window-dedicated-p win)
-		 (and inhibit-same
-		      (eq win current-window))))
-	   win))))
+	     ((not (or
+		    (not (window-live-p win))
+		    (window-minibuffer-p win)
+		    (window-dedicated-p win)
+		    (and inhibit-same
+			 (eq win current-window))))
+	      win))))
    'reuse alist))
 
 (cl-defun display-buffer-leftmost-window (buffer alist)
@@ -1377,8 +1377,8 @@ to `buffer-has-process-p'."
    buffer
    (or
     (cl-loop for win in (window-list)
-	     when (eq buffer (window-buffer win))
-	     return win)
+       when (eq buffer (window-buffer win))
+       return win)
     (and (cdr (assq 'accept-current-with-process alist))
 	 (buffer-has-process-p (window-buffer))
 	 (selected-window))
@@ -1391,22 +1391,22 @@ to `buffer-has-process-p'."
       (cl-do ((win
 	       (cl-do ((win current-window win2)
 		       (win2 current-window (window-left win2)))
-		   ((null win2) win))
+		      ((null win2) win))
 	       (or (window-right win)
 		   (when (cdr (assq 'allow-no-window alist))
 		     (cl-return-from display-buffer-leftmost-window))
 		   (if inhibit-same
 		       (cl-loop for w in (window-list)
-				when (not (eq current-window w))
-				return w)
+			  when (not (eq current-window w))
+			  return w)
 		     current-window))))
-	  ((not (or
-		 (not (window-live-p win))
-		 (window-minibuffer-p win)
-		 (window-dedicated-p win)
-		 (and inhibit-same
-		      (eq win current-window))))
-	   win))))
+	     ((not (or
+		    (not (window-live-p win))
+		    (window-minibuffer-p win)
+		    (window-dedicated-p win)
+		    (and inhibit-same
+			 (eq win current-window))))
+	      win))))
    'reuse alist))
 
 (add-to-list 'display-buffer-alist
@@ -1439,14 +1439,14 @@ on the location of the new git directory."
 	 (ignore-file (concat dir-name ".gitignore")))
     (unless (file-exists-p attributes-file)
       (cond
-       ((string-match "/quicklisp/local-projects/" attributes-file)
-	(with-temp-file attributes-file
-	  (insert "*.lisp diff=lisp\n")))))
+	((string-match "/quicklisp/local-projects/" attributes-file)
+	 (with-temp-file attributes-file
+	   (insert "*.lisp diff=lisp\n")))))
     (unless (file-exists-p ignore-file)
       (cond
-       ((string-match "/quicklisp/local-projects/" ignore-file)
-	(with-temp-file ignore-file
-	  (insert "*.fasl\n"))))))
+	((string-match "/quicklisp/local-projects/" ignore-file)
+	 (with-temp-file ignore-file
+	   (insert "*.fasl\n"))))))
   (apply orig args))
 
 (defvar magit-no-message '("Turning on magit-auto-revert-mode..."))
@@ -1572,14 +1572,14 @@ Don't mess with special buffers."
   "Set a timer to go off in x minutes, default to 5."
   (interactive "P")
   (let ((time (cond
-	       ((equal x nil) "5")
-	       ((listp x) (if (= (first x) 4)
-			      (read-string "Number of minutes: " nil nil "10")
-			    (format "%d"
-				    (* (string-to-number
-					(read-string "Number of hours: " nil nil "1"))
-				       60))))
-	       (t (format "%d" x)))))
+		((equal x nil) "5")
+		((listp x) (if (= (first x) 4)
+			       (read-string "Number of minutes: " nil nil "10")
+			     (format "%d"
+				     (* (string-to-number
+					 (read-string "Number of hours: " nil nil "1"))
+					60))))
+		(t (format "%d" x)))))
     (run-at-time (concat time " min") nil
 		 (lambda ()
 		   (let ((visible-bell t)
@@ -1592,18 +1592,18 @@ Don't mess with special buffers."
 		     (format-time-string "%T")))))
 
 (with-no-warnings
- (defun duplicate-other-window-buffer ()
-   (interactive)
-   (let ((this-buffer (current-buffer))
-	 (len (length (window-list))))
-     (cond
-      ((= len 2)
-       (other-window 1)
-       (switch-to-buffer this-buffer t t)
-       (other-window 1))
-      ((= len 1)
-       (split-window-right))
-      ((user-error "Too many windows"))))))
+  (defun duplicate-other-window-buffer ()
+    (interactive)
+    (let ((this-buffer (current-buffer))
+	  (len (length (window-list))))
+      (cond
+	((= len 2)
+	 (other-window 1)
+	 (switch-to-buffer this-buffer t t)
+	 (other-window 1))
+	((= len 1)
+	 (split-window-right))
+	((user-error "Too many windows"))))))
 
 (defmacro defun-other-window-do (name if-2-list &rest else)
   `(defun ,name ()
@@ -1614,17 +1614,17 @@ Don't mess with special buffers."
 	   ,@if-2-list
 	   (other-window 1))
        ,@(if else
-	    else
+	     else
 	   '((user-error "Need two windows"))))))
 
 (defun find-user-init-file ()
   "Edit the `user-init-file'"
   (interactive)
   (cl-loop for win in (window-list)
-	   when (string= user-init-file
-			 (buffer-file-name (window-buffer win)))
-	   return (pop-to-buffer (window-buffer win))
-	   finally (find-file user-init-file)))
+     when (string= user-init-file
+		   (buffer-file-name (window-buffer win)))
+     return (pop-to-buffer (window-buffer win))
+     finally (find-file user-init-file)))
 
 (defkey "C-i" find-user-init-file my/window)
 
@@ -1657,17 +1657,17 @@ open last agenda file."
 (defkey "C-a" find-first-agenda-file my/window)
 
 (defun-other-window-do other-window-imenu
-  ((call-interactively #'imenu)))
+    ((call-interactively #'imenu)))
 
 (defun-other-window-do other-window-isearch-forward
-  ((let ((isearch-mode-end-hook (append isearch-mode-end-hook '(exit-recursive-edit))))
-     (call-interactively #'isearch-forward)
-     (recursive-edit))))
+    ((let ((isearch-mode-end-hook (append isearch-mode-end-hook '(exit-recursive-edit))))
+       (call-interactively #'isearch-forward)
+       (recursive-edit))))
 
 (defun-other-window-do other-window-isearch-backward
-  ((let ((isearch-mode-end-hook (append isearch-mode-end-hook '(exit-recursive-edit))))
-     (call-interactively #'isearch-backward)
-     (recursive-edit))))
+    ((let ((isearch-mode-end-hook (append isearch-mode-end-hook '(exit-recursive-edit))))
+       (call-interactively #'isearch-backward)
+       (recursive-edit))))
 
 (defun other-window-quit (arg)
   "Run `quit-window' in the window selected by `ace-window'.
@@ -1857,11 +1857,11 @@ NO-DEFVAR in order to pacify the byte compiler."
     `(with-eval-after-load ',package
        ,(unless no-defvar `(defvar ,package-map))
        (define-key ,package-map
-	 (vector 'remap
-		 (lookup-key
-		  (lookup-key (current-global-map)
-			      ,key)
-		  ,key))
+	   (vector 'remap
+		   (lookup-key
+		    (lookup-key (current-global-map)
+				,key)
+		    ,key))
 	 (lookup-key ,package-map ,key))
        (define-key ,package-map ,key nil))))
 
@@ -1872,8 +1872,8 @@ arguments for each call with the package listed first."
   (declare (indent 1))
   `(progn
      ,@(cl-loop
-	for a in args collect
-	`(passthrough-move-key ,key ,@(my/ensure-cons a)))))
+	  for a in args collect
+	    `(passthrough-move-key ,key ,@(my/ensure-cons a)))))
 
 (passthrough-move-keys "C-o"
   ibuffer
@@ -2121,13 +2121,13 @@ definition of that thing instead."
 	   (describe-variable #'find-variable)
 	   (describe-key #'find-function-on-key)
 	   (t (throw 'not-help-command
-		     (if (< n 60)
-			 (help-go-to-definition
-			  (rest temp/command-history)
-			  (1+ n)
-			  start-buffer)
-		       (user-error
-			"No applicable help command in recent history")))))
+		(if (< n 60)
+		    (help-go-to-definition
+		     (rest temp/command-history)
+		     (1+ n)
+		     start-buffer)
+		  (user-error
+		   "No applicable help command in recent history")))))
        (unless (and
 		(eval-when-compile (< emacs-major-version 25))
 		;; Prior to version 25 find-function-on-key used other-window
@@ -2367,7 +2367,7 @@ otherwise if within a comment then uncomment, else call
   	    (forward-line -1))
   	  (forward-line)
   	  (back-to-indentation))
-  	(smarter-mark-sexp)))
+      (smarter-mark-sexp)))
   (with-no-warnings
     (paredit-comment-dwim)))
 
@@ -2572,8 +2572,8 @@ project."
   (interactive)
   (setq mode-line-format
 	'("%e" mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote "  " mode-line-position mode-line-frame-identification mode-line-buffer-identification
- (vc-mode vc-mode)
- "  " mode-line-modes mode-line-misc-info mode-line-end-spaces)))
+	  (vc-mode vc-mode)
+	  "  " mode-line-modes mode-line-misc-info mode-line-end-spaces)))
 
 (add-hook 'pdf-view-mode-hook #'set-mode-line-numbers-at-front)
 
@@ -2695,9 +2695,9 @@ otherwise self-insert."
 
 (cl-macrolet
     ((my/undisable (&rest functions)
-		   `(progn
-		      ,@(cl-loop for f in functions
-				 collect `(put ',f 'disabled nil)))))
+       `(progn
+	  ,@(cl-loop for f in functions
+	       collect `(put ',f 'disabled nil)))))
 
   (my/undisable
    set-goal-column

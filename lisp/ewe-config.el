@@ -27,8 +27,8 @@ of the buffer."
 		   (beginning-of-line)
 		   (point)))
 	      (pre (cond
-		    ((= x 1) "    ")
-		    ((= x 4) ">")))
+		     ((= x 1) "    ")
+		     ((= x 4) ">")))
 	      (blank "[[:space:]]*$"))
 	  (string-rectangle p m pre)
 	  (goto-char p)
@@ -48,8 +48,8 @@ of the buffer."
 	      (newline)))))
     (save-excursion
       (cond
-       ((= x 1) (mark-defun))
-       ((= x 4) (mark-paragraph)))
+	((= x 1) (mark-defun))
+	((= x 4) (mark-paragraph)))
       (markdown-codify-region x))))
 
 (defun markdown-inline-codify-region ()
