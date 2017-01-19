@@ -1278,6 +1278,25 @@ Make `last-key-repeating'."
     (user-error "No available process to switch to.")))
   (last-key-repeating))
 
+(defun my/override-xref-and-reuse-window (buffer-or-name _)
+  "Match when there is only one frame with two or fewer windows
+and one of them is dedicated to displaying the xref buffer."
+  (ignore buffer-or-name)
+  (and (featurep 'xref)
+       (not (cdr (frame-list)))
+       (not (cddr (window-list)))
+       (cl-loop for w in (window-list)
+		when (string= (buffer-name (window-buffer w))
+			      (with-no-warnings xref-buffer-name))
+		return (window-dedicated-p w))))
+
+(with-eval-after-load 'xref
+  (add-to-list 'display-buffer-alist (cons #'my/override-xref-and-reuse-window
+					   (cons #'display-buffer-same-window
+						 (cons
+						  (cons 'inhibit-same-window nil)
+						  nil)))))
+
 (defun buffer-has-process-p (buffer-or-name &rest _)
   "True if BUFFER-OR-NAME has a process associated with it or has
 `major-mode' eq to `slime-repl-mode'."
@@ -1293,11 +1312,15 @@ Make `last-key-repeating'."
 
 (defun my/keep-right-and-inhibit-same (buffer-or-name _)
   (with-current-buffer buffer-or-name
-    (derived-mode-p
-     'magit-status-mode
-     'Man-mode
-     'woman-mode
-     'help-mode)))
+    (or
+     (derived-mode-p
+      'magit-status-mode
+      'Man-mode
+      'woman-mode
+      'help-mode)
+     (and
+      (featurep 'xref)
+      (string= (with-no-warnings xref-buffer-name) (buffer-name))))))
 
 (cl-defun display-buffer-rightmost-window (buffer alist)
   "For use with `display-buffer-alist'. Display BUFFER in the
