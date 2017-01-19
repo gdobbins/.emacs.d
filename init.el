@@ -2457,7 +2457,9 @@ project."
      ("(define-constant\\s-+\\(\\(\\sw\\|\\s_\\)*\\)" 1 'font-lock-variable-name-face))
    t)
   (define-key lisp-mode-map (kbd "C-c e") #'slime-eval-and-replace)
-  (define-key lisp-mode-map (kbd "C-c C-s") #'slime-scratch))
+  (define-key lisp-mode-map (kbd "C-c C-s") #'slime-scratch)
+  (setq lisp-indent-function #'common-lisp-indent-function)
+  (put 'defkeys 'common-lisp-indent-function-for-elisp `(,lisp-body-indent &body)))
 
 (defun slime-return-to-lisp-file ()
   "Go backwards through the buffer list until one in lisp mode is found."
