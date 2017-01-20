@@ -421,6 +421,10 @@ hasn't been repeated."
   (define-key eww-mode-map (kbd "C-c b") 'eww-back-url)
   (define-key eww-mode-map (kbd "C-c f") 'eww-forward-url))
 
+(with-eval-after-load 'shr
+  (defvar shr-use-fonts)
+  (setq shr-use-fonts nil))
+
 (add-to-list 'browse-url-browser-function '("^file" . eww-browse-url))
 (add-to-list 'browse-url-browser-function '("^https?://en\\.wiktionary\\.org/wiki/" . eww-browse-url))
 
