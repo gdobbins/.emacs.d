@@ -2452,7 +2452,7 @@ project."
   (font-lock-add-keywords
    'lisp-mode
    '(("(\\(iter\\(ate\\)?\\|defmacro-\\(driver\\|clause\\)\\)[[:space:]\n]" 1 'font-lock-keyword-face)
-     ("(i\\(ter\\(ate\\)?\\|n\\)\\s-+\\([^()\\s-]+\\)" 3 'font-lock-constant-face)
+     ("(\\(i\\(ter\\(ate\\)?\\|n\\)\\|block\\|return-from\\|loop\\s-+named\\)\\s-+\\([^()[:space:]]+\\)" 4 'font-lock-constant-face)
      ("(\\(f\\(or\\|in\\(ish\\|ally\\(-protected\\)?\\)\\)\\|generate\\|w\\(hile\\|ith\\)\\|until\\|repeat\\|leave\\|next-iteration\\|i\\(n\\(itially\\)?\\|f-first-time\\)\\|after-each\\|else\\)[[:space:]\n)]" 1 'font-lock-keyword-face)
      ("(define-constant\\s-+\\(\\(\\sw\\|\\s_\\)*\\)" 1 'font-lock-variable-name-face))
    t)
