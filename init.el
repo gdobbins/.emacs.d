@@ -522,7 +522,7 @@ hasn't been repeated."
 		   (mode . TeX-output-mode)
 		   (mode . plain-tex-mode)
 		   (name . "^\\*\\(Latex Preview Pane \\(Welcome\\|Errors\\)\\|pdflatex-buffer\\)\\*$")))
-	 ("Text" (or (mode . text-mode)
+	 ("Text" (or (derived-mode . text-mode)
 		     (mode . nroff-mode)
 		     (mode . change-log-mode)))
 	 ("Books" (or
