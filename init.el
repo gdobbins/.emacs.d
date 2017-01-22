@@ -470,7 +470,9 @@ hasn't been repeated."
   (setq wdired-allow-to-change-permissions t))
 
 (global-set-key (kbd "C-x p") #'proced)
-(setq-default proced-filter 'emacs)
+(with-eval-after-load 'proced
+  (defvar proced-filter)
+  (setq-default proced-filter 'emacs))
 
 (setq ibuffer-saved-filter-groups
       `(("default"
