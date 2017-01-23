@@ -703,7 +703,12 @@ Use in `isearch-mode-end-hook'."
     (defkeys (slime-mode (slime-repl-mode t))
       "C-c C-d DEL" 'doc-fun
       "C-c C-k" nil
-      "M-?" nil)))
+      "M-?" nil))
+  (with-eval-after-load 'cl-indent
+    (put 'iter 'common-lisp-indent-function `(,lisp-body-indent &body))
+    (put 'iterate 'common-lisp-indent-function
+	 (get 'iter 'common-lisp-indent-function))
+    (put 'in 'common-lisp-indent-function '(&lambda &body))))
 
 (setf slime-lisp-implementations
       (eval-when-compile
