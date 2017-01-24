@@ -1475,9 +1475,10 @@ on the location of the new git directory."
 
 (setq ioccur-buffer-completion-use-ido t)
 
-(with-eval-after-load 'message
-  (defvar message-use-idna)
-  (setq message-use-idna 'ask))
+(when (eval-when-compile (< emacs-major-version 26))
+  (with-eval-after-load 'message
+    (defvar message-use-idna)
+    (setq message-use-idna 'ask)))
 
 (with-eval-after-load 'tls
   (defvar tls-program)
