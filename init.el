@@ -1895,7 +1895,8 @@ arguments for each call with the package listed first."
   wdired
   (rect rectangle-mark-mode-map)
   grep
-  (xref xref--xref-buffer-mode-map))
+  (xref xref--xref-buffer-mode-map)
+  (compile compilation-mode-map))
 
 (defun close-line (arg)
   (interactive "*p")
