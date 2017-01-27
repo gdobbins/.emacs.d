@@ -2233,9 +2233,25 @@ ELSE."
 (define-key comint-mode-map (kbd "C-r") #'comint-history-isearch-backward)
 (defkey "C-c C-z" nil comint-mode)
 
+(defun imenu-man-flag-create-index-function ()
+  "For use in Man buffers. Suitable for use in
+`imenu-create-index-function'. Collects an alist of the flags
+listed in the man page and their `point's."
+  (goto-char (point-min))
+  (cl-loop while (re-search-forward "^\\s-*-+" nil t)
+     collect #1=(cons (thing-at-point 'symbol t) (point))
+     nconc
+       (cl-loop while (re-search-forward ",\\s-+-+" (1+ (point-at-eol)) 1)
+	  collect #1#)))
+
 (with-eval-after-load 'man
   (defvar Man-width)
-  (setq Man-width 80))
+  (setq Man-width 80)
+  (require 'imenu)
+  (add-hook 'Man-mode-hook
+	    (lambda ()
+	      (setq-local imenu-create-index-function
+			  #'imenu-man-flag-create-index-function))))
 
 (when (and (string-match "zsh$" (getenv "SHELL"))
 	   (not (getenv "HISTFILE")))
