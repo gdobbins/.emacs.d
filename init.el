@@ -1921,20 +1921,43 @@ arguments for each call with the package listed first."
   (indent-according-to-mode)
   (last-key-repeating))
 
+(defun my/xor (a b)
+  "Logical xor of A and B"
+  (if a (if (not b) a) b))
+
+(defvar non-native-C-c-C-z-first nil
+  "Whether `C-c-C-z-or-smart-switch-to-output-buffer' should call
+  the native C-c C-z function without \\[universal-argument].")
+
 (defun C-c-C-z-or-smart-switch-to-output-buffer (arg)
   "With plain \\[universal-argument] call `smart-switch-to-output-buffer',
-otherwise call whatever is bound to C-c C-z ARG times."
+otherwise call whatever is bound to C-c C-z ARG times. Reverse if
+`non-native-C-c-C-z-first'. Two \\[universal-argument]'s will
+change the value of `non-native-C-c-C-z-first'."
   (interactive "P")
-  (dotimes (_ (if (consp arg)
-		  (progn
-		    (setq this-command #'smart-switch-to-output-buffer)
-		    (log (or (car-safe arg) 4) 4))
-		(last-key-repeating)
-		(prefix-numeric-value arg)))
-    (call-interactively
-     (if (consp arg)
-	 this-command
-       (key-binding (kbd "C-c C-z"))))))
+  (if (and (consp arg) (= 16 (car arg)))
+      (progn
+	(setq non-native-C-c-C-z-first (not non-native-C-c-C-z-first))
+	(message
+	 (format "Switching mode set to%snative first."
+		 (if non-native-C-c-C-z-first
+		     " non-"
+		   " "))))
+    (let ((non-native (my/xor (consp arg) non-native-C-c-C-z-first))
+	  prefix-arg)
+      (dotimes (_ (if non-native
+		      (progn
+			(setq this-command #'smart-switch-to-output-buffer)
+			(log (or (car-safe arg) 4) 4))
+		    (setq this-command (my/push-key "C-c C-z"))
+		    (last-key-repeating)
+		    (/
+		     (prefix-numeric-value arg)
+		     (if non-native-C-c-C-z-first
+			 4
+		       1))))
+	(call-interactively
+	 this-command)))))
 
 (define-prefix-command 'my/run-map)
 (defkeys my/run
