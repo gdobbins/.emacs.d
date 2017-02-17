@@ -335,6 +335,65 @@ multiple functions can call each other in repetition."
       (let ((last-command-event event))
 	(call-interactively (key-binding key t))))))
 
+(eval-and-compile
+  (defun my/regexp-part->char-match (regexp)
+    (or
+     (case (length regexp)
+       (1 (cons `(= direction ,(aref regexp 0)) nil))
+       (3 (and (= ?\\ (aref regexp 0)) (= ?s (aref regexp 1))
+	       (cons `(= char-syntax-direction ,(let ((temp (aref regexp 2)))
+						  (if (= temp 45)
+						      32
+						    temp)))
+		     t))))
+     (error "Can not optimize %s" regexp)))
+
+  (defun my/regexp->char-match (form regexp backward)
+    (if (stringp regexp)
+	(condition-case nil
+	    (cl-subst (if backward
+			  '(preceding-char)
+			'(following-char))
+		      'direction
+		      (cl-subst `(char-syntax direction) 'char-syntax-direction
+				(cl-loop for r in (split-string regexp "\\\\|" t)
+				   for (c . d) = (my/regexp-part->char-match r)
+				   collect c into res
+				   collect d into var
+				   finally return
+				     (if (cdr res)
+					 (let ((sym1 (cl-gensym)))
+					   (nconc
+					    `(let ((,sym1 direction)))
+					    (list
+					     (cl-subst sym1 'direction
+						       (if (cl-loop for dd in var
+							      when dd return t)
+							   (let ((sym2 (cl-gensym)))
+							     (nconc
+							      `(let ((,sym2 (char-syntax ,sym1))))
+							      (list (cons 'or (cl-subst sym2 'char-syntax-direction res)))))
+							 (cons 'or res))))))
+				       (car res)))))
+	  (error form))
+      form)))
+
+(defalias 'my/looking-at #'looking-at)
+
+(cl-define-compiler-macro my/looking-at (&whole form regexp)
+  (my/regexp->char-match form regexp nil))
+
+(defalias 'my/looking-back #'looking-back)
+
+(cl-define-compiler-macro my/looking-back (&whole form regexp limit &optional greedy)
+  (or
+   (and
+    (not greedy)
+    (numberp limit)
+    (= 1 limit)
+    (my/regexp->char-match form regexp t))
+   form))
+
 (defmacro defun-smarter-movement (original backward forward key &optional not-use-region no-repeat map look-string)
   "Define a new function which operates better than ORIGINAL. If
 `looking-at' LOOK-STRING or `eobp' first go BACKWARD then
@@ -347,8 +406,8 @@ hasn't been repeated."
     `(progn
        (defun ,new-func ()
 	 (interactive)
-	 (if (and (or (looking-at ,(or look-string
-				       "\\(\\s)\\|[[:space:]\n]\\|\\s\"\\)"))
+	 (if (and (or (my/looking-at ,(or look-string
+				       "\\s)\\|\\s-\\|\n\\|\\s\""))
 		      (eobp))
 		  ,(if not-use-region
 		       '(not (use-region-p))
@@ -837,9 +896,9 @@ FUNCTION either locally, or optionally in KEYMAP"
 
 (defun pathname->~->home (arg)
   (interactive "P")
-  (if (and (not arg) (looking-back "/" 1))
+  (if (and (not arg) (my/looking-back "/" 1))
       (progn
-	(when (looking-at ".")
+	(when (my/looking-at ".")
 	  (kill-line))
 	(insert "~/"))
     (let (current-prefix-arg)
@@ -847,7 +906,7 @@ FUNCTION either locally, or optionally in KEYMAP"
 
 (defun pathname->/->root ()
   (interactive)
-  (if (looking-back "/" 1)
+  (if (my/looking-back "/" 1)
       (insert "//")
     (call-interactively #'self-insert-command)))
 
@@ -1071,7 +1130,7 @@ function."
   (interactive "p")
   (let ((y x))
     (if (> y 0)
-	(let ((s (if (looking-back " " 1) 0 -1)))
+	(let ((s (if (my/looking-back " " 1) 0 -1)))
 	  (while (> y 0)
 	    (setf s (+ s (if (= 0 (skip-chars-backward " \n\t")) 1 0)))
 	    (kill-sexp -1)
@@ -1156,7 +1215,7 @@ lines have identical symbols at identical goal columns as the symbol at point."
   (let (upper-pt lower-pt (next-line-add-newlines t))
     (save-excursion
       (let ((target (format "%s" (symbol-at-point))))
-	(while (looking-back "\\(\\sw\\|\\s_\\)" 1)
+	(while (my/looking-back "\\sw\\|\\s_" 1)
 	  (backward-char 1))
 	(with-no-warnings
 	  (save-excursion
@@ -1173,11 +1232,11 @@ lines have identical symbols at identical goal columns as the symbol at point."
       (let ((upper-pt (or upper-pt (point)))
 	    (lower-pt (or lower-pt (point))))
 	(goto-char lower-pt)
-	(while (looking-at "\\(\\sw\\|\\s_\\)")
+	(while (my/looking-at "\\sw\\|\\s_")
 	  (forward-char 1))
 	(push-mark nil nil t)
 	(goto-char upper-pt)
-	(while (looking-back "\\(\\sw\\|\\s_\\)" 1)
+	(while (my/looking-back "\\sw\\|\\s_" 1)
 	  (backward-char 1)))))
   (rectangle-mark-mode))
 
@@ -1195,13 +1254,13 @@ in lisp programming languages."
 	(chars 2))
     (save-excursion
       (when move
-	(do () ((looking-back "(" 1) (backward-char))
+	(do () ((my/looking-back "(" 1) (backward-char))
 	  (forward-thing 'sexp -1)))
-      (when (looking-back "[^[:space:]\n]" 1)
+      (when (not (my/looking-back "\\s-\\|\n" 1))
 	(insert " ")
 	(incf chars))
       (insert ",@")
-      (unless (looking-at "(")
+      (unless (my/looking-at "(")
 	(insert "()")
 	(backward-char)
 	(incf chars))
@@ -1723,16 +1782,16 @@ current line. Repeat ARG times."
 	(move-end-of-line 1)
       (let ((eolp (eolp)))
 	(backward-char 1)
-	(while (looking-at "[[:space:]]")
+	(while (my/looking-at "\\s-")
 	  (backward-char 1))
-	(if (and eolp (looking-back "\\s)" 1))
+	(if (and eolp (my/looking-back "\\s)" 1))
 	    (progn
-	      (while (looking-at "\\s)")
+	      (while (my/looking-at "\\s)")
 		(backward-char 1))
 	      (forward-char 1))
-	  (while (not (looking-at "\\s(\\|\\s)\\|\n"))
+	  (while (not (my/looking-at "\\s(\\|\\s)\\|\n"))
 	    (backward-char 1)))
-	(when (looking-at "[[:space:]]\\|\n")
+	(when (my/looking-at "\\s-\\|\n")
 	  (forward-char 1))))))
 
 (defun smarter-move-end-of-line (arg)
@@ -2408,7 +2467,7 @@ otherwise if within a comment then uncomment, else call
   (unless (use-region-p)
     (if (save-excursion
   	  (back-to-indentation)
-  	  (looking-at "\\s<"))
+  	  (my/looking-at "\\s<"))
   	(progn
   	  (beginning-of-line)
   	  (while (looking-at "[[:space:]]*\\s<")
@@ -2451,8 +2510,8 @@ otherwise if within a comment then uncomment, else call
 (defun insert-earmuffs ()
   (interactive)
   (let ((pointer-position (point)))
-    (if (looking-back "[^ \n]" 1)
-	(if (not (looking-at "\*"))
+    (if (not (my/looking-back "\\s-\\|\n" 1))
+	(if (not (my/looking-at "\*"))
 	    (insert "*"))
       (insert "**"))
     (goto-char (+ 1 pointer-position))))
@@ -2569,7 +2628,7 @@ project."
     (define-key slime-repl-mode-map (kbd "C-c C-q") #'slime-quit-lisp)))
 
 (defadvice slime-scratch (after slime-scratch-add-top-line-comment compile activate)
-  (when (and (bobp) (not (looking-at ".")))
+  (when (and (bobp) (not (my/looking-at ".")))
     (insert ";; This buffer is for notes you don't want to save, and for Common Lisp evaluation.\n\n")))
 
 (defun paredit-or-smartparens ()
@@ -2594,7 +2653,7 @@ project."
   cursor to the new line."
   (interactive "P")
   (let ((case-fold-search nil))
-    (if (looking-at "[\]\)}]")
+    (if (my/looking-at "\]\\|\)\\|\}")
 	(save-excursion (newline-and-indent)))
     (newline arg)
     (indent-according-to-mode)))
@@ -2692,7 +2751,7 @@ project."
   "If the next character is a closing delimiter skip it,
 otherwise self-insert."
   (interactive)
-  (if (and (not (eobp)) (looking-at "\\s)"))
+  (if (and (not (eobp)) (my/looking-at "\\s)"))
       (forward-char 1)
     (call-interactively #'self-insert-command)))
 
