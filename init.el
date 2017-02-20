@@ -1034,9 +1034,16 @@ function."
     (cond ((string-match (expand-file-name "~/quicklisp/local-projects/\\(.*\\)/$")
 			 root)
 	   (let ((cl-package (match-string 1 root)))
-	     (if (directory-files root nil ".*\\.lisp$" t)
-		 (find-file (concat root "[!.]*.lisp") t)
-	       (dired root))
+	     (let ((files (directory-files root t "^[^.].*\\.lisp$" t)))
+	       (if files
+		   (dolist (f (setq files (sort files
+						(lambda (a b)
+						  (cond
+						    ((file-remote-p a) t)
+						    ((file-remote-p b) nil)
+						    (t (file-newer-than-file-p b a)))))))
+		     (find-file f))
+		 (dired root)))
 	     (if cl-package
 		 (progn
 		   (require 'slime)
