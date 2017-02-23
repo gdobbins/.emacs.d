@@ -2842,7 +2842,4 @@ derived from prog-mode."
              (file-exists-p (byte-compile-dest-file buffer-file-name)))
     (byte-compile-file buffer-file-name)))
 
-(defun add-byte-compile-hook ()
-  (add-hook 'after-save-hook #'byte-compile-current-buffer nil t))
-
-(add-hook 'emacs-lisp-mode-hook #'add-byte-compile-hook)
+(add-hook 'after-save-hook #'byte-compile-current-buffer)
