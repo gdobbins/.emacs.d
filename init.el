@@ -2839,6 +2839,11 @@ derived from prog-mode."
   "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
   (interactive)
   (when (and (eq major-mode 'emacs-lisp-mode)
+	     (not (string-match
+		   (eval-when-compile
+		     (concat "^" (regexp-quote
+				  (expand-file-name "~/emacs/"))))
+		   default-directory))
              (file-exists-p (byte-compile-dest-file buffer-file-name)))
     (byte-compile-file buffer-file-name)))
 
