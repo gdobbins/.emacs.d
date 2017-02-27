@@ -2248,13 +2248,25 @@ definition of that thing instead."
 (global-set-key (kbd "s-h") #'help-go-to-definition)
 (defkey "DEL" help-go-to-definition my/avy-passthrough)
 
+(defun my/help-goto-symbol-at-point ()
+  (interactive)
+  (let ((xref-backend-functions
+	 (if (get-buffer "*scratch*")
+	     (with-current-buffer "*scratch*"
+	       xref-backend-functions)
+	   xref-backend-functions))
+	xref-prompt-for-identifier)
+    (call-interactively #'xref-find-definitions)))
+
 (with-eval-after-load 'help-mode
-  (define-key help-mode-map (kbd "<mouse-8>") #'help-go-back)
-  (define-key help-mode-map (kbd "<mouse-9>") #'help-go-forward)
-  (define-key help-mode-map (kbd "C-c b") #'help-go-back)
-  (define-key help-mode-map (kbd "C-c f") #'help-go-forward)
-  (define-key help-mode-map (kbd "n") #'next-line)
-  (define-key help-mode-map (kbd "p") #'previous-line)
+  (defkeys help-mode
+    "<mouse-8>" help-go-back
+    "<mouse-9>" help-go-forward
+    "C-c b" help-go-back
+    "C-c f" help-go-forward
+    "n" next-line
+    "p" previous-line
+    "M-." my/help-goto-symbol-at-point)
   (defadvice describe-bindings (after describe-bindings-move-to-major-mode compile activate)
     "Pop to the help buffer and search forward for the Major mode bindings."
     (pop-to-buffer (help-buffer))
