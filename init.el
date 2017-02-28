@@ -2339,10 +2339,10 @@ ELSE."
 `imenu-create-index-function'. Collects an alist of the flags
 listed in the man page and their `point's."
   (goto-char (point-min))
-  (cl-loop while (re-search-forward "^\\s-*-+" nil t)
+  (cl-loop while (re-search-forward "^\\s-*[-−]+" nil t)
      collect #1=(cons (thing-at-point 'symbol t) (point))
      nconc
-       (cl-loop while (re-search-forward ",\\s-+-+" (1+ (point-at-eol)) 1)
+       (cl-loop while (re-search-forward ",\\s-+[-−]+" (1+ (point-at-eol)) 1)
 	  collect #1#)))
 
 (with-eval-after-load 'man
