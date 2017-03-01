@@ -2772,7 +2772,13 @@ otherwise self-insert."
   (interactive)
   (if (and (not (eobp)) (my/looking-at "\\s)"))
       (forward-char 1)
-    (call-interactively #'self-insert-command)))
+    (let ((pt (point))
+	  message-log-max)
+      (with-temp-message (or (current-message) "")
+	(call-interactively #'self-insert-command))
+      (when (= pt (point))
+	(delete-blank-lines)
+	(re-search-forward "\\s)")))))
 
 (with-eval-after-load 'smartparens
   (require 'smartparens-config)
