@@ -2808,26 +2808,6 @@ otherwise self-insert."
   (interactive)
   (set (make-local-variable 'flymake-no-changes-timeout) 3600))
 
-(with-eval-after-load 'company
-  (with-eval-after-load 'yasnippet
-    (defvar company-active-map)
-    (substitute-key-definition
-     'company-complete-common
-     'company-yasnippet-or-completion
-     company-active-map)
-    (defvar yas-fallback-behavior)
-    (defun company-yasnippet-or-completion ()
-      "Solve company yasnippet conflicts."
-      (interactive)
-      (let ((yas-fallback-behavior
-	     '(apply 'company-complete-common nil)))
-	(with-no-warnings
-	  (yas-expand))))))
-
-(with-eval-after-load 'yasnippet
-  (with-no-warnings
-    (yas-reload-all)))
-
 (with-eval-after-load 'wttrin
   (advice-add 'wttrin :after #'truncate-lines->t))
 
