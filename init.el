@@ -2666,6 +2666,21 @@ project."
 (add-hook 'eval-expression-minibuffer-setup-hook	#'enable-paredit-mode)
 (add-hook 'slime-repl-mode-hook				#'enable-paredit-mode)
 
+(defun my/c-electric-brace-electric-pair (&rest args)
+  (when (= last-command-event ?\{)
+    (save-excursion
+      (let ((last-command-event ?\})
+  	    smartparens-mode)
+  	(self-insert-command (prefix-numeric-value (car-safe args)))))
+    (smarter-open-line 1)))
+
+(with-eval-after-load 'cc-mode
+  (add-hook 'c-mode-hook 'c-toggle-auto-newline)
+  (require 'smartparens)
+  (with-no-warnings
+    (sp-local-pair 'c-mode "{" "}" :actions '(:rem insert)))
+  (advice-add 'c-electric-brace :after #'my/c-electric-brace-electric-pair))
+
 (defun electrify-return-if-match (arg)
   "If the text after the cursor matches \"[\]\)}]\" then
   open and indent an empty line between the cursor and the text.  Move the
