@@ -1121,7 +1121,10 @@ function."
   (unless (string= user-login-name "root")
     (setq undo-tree-auto-save-history t))
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo/")))
-  (advice-add 'undo-tree-save-history :around #'undo-tree-save-history-ignore-file))
+  (advice-add 'undo-tree-save-history :around #'undo-tree-save-history-ignore-file)
+  (defkeys undo-tree
+    "<S-mouse-5>" undo-tree-redo
+    "<S-mouse-4>" undo-tree-undo))
 
 (setq save-interprogram-paste-before-kill t
       kill-do-not-save-duplicates t)
