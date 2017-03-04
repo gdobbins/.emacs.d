@@ -1539,6 +1539,17 @@ on the location of the new git directory."
 (add-to-list 'safe-local-variable-values
 	     '(magit-commit-arguments . ("--gpg-sign=F1F2C078BAEE096B!")))
 
+(defun my/git-commit-setup ()
+  (when (string-match
+	 (eval-when-compile
+	   (concat "^" (regexp-quote
+			(expand-file-name "~/emacs/"))))
+	 default-directory)
+    (setq-local fill-column 77)))
+
+(with-eval-after-load 'git-commit
+  (add-hook 'git-commit-setup-hook #'my/git-commit-setup))
+
 (setq ioccur-buffer-completion-use-ido t)
 
 (when (eval-when-compile (< emacs-major-version 26))
