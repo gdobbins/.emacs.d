@@ -2690,9 +2690,23 @@ project."
 
 (with-eval-after-load 'cc-mode
   (add-hook 'c-mode-hook 'c-toggle-auto-newline)
+  (add-hook 'c++-mode-hook 'c-toggle-auto-newline)
+  (when (eval-when-compile
+	  (file-exists-p "~/emacs"))
+    (with-eval-after-load 'cmacexp
+      (defvar c-macro-cppflags)
+      (setq c-macro-cppflags
+	    (concat c-macro-cppflags
+		    (when c-macro-cppflags " ")
+		    "-I" (expand-file-name "~/emacs/src")
+		    " -I" (expand-file-name "~/emacs/lib")))))
+  (defvar c-mode-map)
+  (defvar c++-mode-map)
+  (defkeys (c-mode c++-mode)
+    "C-c M-e" macrostep-expand)
   (require 'smartparens)
   (with-no-warnings
-    (sp-local-pair 'c-mode "{" "}" :actions '(:rem insert)))
+    (sp-local-pair '(c-mode c++-mode) "{" "}" :actions '(:rem insert)))
   (advice-add 'c-electric-brace :after #'my/c-electric-brace-electric-pair))
 
 (defun electrify-return-if-match (arg)
