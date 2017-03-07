@@ -2259,8 +2259,36 @@ definition of that thing instead."
     (unless (eq (buffer-name start-buffer) (help-buffer))
       (pop-to-buffer start-buffer))))
 
+(defun my/open-alternative-emacs-source-file ()
+  "Attempt to switch to the corresponding Emacs git repo file
+rather than the system source file."
+  (interactive)
+  (if (eval-when-compile (file-exists-p #1="~/emacs/"))
+      (if (string-match "/usr/share/emacs/\\([[:digit:].]*/\\)" buffer-file-name)
+	  (let ((file (replace-match "~/emacs/" t t buffer-file-name))
+		(pt (point))
+		(pt-bol (point-at-bol))
+		(line (thing-at-point 'line)))
+	    (when (string-match "\\.gz$" file)
+	      (setq file (replace-match "" t t file)))
+	    (find-alternate-file file)
+	    (goto-char (point-min))
+	    (condition-case nil
+		(progn
+		  (re-search-forward (regexp-quote line) nil)
+		  (forward-line -1)
+		  (forward-char (- pt pt-bol)))
+	      (error (goto-char pt))))
+	(if (string-match (eval-when-compile (regexp-quote (expand-file-name #1#)))
+			  buffer-file-name)
+	    (user-error "Already in Emacs source repo")
+	  (user-error "This is not an Emacs source file")))
+    (user-error "Could not find the Emacs repo")))
+
 (global-set-key (kbd "s-h") #'help-go-to-definition)
 (defkey "DEL" help-go-to-definition my/avy-passthrough)
+(defkeys
+  "C-c v" my/open-alternative-emacs-source-file)
 
 (defun my/help-goto-symbol-at-point ()
   (interactive)
