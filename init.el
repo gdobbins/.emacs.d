@@ -2147,7 +2147,9 @@ change the value of `non-native-C-c-C-z-first'."
   "<f5>"	 egg-timer
   "C-x c"	 server-edit
   "C-x #"	 nil
-  "C-;"		 (my/push-key "M-;")
+  "C-;"		 (if (fboundp 'comment-line)
+		     'comment-line
+		   (my/push-key "M-;"))
   "H-k"		 kill-whole-line
   "C-c h"	 man
   "H-,"		 (my/push-key "M-<")
