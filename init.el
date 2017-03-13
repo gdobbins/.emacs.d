@@ -2378,6 +2378,17 @@ ELSE."
 (define-key comint-mode-map (kbd "C-r") #'comint-history-isearch-backward)
 (defkey "C-c C-z" nil comint-mode)
 
+(defun my/comint-preprocess-for-clear (string)
+  (or
+   (and (eq major-mode 'shell-mode)
+	(equal (substring string 0 4) "nil\n")
+	(string-match
+	 (eval-when-compile
+	   (concat "^nil\n%[[:space:]]*" (regexp-quote " [01;31m>[00m") "$"))
+	 string)
+	(substring string 4))
+   string))
+
 (defun imenu-man-flag-create-index-function ()
   "For use in Man buffers. Suitable for use in
 `imenu-create-index-function'. Collects an alist of the flags
@@ -2417,7 +2428,8 @@ listed in the man page and their `point's."
   (when (string-match "zsh$" (getenv "SHELL"))
     (modify-syntax-entry ?\> " " shell-mode-syntax-table))
   (add-hook 'shell-mode-hook #'add-mode-line-dirtrack)
-  (add-hook 'shell-mode-hook #'truncate-lines->t))
+  (add-hook 'shell-mode-hook #'truncate-lines->t)
+  (add-hook 'comint-preoutput-filter-functions #'my/comint-preprocess-for-clear))
 
 (with-eval-after-load 'term
   (add-hook 'term-mode-hook #'add-mode-line-dirtrack))
