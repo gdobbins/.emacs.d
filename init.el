@@ -2292,6 +2292,7 @@ rather than the system source file."
 (defkeys
   "C-c v" my/open-alternative-emacs-source-file)
 
+(eval-when-compile (require 'xref))
 (defun my/help-goto-symbol-at-point ()
   (interactive)
   (let ((xref-backend-functions
