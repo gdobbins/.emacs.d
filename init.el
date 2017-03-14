@@ -2428,6 +2428,9 @@ listed in the man page and their `point's."
   (defvar shell-mode-syntax-table)
   (when (string-match "zsh$" (getenv "SHELL"))
     (modify-syntax-entry ?\> " " shell-mode-syntax-table))
+  (defvar shell-mode-map)
+  (defkeys shell-mode
+    "SPC" comint-magic-space)
   (add-hook 'shell-mode-hook #'add-mode-line-dirtrack)
   (add-hook 'shell-mode-hook #'truncate-lines->t)
   (add-hook 'comint-preoutput-filter-functions #'my/comint-preprocess-for-clear))
