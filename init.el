@@ -2379,16 +2379,6 @@ ELSE."
 (setq comint-history-isearch 'dwim)
 (defkey "C-c C-z" nil comint-mode)
 
-(defun my/comint-preprocess-for-clear (string)
-  (or
-   (and (eq major-mode 'shell-mode)
-	(string-match
-	 (eval-when-compile
-	   (concat "^nil\n%[[:space:]]*" (regexp-quote " [01;31m>[00m") "$"))
-	 string)
-	(substring string 4))
-   string))
-
 (defun imenu-man-flag-create-index-function ()
   "For use in Man buffers. Suitable for use in
 `imenu-create-index-function'. Collects an alist of the flags
@@ -2431,8 +2421,7 @@ listed in the man page and their `point's."
   (defkeys shell-mode
     "SPC" comint-magic-space)
   (add-hook 'shell-mode-hook #'add-mode-line-dirtrack)
-  (add-hook 'shell-mode-hook #'truncate-lines->t)
-  (add-hook 'comint-preoutput-filter-functions #'my/comint-preprocess-for-clear))
+  (add-hook 'shell-mode-hook #'truncate-lines->t))
 
 (with-eval-after-load 'term
   (add-hook 'term-mode-hook #'add-mode-line-dirtrack))
