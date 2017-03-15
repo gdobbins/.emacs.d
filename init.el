@@ -2382,7 +2382,6 @@ ELSE."
 (defun my/comint-preprocess-for-clear (string)
   (or
    (and (eq major-mode 'shell-mode)
-	(equal (substring string 0 4) "nil\n")
 	(string-match
 	 (eval-when-compile
 	   (concat "^nil\n%[[:space:]]*" (regexp-quote " [01;31m>[00m") "$"))
