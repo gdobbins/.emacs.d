@@ -2376,7 +2376,7 @@ ELSE."
   (comint-delchar-or-maybe-eof arg))
 
 (define-key comint-mode-map (kbd "C-d") #'comint-delchar-or-eof-or-kill-buffer)
-(define-key comint-mode-map (kbd "C-r") #'comint-history-isearch-backward)
+(setq comint-history-isearch 'dwim)
 (defkey "C-c C-z" nil comint-mode)
 
 (defun my/comint-preprocess-for-clear (string)
