@@ -144,7 +144,7 @@ FLAG is then removed if found and added to `used-command-flags'."
 (when (and (eval-when-compile (>= emacs-major-version 25))
 	   (not package-selected-packages))
   (setq package-selected-packages
-	'(ace-window alert auctex avy avy-zap browse-kill-ring dired-narrow edit-server elpy expand-region flycheck ido-hacks ido-sort-mtime ido-ubiquitous ido-yes-or-no interleave ioccur isearch+ latex-preview-pane lua-mode magit multi-term paredit pdf-tools pkgbuild-mode projectile sage-shell-mode slime smartparens smartscan smex solarized-theme string-edit undo-tree writegood-mode wttrin x86-lookup))
+	'(ace-window alert auctex avy avy-zap browse-kill-ring dired-narrow edit-server elpy expand-region flycheck ido-hacks ido-sort-mtime ido-ubiquitous ido-yes-or-no interleave ioccur latex-preview-pane lua-mode magit multi-term paredit pdf-tools pkgbuild-mode projectile sage-shell-mode slime smartparens smartscan smex solarized-theme string-edit undo-tree writegood-mode wttrin x86-lookup))
   (package-install-selected-packages)
   (dolist (file (cons user-init-file
 		      (directory-files-recursively
@@ -725,18 +725,6 @@ hasn't been repeated."
 
 (with-eval-after-load 'string-edit
   (add-hook 'string-edit-mode-hook #'window-dedicated->t))
-
-(defun lazy-require-isearch+ ()
-  "Since isearch is loaded by default, this function is added to
-`isearch-mode-hook' to require isearch+ when isearch is first
-used."
-  (require 'isearch+)
-  (remove-hook 'isearch-mode-hook #'lazy-require-isearch+))
-
-(add-hook 'isearch-mode-hook #'lazy-require-isearch+)
-
-(autoload #'isearchp-open-recursive-edit "isearch+")
-(define-key isearch-mode-map [remap ace-window] #'isearchp-open-recursive-edit)
 
 (setq search-whitespace-regexp ".*"
       isearch-allow-scroll t)
