@@ -2031,6 +2031,7 @@ change the value of `non-native-C-c-C-z-first'."
 (defkeys my/run
   "C-l" slime
   "C-t" shell
+  "C-e" eshell
   "C-p" run-python
   "C-s" sage-shell:run-sage
   "C-i" ielm)
