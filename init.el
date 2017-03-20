@@ -621,10 +621,13 @@ hasn't been repeated."
 		     (name . "^\\.newsrc-dribble$")
 		     (name . "^\\*imap-log\\*$")
 		     (mode . newsticker-mode)))
+	 ("Emacs Lisp" (or
+			(mode . emacs-lisp-mode)
+			(mode . elisp-byte-code-mode)
+			(mode . lisp-interaction-mode)
+			(mode . inferior-emacs-lisp-mode)
+			(mode . eshell-mode)))
 	 ("Emacs" (or
-		   (mode . emacs-lisp-mode)
-		   (mode . elisp-byte-code-mode)
-		   (mode . lisp-interaction-mode)
 		   (mode . help-mode)
 		   (mode . Info-mode)
 		   (mode . package-menu-mode)
