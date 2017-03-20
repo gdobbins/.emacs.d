@@ -558,7 +558,8 @@ hasn't been repeated."
 		 (mode . lua-mode)))
 	 ("C" (or
 	       (mode . c-mode)
-	       (mode . c++-mode)))
+	       (mode . c++-mode)
+	       (mode . tags-table-mode)))
 	 ("Perl" (or
 		  (mode . perl-mode)))
 	 ("Shell" (or
