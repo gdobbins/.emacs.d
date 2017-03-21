@@ -2270,9 +2270,22 @@ definition of that thing instead."
 (defun my/open-alternative-source-file ()
   "Attempt to switch to the corresponding source file."
   (interactive)
-  (let ((pt (point))
-	(pt-bol (point-at-bol))
-	(line (thing-at-point 'line)))
+  (let* ((pt (point))
+	 (pt-bol (point-at-bol))
+	 (recenter-num (+ (count-screen-lines (window-start) (point))
+			  (if (bolp) 0 -1)))
+	 (line-offset 0)
+	 (line
+	  (let ((line (concat "^" (regexp-quote (thing-at-point 'line)))))
+	    (while (and
+		    (save-excursion
+		      (goto-char (point-min))
+		      (re-search-forward line nil t 2))
+		    (not (eobp)))
+	      (incf line-offset)
+	      (forward-line)
+	      (setq line (concat "^" (regexp-quote (thing-at-point 'line)))))
+	    line)))
     (cond
       ((string-match
 	(concat "^\\("
@@ -2299,10 +2312,11 @@ definition of that thing instead."
     (goto-char (point-min))
     (condition-case nil
 	(progn
-	  (re-search-forward (regexp-quote line) nil)
-	  (forward-line -1)
+	  (re-search-forward line nil)
+	  (forward-line (- (1+ line-offset)))
 	  (forward-char (- pt pt-bol)))
-      (error (goto-char (min pt (point-max)))))))
+      (error (goto-char (max (min pt (point-max)) (point-min)))))
+    (recenter recenter-num)))
 
 (global-set-key (kbd "s-h") #'help-go-to-definition)
 (defkey "DEL" help-go-to-definition my/avy-passthrough)
