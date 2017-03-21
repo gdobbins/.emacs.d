@@ -1714,6 +1714,19 @@ Don't mess with special buffers."
 
 (defkey "C-i" find-user-init-file my/window)
 
+(defun find-user-shell-rc ()
+  "Edit the users shell rc file."
+  (interactive)
+  (with-temp-message ""
+    (find-file
+     (concat
+      "~/"
+      (if (string-match "zsh$" (getenv "SHELL"))
+	  ".zshrc"
+	".bashrc")))))
+
+(defkey "C-z" find-user-shell-rc my/window)
+
 (defun pop-to-scratch ()
   "Pop to the scratch buffer."
   (interactive)
