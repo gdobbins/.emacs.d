@@ -2285,7 +2285,9 @@ definition of that thing instead."
 	      (incf line-offset)
 	      (forward-line)
 	      (setq line (concat "^" (regexp-quote (thing-at-point 'line)))))
-	    line)))
+	    line))
+	 inhibit-goto
+	 inhibit-recenter)
     (cond
       ((string-match
 	(concat "^\\("
@@ -2307,16 +2309,44 @@ definition of that thing instead."
 	 (find-alternate-file file)))
       ((string-match (eval-when-compile (regexp-quote (expand-file-name #1#))) buffer-file-name)
        (user-error "Already in Emacs source repo"))
+      ((and (string-match "\\(\\.lisp\\)$" buffer-file-name)
+	    (let ((dir (locate-dominating-file
+			buffer-file-name
+			(file-name-nondirectory
+			 (replace-match ".asd" t t buffer-file-name 1)))))
+	      (when dir
+		(find-file
+		 (concat dir
+			 (file-name-sans-extension
+			  (file-name-nondirectory buffer-file-name))
+			 ".asd"))
+		(setq inhibit-goto t
+		      inhibit-recenter t)))))
+      ((and (string-match "\\(\\.asd\\)$" buffer-file-name)
+	    (let ((files (directory-files-recursively
+			  default-directory
+			  (regexp-quote
+			   (concat
+			    (file-name-sans-extension
+			     (file-name-nondirectory buffer-file-name))
+			    ".lisp")))))
+	      (when files
+		(find-file
+		 (car (last files)))
+		(setq inhibit-goto t
+		      inhibit-recenter t)))))
       (t
        (user-error "Could not find an alternative source file")))
-    (goto-char (point-min))
-    (condition-case nil
-	(progn
-	  (re-search-forward line nil)
-	  (forward-line (- (1+ line-offset)))
-	  (forward-char (- pt pt-bol)))
-      (error (goto-char (max (min pt (point-max)) (point-min)))))
-    (recenter recenter-num)))
+    (unless inhibit-goto
+      (goto-char (point-min))
+      (condition-case nil
+	  (progn
+	    (re-search-forward line nil)
+	    (forward-line (- (1+ line-offset)))
+	    (forward-char (- pt pt-bol)))
+	(error (goto-char (max (min pt (point-max)) (point-min))))))
+    (unless inhibit-recenter
+      (recenter recenter-num))))
 
 (global-set-key (kbd "s-h") #'help-go-to-definition)
 (defkey "DEL" help-go-to-definition my/avy-passthrough)
