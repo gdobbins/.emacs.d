@@ -2309,6 +2309,10 @@ definition of that thing instead."
 	 (find-alternate-file file)))
       ((string-match (eval-when-compile (regexp-quote (expand-file-name #1#))) buffer-file-name)
        (user-error "Already in Emacs source repo"))
+      ((and (eval-when-compile (file-exists-p #2="~/sbcl/"))
+	    (string-match "/usr/share/sbcl-source/" buffer-file-name))
+       (let ((file (replace-match "~/sbcl/" t t buffer-file-name)))
+	 (find-alternate-file file)))
       ((and (string-match "\\(\\.lisp\\)$" buffer-file-name)
 	    (let ((dir (locate-dominating-file
 			buffer-file-name
@@ -2335,6 +2339,8 @@ definition of that thing instead."
 		 (car (last files)))
 		(setq inhibit-goto t
 		      inhibit-recenter t)))))
+      ((string-match (eval-when-compile (regexp-quote (expand-file-name #2#))) buffer-file-name)
+       (user-error "Already in SBCL source repo"))
       (t
        (user-error "Could not find an alternative source file")))
     (unless inhibit-goto
