@@ -2341,6 +2341,20 @@ definition of that thing instead."
 		      inhibit-recenter t)))))
       ((string-match (eval-when-compile (regexp-quote (expand-file-name #2#))) buffer-file-name)
        (user-error "Already in SBCL source repo"))
+      ((and (string-match "\\(\\.el\\)$" buffer-file-name)
+	    (let ((file (replace-match ".elc" t t buffer-file-name 1)))
+	      (when (file-readable-p file)
+		(setq line
+		      (save-excursion
+			(beginning-of-defun)
+			(forward-char)
+			(forward-sexp)
+			(skip-chars-forward "[:blank:]\n")
+			(regexp-quote (thing-at-point 'symbol)))
+		      inhibit-recenter t
+		      line-offset (1- line-offset)
+		      pt-bol (point))
+		(find-file file)))))
       (t
        (user-error "Could not find an alternative source file")))
     (unless inhibit-goto
