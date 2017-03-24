@@ -759,7 +759,8 @@ Use in `isearch-mode-end-hook'."
     (put 'iter 'common-lisp-indent-function `(,lisp-body-indent &body))
     (put 'iterate 'common-lisp-indent-function
 	 (get 'iter 'common-lisp-indent-function))
-    (put 'in 'common-lisp-indent-function '(&lambda &body))))
+    (put 'in 'common-lisp-indent-function '(&lambda &body))
+    (put 'defcommand 'common-lisp-indent-function '(4 &lambda &lambda &body))))
 
 (setf slime-lisp-implementations
       (eval-when-compile
