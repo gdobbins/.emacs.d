@@ -2272,59 +2272,51 @@ definition of that thing instead."
   (interactive)
   (let* ((pt (point))
 	 (pt-bol (point-at-bol))
-	 (recenter-num (+ (count-screen-lines (window-start) (point))
-			  (if (bolp) 0 -1)))
 	 (line-offset 0)
-	 (line
-	  (let ((line (concat "^" (regexp-quote (thing-at-point 'line)))))
-	    (while (and
-		    (save-excursion
-		      (goto-char (point-min))
-		      (re-search-forward line nil t 2))
-		    (not (eobp)))
-	      (incf line-offset)
-	      (forward-line)
-	      (setq line (concat "^" (regexp-quote (thing-at-point 'line)))))
-	    line))
+	 recenter-num
+	 line
 	 inhibit-goto
-	 inhibit-recenter)
+	 inhibit-recenter
+	 file
+	 find-alternate)
     (cond
       ((string-match
 	(concat "^\\("
 		(expand-file-name "~/")
 		".*[./]\\)zsh\\(.*/\\.\\)zsh\\(.*$\\)")
 	buffer-file-name)
-       (find-file (replace-match "\\1bash\\2bash\\3" t nil buffer-file-name)))
+       (setq file (replace-match "\\1bash\\2bash\\3" t nil buffer-file-name)))
       ((string-match
 	(concat "^\\("
 		(expand-file-name "~/")
 		".*[./]\\)bash\\(.*/\\.\\)bash\\(.*$\\)")
 	buffer-file-name)
-       (find-file (replace-match "\\1zsh\\2zsh\\3" t nil buffer-file-name)))
+       (setq file (replace-match "\\1zsh\\2zsh\\3" t nil buffer-file-name)))
       ((and (eval-when-compile (file-exists-p #1="~/emacs/"))
 	    (string-match "/usr/share/emacs/\\([[:digit:].]*/\\)" buffer-file-name))
-       (let ((file (replace-match "~/emacs/" t t buffer-file-name)))
-	 (when (string-match "\\.gz$" file)
-	   (setq file (replace-match "" t t file)))
-	 (find-alternate-file file)))
+       (let ((new-file (replace-match "~/emacs/" t t buffer-file-name)))
+	 (when (string-match "\\.gz$" new-file)
+	   (setq new-file (replace-match "" t t new-file)))
+	 (setq file new-file
+	       find-alternate t)))
       ((string-match (eval-when-compile (regexp-quote (expand-file-name #1#))) buffer-file-name)
        (user-error "Already in Emacs source repo"))
       ((and (eval-when-compile (file-exists-p #2="~/sbcl/"))
 	    (string-match "/usr/share/sbcl-source/" buffer-file-name))
-       (let ((file (replace-match "~/sbcl/" t t buffer-file-name)))
-	 (find-alternate-file file)))
+       (let ((new-file (replace-match "~/sbcl/" t t buffer-file-name)))
+	 (setq file new-file
+	       find-alternate t)))
       ((and (string-match "\\(\\.lisp\\)$" buffer-file-name)
 	    (let ((dir (locate-dominating-file
 			buffer-file-name
 			(file-name-nondirectory
 			 (replace-match ".asd" t t buffer-file-name 1)))))
 	      (when dir
-		(find-file
-		 (concat dir
-			 (file-name-sans-extension
-			  (file-name-nondirectory buffer-file-name))
-			 ".asd"))
-		(setq inhibit-goto t
+		(setq file (concat dir
+				   (file-name-sans-extension
+				    (file-name-nondirectory buffer-file-name))
+				   ".asd")
+		      inhibit-goto t
 		      inhibit-recenter t)))))
       ((and (string-match "\\(\\.asd\\)$" buffer-file-name)
 	    (let ((files (directory-files-recursively
@@ -2335,15 +2327,14 @@ definition of that thing instead."
 			     (file-name-nondirectory buffer-file-name))
 			    ".lisp")))))
 	      (when files
-		(find-file
-		 (car (last files)))
-		(setq inhibit-goto t
+		(setq file (car (last files))
+		      inhibit-goto t
 		      inhibit-recenter t)))))
       ((string-match (eval-when-compile (regexp-quote (expand-file-name #2#))) buffer-file-name)
        (user-error "Already in SBCL source repo"))
       ((and (string-match "\\(\\.el\\)$" buffer-file-name)
-	    (let ((file (replace-match ".elc" t t buffer-file-name 1)))
-	      (when (file-readable-p file)
+	    (let ((new-file (replace-match ".elc" t t buffer-file-name 1)))
+	      (when (file-readable-p new-file)
 		(setq line
 		      (save-excursion
 			(beginning-of-defun)
@@ -2353,10 +2344,31 @@ definition of that thing instead."
 			(regexp-quote (thing-at-point 'symbol)))
 		      inhibit-recenter t
 		      line-offset (1- line-offset)
-		      pt-bol (point))
-		(find-file file)))))
+		      pt-bol (point)
+		      file new-file)))))
       (t
        (user-error "Could not find an alternative source file")))
+    (unless file
+      (error "No file specified"))
+    (unless (or line inhibit-goto)
+      (setq line
+	    (let ((line (concat "^" (regexp-quote (thing-at-point 'line)))))
+	      (while (and
+		      (save-excursion
+			(goto-char (point-min))
+			(re-search-forward line nil t 2))
+		      (not (eobp)))
+		(incf line-offset)
+		(forward-line)
+		(setq line (concat "^" (regexp-quote (thing-at-point 'line)))))
+	      line)))
+    (unless (or recenter-num inhibit-recenter)
+      (setq recenter-num
+	    (+ (count-screen-lines (window-start) (point))
+	       (if (bolp) 0 -1))))
+    (if find-alternate
+	(find-alternate-file file)
+      (find-file file))
     (unless inhibit-goto
       (goto-char (point-min))
       (condition-case nil
