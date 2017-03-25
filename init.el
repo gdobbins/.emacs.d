@@ -47,7 +47,9 @@ some other initialization operations which slow startup time."
 
   (define-key input-decode-map (kbd "C-h") (kbd "DEL"))
   (define-key input-decode-map (kbd "M-h") (kbd "M-DEL"))
-  (define-key input-decode-map (kbd "H-h") (kbd "C-h")))
+  (define-key input-decode-map (kbd "H-h") (kbd "C-h"))
+
+  (define-key input-decode-map (kbd "C-S-g") (kbd "C-g")))
 
 (setup-input-decode-map)
 
