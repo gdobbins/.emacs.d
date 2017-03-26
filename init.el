@@ -925,11 +925,26 @@ FUNCTION either locally, or optionally in KEYMAP"
 (setq ido-file-extensions-order '(".el" ".org" ".lisp" ".py" ".pdf" t))
 (setq ido-use-filename-at-point 'guess)
 
+(defvar my/user-has-root-privileges 'ask)
+
+(defun my/user-has-root-privileges ()
+  (if (eq my/user-has-root-privileges 'ask)
+      (setq my/user-has-root-privileges
+	    (or
+	     (with-temp-buffer
+	       (call-process "id" nil (current-buffer) nil "-nG")
+	       (cl-loop for group in (split-string (buffer-string))
+		  when (string= "wheel" group)
+		  return t))
+	     (yes-or-no-p "Do you have root privileges? ")))
+    my/user-has-root-privileges))
+
 (defadvice ido-find-file (after find-file-sudo compile activate)
   "Find file as root if necessary."
   (when (and buffer-file-name
 	     (not (file-writable-p buffer-file-name))
-	     (file-directory-p default-directory))
+	     (file-directory-p default-directory)
+	     (my/user-has-root-privileges))
     (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
 (defun copy-current-file-path (arg)
