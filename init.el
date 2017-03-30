@@ -12,8 +12,6 @@
 (defun delayed-initialization ()
   "Return `gc-cons-threshold' to it's original value and perform
 some other initialization operations which slow startup time."
-  (defun delayed-initialization ()
-    (garbage-collect))
   (require 'magit)
   (require 'avy)
   (require 'dired)
