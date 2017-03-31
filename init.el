@@ -2175,7 +2175,8 @@ change the value of `non-native-C-c-C-z-first'."
   "H-k"		 kill-whole-line
   "C-c h"	 man
   "H-,"		 (my/push-key "M-<")
-  "H-."		 (my/push-key "M->"))
+  "H-."		 (my/push-key "M->")
+  "C-j"		 (lookup-key (current-global-map) (kbd "RET")))
 
 (autoload 'mpc-resume "mpc")
 (autoload 'mpc-pause "mpc")
