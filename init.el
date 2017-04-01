@@ -1743,6 +1743,12 @@ Don't mess with special buffers."
 
 (defkey "C-z" find-user-shell-rc my/window)
 
+(defun find-stumpwm-file ()
+  (interactive)
+  (find-file "~/dotfiles/stumpwm/.config/stumpwm/config"))
+
+(defkey "C-t" find-stumpwm-file my/window)
+
 (defun pop-to-scratch ()
   "Pop to the scratch buffer."
   (interactive)
