@@ -1223,7 +1223,7 @@ function."
 	  (select-window first-win)
 	  (if this-win-2nd (other-window 1))))))
 
-(defkey "C-t" toggle-window-split my/window)
+(defkey "C-x" toggle-window-split my/window)
 
 (defun activate-word-column-region ()
   "Look at the symbol at point, search backward and place the point before a
