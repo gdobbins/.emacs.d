@@ -1925,6 +1925,8 @@ is already narrowed."
   (setq avy-keys (list ?h ?t ?n ?s ?a ?o ?e ?u))
   (defvar avy-style)
   (setq avy-style 'de-bruijn)
+  (defvar avy-case-fold-search)
+  (setq avy-case-fold-search nil)
   (defvar avy-dispatch-alist)
   (setq avy-dispatch-alist
 	'((?k . my/avy-action-kill-stay)
