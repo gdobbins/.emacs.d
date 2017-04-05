@@ -1733,7 +1733,7 @@ Don't mess with special buffers."
 (defun find-user-shell-rc ()
   "Edit the users shell rc file."
   (interactive)
-  (with-temp-message ""
+  (let ((inhibit-message t))
     (find-file
      (concat
       "~/"
