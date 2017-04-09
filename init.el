@@ -1545,7 +1545,17 @@ on the location of the new git directory."
 (with-eval-after-load 'magit
   (advice-add 'magit-init :around #'magit-auto-create-gitattributes&ignore)
   (defvar magit-completing-read-function)
-  (setq magit-completing-read-function #'magit-ido-completing-read))
+  (setq magit-completing-read-function #'magit-ido-completing-read)
+  (with-eval-after-load 'magit-repos
+    (add-to-list 'magit-repository-directories (cons user-emacs-directory 0))
+    (when (eval-when-compile (file-exists-p #1="~/quicklisp/local-projects/"))
+      (add-to-list 'magit-repository-directories (cons #1# 1)))
+    (when (eval-when-compile (file-exists-p #1="~/dotfiles/"))
+      (add-to-list 'magit-repository-directories (cons #1# 0)))
+    (when (eval-when-compile (file-exists-p #1="~/emacs/"))
+      (add-to-list 'magit-repository-directories (cons #1# 0)))
+    (when (eval-when-compile (file-exists-p #1="~/sbcl/"))
+      (add-to-list 'magit-repository-directories (cons #1# 0)))))
 
 (add-to-list 'safe-local-variable-values
 	     '(magit-commit-arguments . ("--gpg-sign=F1F2C078BAEE096B!")))
