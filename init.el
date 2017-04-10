@@ -961,17 +961,36 @@ then copy without directory."
 
 (global-set-key (kbd "M-/") #'hippie-expand)
 
-(setq hippie-expand-try-functions-list
-      '(try-expand-all-abbrevs
-	try-expand-dabbrev
-	try-expand-list
-	try-expand-line
-	try-expand-dabbrev-all-buffers
-	try-expand-dabbrev-from-kill
-	try-complete-lisp-symbol-partially
-	try-complete-lisp-symbol
-	try-complete-file-name-partially
-	try-complete-file-name))
+(defun he-closing-delimiter-fix (&rest _)
+  "Remove extra closing delimiter when expanding line."
+  (let (end)
+    (when (and (= (char-syntax (preceding-char)) ?\))
+	       (= (preceding-char)
+		  (save-excursion
+		    (skip-syntax-forward "-")
+		    (setq end (1- (point)))
+		    (following-char))))
+      (delete-char -1)
+      (if (region-modifiable-p (point) end)
+	  (delete-region (point) end)
+	(goto-char end))
+      (forward-char))))
+
+(with-eval-after-load 'hippie-exp
+  (defvar hippie-expand-try-functions-list)
+  (setq hippie-expand-try-functions-list
+	'(try-expand-all-abbrevs
+	  try-expand-dabbrev
+	  try-expand-list
+	  try-expand-line
+	  try-expand-dabbrev-all-buffers
+	  try-expand-dabbrev-from-kill
+	  try-complete-lisp-symbol-partially
+	  try-complete-lisp-symbol
+	  try-complete-file-name-partially
+	  try-complete-file-name))
+
+  (advice-add #'he-substitute-string :after #'he-closing-delimiter-fix))
 
 (defun my/dabbrev-friend-buffer (other-buffer)
   (< (buffer-size other-buffer) 1048576))
@@ -2454,11 +2473,6 @@ definition of that thing instead."
 (when (eval-when-compile (< emacs-major-version 25))
   (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
   (add-hook 'ielm-mode-hook #'eldoc-mode))
-
-(defadvice he-substitute-string (after he-paredit-fix compile activate)
-  "remove extra paren when expanding line in paredit"
-  (if (and paredit-mode (equal (substring str -1) ")"))
-      (progn (backward-delete-char 1) (forward-char))))
 
 (add-to-list 'default-frame-alist '(font . "Hack:pixelsize=13"))
 (setq split-width-threshold 100)
