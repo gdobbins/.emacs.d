@@ -980,6 +980,7 @@ then copy without directory."
   (defvar hippie-expand-try-functions-list)
   (setq hippie-expand-try-functions-list
 	'(try-expand-all-abbrevs
+	  try-expand-dabbrev-visible
 	  try-expand-dabbrev
 	  try-expand-list
 	  try-expand-line
