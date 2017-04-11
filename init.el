@@ -15,6 +15,7 @@ some other initialization operations which slow startup time."
   (require 'magit)
   (require 'avy)
   (require 'dired)
+  (require 'hippie-exp)
   (remove-hook 'focus-out-hook #'delayed-initialization)
   (setq gc-cons-threshold 800000)
   (garbage-collect)
