@@ -1903,7 +1903,7 @@ been modified, call `save-buffer' unless ARG. Then call
     (save-buffer))
   (if (string= (buffer-name) "*scratch*")
       (bury-buffer)
-    (kill-this-buffer)))
+    (kill-buffer (current-buffer))))
 
 (defun narrow-or-widen-dwim (p)
   "Widen if buffer is narrowed, narrow-dwim otherwise.
