@@ -2289,39 +2289,54 @@ change the value of `non-native-C-c-C-z-first'."
 
   (global-set-key [remap digit-argument] #'control-number->self-insert))
 
-(defun help-go-to-definition (temp/command-history n start-buffer)
+(defun help-go-to-definition--find-key (key)
+  (let (fun)
+    (if (and (eq (buffer-name) (help-buffer))
+	     (save-excursion
+	       (goto-char (point-min))
+	       (cl-loop for k across key
+		  do (forward-sexp)
+		  unless (eq k (aref (kbd (thing-at-point 'symbol)) 0))
+		  return nil
+		  finally return
+		    (progn
+		      (re-search-forward
+		       "runs the command \\(\\(\\sw\\|\\s_\\)*\\)"
+		       (point-at-eol) t)
+		      (setq fun (intern (match-string 1)))
+		      (fboundp fun)))))
+	(find-function fun)
+      (find-function-on-key key))))
+
+(defun help-go-to-definition (start-buffer)
   "When called after a help describe function, go to the
 definition of that thing instead."
-  (interactive (list command-history
-		     0
-		     (current-buffer)))
-  (catch 'not-help-command
-    (funcall
-     (prog1
-	 (case (first (first temp/command-history))
-	   (describe-function #'find-function)
-	   (describe-variable #'find-variable)
-	   (describe-key #'find-function-on-key)
-	   (t (throw 'not-help-command
-		(if (< n 60)
-		    (help-go-to-definition
-		     (rest temp/command-history)
-		     (1+ n)
-		     start-buffer)
-		  (user-error
-		   "No applicable help command in recent history")))))
-       (unless (and
-		(eval-when-compile (< emacs-major-version 25))
-		;; Prior to version 25 find-function-on-key used other-window
-		(eq (first (first temp/command-history))
-		    #'describe-key))
-	 (pop-to-buffer (help-buffer))))
-     (let ((temp (second (first temp/command-history))))
-       (if (consp temp)
-	   (second temp)
-	 temp)))
-    (unless (eq (buffer-name start-buffer) (help-buffer))
-      (pop-to-buffer start-buffer))))
+  (interactive (list (current-buffer)))
+  (cl-dolist (temp/command-history command-history
+	      (user-error
+	       "No applicable help command in recent history"))
+    (let ((fun
+	   (case (car temp/command-history)
+	     (describe-function #'find-function)
+	     (describe-variable #'find-variable)
+	     (describe-key #'help-go-to-definition--find-key)
+	     (t nil))))
+      (when fun
+	(unless (and
+		 (eval-when-compile (< emacs-major-version 25))
+		 ;; Prior to version 25 find-function-on-key used other-window
+		 (eq (car temp/command-history)
+		     #'describe-key))
+	  (pop-to-buffer (help-buffer)))
+	(cl-return
+	  (prog1
+	      (funcall fun
+		       (let ((temp (cadr temp/command-history)))
+			 (if (consp temp)
+			     (cadr temp)
+			   temp)))
+	    (unless (eq (buffer-name start-buffer) (help-buffer))
+	      (pop-to-buffer start-buffer))))))))
 
 (defun my/open-alternative-source-file ()
   "Attempt to switch to the corresponding source file."
@@ -2436,7 +2451,6 @@ definition of that thing instead."
     (unless inhibit-recenter
       (recenter recenter-num))))
 
-(global-set-key (kbd "s-h") #'help-go-to-definition)
 (defkey "DEL" help-go-to-definition my/avy-passthrough)
 (defkeys
   "C-c v" my/open-alternative-source-file)
