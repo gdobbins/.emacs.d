@@ -2661,6 +2661,9 @@ Interactively also sends a terminating newline."
 
 (add-to-list 'auto-mode-alist '("README$" . text-mode))
 
+(add-hook 'text-mode-hook #'writegood-mode)
+(add-hook 'text-mode-hook #'flyspell-mode)
+
 (defun fix-capitalization->paren ()
   "Search backward and replace a capital letter with (<lowercase letter>"
   (interactive)
