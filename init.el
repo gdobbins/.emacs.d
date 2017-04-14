@@ -755,13 +755,7 @@ Use in `isearch-mode-end-hook'."
     (defkeys (slime-mode (slime-repl-mode t))
       "C-c C-d DEL" 'doc-fun
       "C-c C-k" nil
-      "M-?" nil))
-  (with-eval-after-load 'cl-indent
-    (put 'iter 'common-lisp-indent-function `(,lisp-body-indent &body))
-    (put 'iterate 'common-lisp-indent-function
-	 (get 'iter 'common-lisp-indent-function))
-    (put 'in 'common-lisp-indent-function '(&lambda &body))
-    (put 'defcommand 'common-lisp-indent-function '(4 &lambda &lambda &body))))
+      "M-?" nil)))
 
 (setf slime-lisp-implementations
       (eval-when-compile
@@ -2799,8 +2793,7 @@ project."
    t)
   (define-key lisp-mode-map (kbd "C-c e") #'slime-eval-and-replace)
   (define-key lisp-mode-map (kbd "C-c C-s") #'slime-scratch)
-  (setq lisp-indent-function #'common-lisp-indent-function)
-  (put 'defkeys 'common-lisp-indent-function-for-elisp `(,lisp-body-indent &body)))
+  (load (concat user-emacs-directory "lisp/cl-indentation") nil t))
 
 (defun slime-return-to-lisp-file ()
   "Go backwards through the buffer list until one in lisp mode is found."
