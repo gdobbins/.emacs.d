@@ -17,4 +17,5 @@
    (iterate iter)
    (in '(&lambda &body))
    (defcommand '(4 &lambda &lambda &body))
+   (concatenate `(,lisp-body-indent &body))
    (defkeys `(,lisp-body-indent &body) t)))
