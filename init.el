@@ -607,6 +607,7 @@ hasn't been repeated."
 		   (mode . tar-mode)
 		   (mode . proced-mode)))
 	 ("Git" (or (derived-mode . magit-mode)
+		    (mode . magit-repolist-mode)
 		    (filename . "\\.git\\(ignore\\|attributes\\)$")))
 	 ("Diff" (or
 		  (mode . ediff-mode)
