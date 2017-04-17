@@ -544,7 +544,7 @@ hasn't been repeated."
 		  (mode . slime-inspector-mode)
 		  (name . "^\\*slime-\\(description\\|compilation\\|xref\\|error\\)\\*$")
 		  (name . "^\\*sldb .*\\*$")
-		  (filename . "^/usr/local/doc/HyperSpec/")))
+		  (filename . "^\\(file://\\)?/usr/local/doc/HyperSpec/")))
 	 ("Sage"
 	  (or
 	   (mode . sage-shell:sage-mode)
