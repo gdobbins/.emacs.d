@@ -150,7 +150,7 @@ FLAG is then removed if found and added to `used-command-flags'."
   (dolist (file (cons user-init-file
 		      (directory-files-recursively
 		       (concat user-emacs-directory "lisp/")
-		       "\.el$")))
+		       "\\.el\\'")))
     (unless (file-exists-p (byte-compile-dest-file file))
       (byte-compile-file file))))
 
@@ -275,7 +275,7 @@ multiple functions can call each other in repetition."
     "Append -map to the symbol in KEYMAP if not already present."
     (let ((symbol-name (symbol-name keymap)))
       (intern
-       (if (string-match "-map$" symbol-name)
+       (if (string-match "-map\\'" symbol-name)
 	   symbol-name
 	 (concat symbol-name "-map"))))))
 
@@ -311,7 +311,7 @@ multiple functions can call each other in repetition."
 			       ',(if (eq t (third map))
 				     (let ((symbol-name (symbol-name (first map))))
 				       (intern
-					(if (string-match "-mode$" symbol-name)
+					(if (string-match "-mode\\'" symbol-name)
 					    (substring symbol-name 0 -5)
 					  symbol-name)))
 				   (third map)))
@@ -515,7 +515,7 @@ hasn't been repeated."
   (setq-default dired-omit-files-p t)
   (setq dired-listing-switches "-alhv")
   (defvar dired-omit-files)
-  (setq dired-omit-files "^\\.\\|^#.#$\\|.~$")
+  (setq dired-omit-files "^\\.\\|^#.#\\'\\|.~\\'")
   (with-no-warnings
     (define-key dired-mode-map (kbd "M-p") #'dired-up-directory))
   (defvar dired-mode-map)
@@ -542,8 +542,8 @@ hasn't been repeated."
 		  (mode . lisp-mode)
 		  (mode . slime-repl-mode)
 		  (mode . slime-inspector-mode)
-		  (name . "^\\*slime-\\(description\\|compilation\\|xref\\|error\\)\\*$")
-		  (name . "^\\*sldb .*\\*$")
+		  (name . "^\\*slime-\\(description\\|compilation\\|xref\\|error\\)\\*\\'")
+		  (name . "^\\*sldb .*\\*\\'")
 		  (filename . "^\\(file://\\)?/usr/local/doc/HyperSpec/")))
 	 ("Sage"
 	  (or
@@ -554,7 +554,7 @@ hasn't been repeated."
 	 ("Python" (or
 		    (mode . python-mode)
 		    (mode . inferior-python-mode)
-		    (name . "^\\*Python \\(Check\\|Doc\\)\\*$")))
+		    (name . "^\\*Python \\(Check\\|Doc\\)\\*\\'")))
 	 ("Lua" (or
 		 (mode . lua-mode)))
 	 ("C" (or
@@ -570,23 +570,23 @@ hasn't been repeated."
 		   (derived-mode . conf-mode)
 		   (derived-mode . shell-script-mode)
 		   (mode . compilation-mode)
-		   (name . "^\\*.* std\\(out\\|err\\)\\*$")
-		   (name . "^\\*Shell Command Output\\*$")))
+		   (name . "^\\*.* std\\(out\\|err\\)\\*\\'")
+		   (name . "^\\*Shell Command Output\\*\\'")))
 	 ("Assembly" (or
 		      (mode . asm-mode)
-		      (filename . "^/usr/local/doc/64-ia-32-architectures-software-developer-manual-325462\\.pdf$")))
+		      (filename . "^/usr/local/doc/64-ia-32-architectures-software-developer-manual-325462\\.pdf\\'")))
 	 ("Man" (or
 		 (mode . Man-mode)
 		 (mode . woman-mode)))
 	 ("Data" (or
-		  (filename . ".*\\.\\([ct]sv\\|dat\\)$")
+		  (filename . ".*\\.\\([ct]sv\\|dat\\)\\'")
 		  (mode . hexl-mode)))
 	 ("LaTeX" (or
 		   (mode . latex-mode)
 		   (mode . tex-shell)
 		   (mode . TeX-output-mode)
 		   (mode . plain-tex-mode)
-		   (name . "^\\*\\(Latex Preview Pane \\(Welcome\\|Errors\\)\\|pdflatex-buffer\\)\\*$")))
+		   (name . "^\\*\\(Latex Preview Pane \\(Welcome\\|Errors\\)\\|pdflatex-buffer\\)\\*\\'")))
 	 ("Text" (or (derived-mode . text-mode)
 		     (mode . nroff-mode)
 		     (mode . change-log-mode)))
@@ -602,26 +602,26 @@ hasn't been repeated."
 	 ("Dired" (or
 		   (mode . dired-mode)
 		   (mode . wdired-mode)
-		   (name . "^\\*Dired log\\*$")
+		   (name . "^\\*Dired log\\*\\'")
 		   (mode . archive-mode)
 		   (mode . tar-mode)
 		   (mode . proced-mode)))
 	 ("Git" (or (derived-mode . magit-mode)
 		    (mode . magit-repolist-mode)
-		    (filename . "\\.git\\(ignore\\|attributes\\)$")))
+		    (filename . "\\.git\\(ignore\\|attributes\\)\\'")))
 	 ("Diff" (or
 		  (mode . ediff-mode)
 		  (mode . diff-mode)
-		  (name . "^\\*[Ee]?[Dd]iff.*\\*$")))
+		  (name . "^\\*[Ee]?[Dd]iff.*\\*\\'")))
 	 ("Gnus" (or (mode . message-mode)
 		     (mode . bbdb-mode)
 		     (mode . mail-mode)
 		     (mode . gnus-group-mode)
 		     (mode . gnus-summary-mode)
 		     (mode . gnus-article-mode)
-		     (name . "^\\.bbdb$")
-		     (name . "^\\.newsrc-dribble$")
-		     (name . "^\\*imap-log\\*$")
+		     (name . "^\\.bbdb\\'")
+		     (name . "^\\.newsrc-dribble\\'")
+		     (name . "^\\*imap-log\\*\\'")
 		     (mode . newsticker-mode)))
 	 ("Emacs Lisp" (or
 			(mode . emacs-lisp-mode)
@@ -635,7 +635,7 @@ hasn't been repeated."
 		   (mode . package-menu-mode)
 		   (mode . finder-mode)
 		   (mode . Custom-mode)
-		   (name . "^\\*Backtrace\\*$")
+		   (name . "^\\*Backtrace\\*\\'")
 		   (mode . apropos-mode)
 		   (mode . ioccur-mode)
 		   (mode . occur-mode)
@@ -693,13 +693,13 @@ hasn't been repeated."
 	   " " filename))))
 
 (with-eval-after-load 'ibuf-ext
-  (add-to-list 'ibuffer-never-show-predicates "^\\*slime-events\\*$")
-  (add-to-list 'ibuffer-never-show-predicates "^\\*inferior-lisp\\*\\(<[0-9]>\\)?$")
-  (add-to-list 'ibuffer-never-show-predicates "^\\*Compile-Log\\*$")
-  (add-to-list 'ibuffer-never-show-predicates "^\\*Completions\\*$")
-  (add-to-list 'ibuffer-never-show-predicates "^\\*tramp/sudo root@localhost\\*$")
+  (add-to-list 'ibuffer-never-show-predicates "^\\*slime-events\\*\\'")
+  (add-to-list 'ibuffer-never-show-predicates "^\\*inferior-lisp\\*\\(<[0-9]>\\)?\\'")
+  (add-to-list 'ibuffer-never-show-predicates "^\\*Compile-Log\\*\\'")
+  (add-to-list 'ibuffer-never-show-predicates "^\\*Completions\\*\\'")
+  (add-to-list 'ibuffer-never-show-predicates "^\\*tramp/sudo root@localhost\\*\\'")
   (add-to-list 'ibuffer-never-show-predicates "^\\*magit-process:.*")
-  (add-to-list 'ibuffer-never-show-predicates "^\\*WoMan-Log\\*$"))
+  (add-to-list 'ibuffer-never-show-predicates "^\\*WoMan-Log\\*\\'"))
 
 (defvar hidden-ibuffer-groups '("^\\[ Default \\]"))
 
@@ -908,13 +908,13 @@ FUNCTION either locally, or optionally in KEYMAP"
 			    (define-key ido-completion-map (kbd "C-c") nil)
 			    (define-key ido-completion-map (kbd "M-c") #'ido-toggle-case)))
 
-(add-to-list 'ido-ignore-files "^\\.smex-items$")
-(add-to-list 'ido-ignore-files "^\\.slime-history\\.eld$")
-(add-to-list 'ido-ignore-files "^\\.python_history$")
-(add-to-list 'ido-ignore-files "^\\.w3m/$")
-(add-to-list 'ido-ignore-files "^\\.histfile$")
-(add-to-list 'ido-ignore-files "^ido\\.last$")
-(add-to-list 'ido-ignore-files "^\\.newsrc\\(\\.eld\\)?$")
+(add-to-list 'ido-ignore-files "^\\.smex-items\\'")
+(add-to-list 'ido-ignore-files "^\\.slime-history\\.eld\\'")
+(add-to-list 'ido-ignore-files "^\\.python_history\\'")
+(add-to-list 'ido-ignore-files "^\\.w3m/\\'")
+(add-to-list 'ido-ignore-files "^\\.histfile\\'")
+(add-to-list 'ido-ignore-files "^ido\\.last\\'")
+(add-to-list 'ido-ignore-files "^\\.newsrc\\(\\.eld\\)?\\'")
 
 (setq ido-file-extensions-order '(".el" ".org" ".lisp" ".py" ".pdf" t))
 (setq ido-use-filename-at-point 'guess)
@@ -1055,10 +1055,10 @@ function."
   "Attempt to jack-in to the project."
   (delete-other-windows)
   (let ((root (projectile-project-root)))
-    (cond ((string-match (expand-file-name "~/quicklisp/local-projects/\\(.*\\)/$")
+    (cond ((string-match (expand-file-name "~/quicklisp/local-projects/\\(.*\\)/\\'")
 			 root)
 	   (let ((cl-package (match-string 1 root)))
-	     (let ((files (directory-files root t "^[^.].*\\.lisp$" t)))
+	     (let ((files (directory-files root t "^[^.].*\\.lisp\\'" t)))
 	       (if files
 		   (dolist (f (setq files (sort files
 						(lambda (a b)
@@ -1135,7 +1135,7 @@ function."
 
 (defun undo-tree-save-history-ignore-file (orig &rest args)
   "Ignore files matching the regex, otherwise save history"
-  (unless (string-match "\\(\\.gpg$\\|^/tmp/\\|/.emacs.d/elpa/\\|/.git/\\)" buffer-file-name)
+  (unless (string-match "\\(\\.gpg\\'\\|^/tmp/\\|/.emacs.d/elpa/\\|/.git/\\)" buffer-file-name)
     (apply orig args)))
 
 (require 'undo-tree)
@@ -1763,7 +1763,7 @@ Don't mess with special buffers."
     (find-file
      (concat
       "~/"
-      (if (string-match "zsh$" (getenv "SHELL"))
+      (if (string-match "zsh\\'" (getenv "SHELL"))
 	  ".zshrc"
 	".bashrc")))))
 
@@ -2349,19 +2349,19 @@ definition of that thing instead."
       ((string-match
 	(concat "^\\("
 		(expand-file-name "~/")
-		".*[./]\\)zsh\\(.*/\\.\\)zsh\\(.*$\\)")
+		".*[./]\\)zsh\\(.*/\\.\\)zsh\\(.*\\'\\)")
 	buffer-file-name)
        (setq file (replace-match "\\1bash\\2bash\\3" t nil buffer-file-name)))
       ((string-match
 	(concat "^\\("
 		(expand-file-name "~/")
-		".*[./]\\)bash\\(.*/\\.\\)bash\\(.*$\\)")
+		".*[./]\\)bash\\(.*/\\.\\)bash\\(.*\\'\\)")
 	buffer-file-name)
        (setq file (replace-match "\\1zsh\\2zsh\\3" t nil buffer-file-name)))
       ((and (eval-when-compile (file-exists-p #1="~/emacs/"))
 	    (string-match "/usr/share/emacs/\\([[:digit:].]*/\\)" buffer-file-name))
        (let ((new-file (replace-match "~/emacs/" t t buffer-file-name)))
-	 (when (string-match "\\.gz$" new-file)
+	 (when (string-match "\\.gz\\'" new-file)
 	   (setq new-file (replace-match "" t t new-file)))
 	 (setq file new-file
 	       find-alternate t)))
@@ -2372,7 +2372,7 @@ definition of that thing instead."
        (let ((new-file (replace-match "~/sbcl/" t t buffer-file-name)))
 	 (setq file new-file
 	       find-alternate t)))
-      ((and (string-match "\\(\\.lisp\\)$" buffer-file-name)
+      ((and (string-match "\\(\\.lisp\\)\\'" buffer-file-name)
 	    (let ((dir (locate-dominating-file
 			buffer-file-name
 			(file-name-nondirectory
@@ -2384,7 +2384,7 @@ definition of that thing instead."
 				   ".asd")
 		      inhibit-goto t
 		      inhibit-recenter t)))))
-      ((and (string-match "\\(\\.asd\\)$" buffer-file-name)
+      ((and (string-match "\\(\\.asd\\)\\'" buffer-file-name)
 	    (let ((files (directory-files-recursively
 			  default-directory
 			  (regexp-quote
@@ -2398,7 +2398,7 @@ definition of that thing instead."
 		      inhibit-recenter t)))))
       ((string-match (eval-when-compile (regexp-quote (expand-file-name #2#))) buffer-file-name)
        (user-error "Already in SBCL source repo"))
-      ((and (string-match "\\(\\.el\\)$" buffer-file-name)
+      ((and (string-match "\\(\\.el\\)\\'" buffer-file-name)
 	    (let ((new-file (replace-match ".elc" t t buffer-file-name 1)))
 	      (when (file-readable-p new-file)
 		(setq line
@@ -2552,7 +2552,7 @@ listed in the man page and their `point's."
 	      (setq-local imenu-create-index-function
 			  #'imenu-man-flag-create-index-function))))
 
-(when (and (string-match "zsh$" (getenv "SHELL"))
+(when (and (string-match "zsh\\'" (getenv "SHELL"))
 	   (not (getenv "HISTFILE")))
   (setenv "HISTFILE" (expand-file-name "~/.histfile")))
 
@@ -2568,7 +2568,7 @@ listed in the man page and their `point's."
 
 (with-eval-after-load 'shell
   (defvar shell-mode-syntax-table)
-  (when (string-match "zsh$" (getenv "SHELL"))
+  (when (string-match "zsh\\'" (getenv "SHELL"))
     (modify-syntax-entry ?\> " " shell-mode-syntax-table))
   (defvar shell-mode-map)
   (defkeys shell-mode
@@ -2654,7 +2654,7 @@ Interactively also sends a terminating newline."
     (add-hook 'LaTeX-mode-hook #'LaTeX-math-mode)
     (define-key LaTeX-mode-map (kbd "C-x n") nil)))
 
-(add-to-list 'auto-mode-alist '("README$" . text-mode))
+(add-to-list 'auto-mode-alist '("README\\'" . text-mode))
 
 (add-hook 'text-mode-hook #'writegood-mode)
 (add-hook 'text-mode-hook #'flyspell-mode)
@@ -2927,7 +2927,7 @@ project."
     (define-key pdf-view-mode-map (kbd "e") #'image-eol)))
 
 (defadvice abort-if-file-too-large (around no-abort-if-file-is-pdf compile activate)
-  (if (string-match-p "\\.[pP][dD][fF]$" filename)
+  (if (string-match-p "\\.[pP][dD][fF]\\'" filename)
       nil
     ad-do-it))
 
