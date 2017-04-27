@@ -1820,10 +1820,13 @@ open last agenda file."
   "Run `quit-window' in the window selected by `ace-window'.
 With \\[universal-argument] switch to that window after quitting."
   (interactive "P")
-  (let ((target (ace-window 1)))
-    (quit-window)
-    (when (and arg (window-live-p target))
-      (select-window target))))
+  (let ((current (selected-window))
+	(target (ace-window 1)))
+    (quit-window nil target)
+    (select-window
+     (if (and arg (window-live-p target))
+	 target
+       current))))
 
 (global-set-key (kbd "H-q") #'other-window-quit)
 
