@@ -2130,10 +2130,25 @@ change the value of `non-native-C-c-C-z-first'."
   (setq avy-zap-dwim-prefer-avy nil))
 
 (defun smarter-delete-other-windows (arg)
+  "With more than one window on frame, `delete-other-windows'.
+With \\[universal-argument], first call `ace-window'. With only
+one window, `split-window-right' and display next buffer in
+`buffer-list'"
   (interactive "P")
-  (when arg
-    (ace-window nil))
-  (delete-other-windows))
+  (if (cdr (window-list nil 'never))
+      (progn
+	(when arg
+	  (ace-window nil))
+	(delete-other-windows))
+    (split-window-right)
+    (let ((cur-buf (current-buffer)))
+      (other-window 1)
+      (unwind-protect
+	   (cl-dolist (win (buffer-list))
+	     (unless (or (eq win cur-buf)
+			 (minibufferp win))
+	       (cl-return (switch-to-buffer win t t))))
+	(other-window 1)))))
 
 (defkey "C-x t" smarter-delete-other-windows)
 
