@@ -496,6 +496,40 @@ hasn't been repeated."
 
 (global-set-key (kbd "M-#") #'wiktionary-word)
 
+;;; The following two functions and their uses are based on
+;;; https://fuco1.github.io/2017-05-06-Enhanced-beginning--and-end-of-buffer-in-special-mode-buffers-(dired-etc.).html
+(defmacro my/special-beginning-of-buffer (mode &rest forms)
+  "Define a special version of `beginning-of-buffer' in MODE."
+  (declare (indent 1))
+  (let ((fname (intern (concat "my--" (symbol-name mode) "-beginning-of-buffer")))
+	(mode-map (intern (concat (symbol-name mode) "-mode-map"))))
+    `(progn
+       (defun ,fname ()
+         (interactive)
+	 (let ((p (point)))
+	   (goto-char (point-min))
+	   (unless (eq last-command this-command)
+	     ,@forms
+	     (when (= p (point))
+	       (goto-char (point-min))))))
+       (define-key ,mode-map [remap beginning-of-buffer] #',fname))))
+
+(defmacro my/special-end-of-buffer (mode &rest forms)
+  "Define a special version of `end-of-buffer' in MODE."
+  (declare (indent 1))
+  (let ((fname (intern (concat "my--" (symbol-name mode) "-end-of-buffer")))
+	(mode-map (intern (concat (symbol-name mode) "-mode-map"))))
+    `(progn
+       (defun ,fname ()
+         (interactive)
+         (let ((p (point)))
+           (goto-char (point-max))
+	   (unless (eq last-command this-command)
+	     ,@forms
+	     (when (= p (point))
+	       (goto-char (point-max))))))
+       (define-key ,mode-map [remap end-of-buffer] #',fname))))
+
 (autoload 'dired-jump "dired-x"
   "Jump to Dired buffer corresponding to current buffer." t)
 
@@ -523,7 +557,12 @@ hasn't been repeated."
   (define-key dired-mode-map (kbd "/") #'dired-narrow-fuzzy)
   (with-no-warnings
     (define-key dired-mode-map (kbd "h") #'dired-omit-mode))
-  (define-key dired-mode-map (kbd "e") #'read-only-mode))
+  (define-key dired-mode-map (kbd "e") #'read-only-mode)
+  (my/special-beginning-of-buffer dired
+    (while (not (ignore-errors (dired-get-filename)))
+      (dired-next-line 1)))
+  (my/special-end-of-buffer dired
+    (dired-previous-line 1)))
 
 (with-eval-after-load 'wdired
   (defvar wdired-allow-to-change-permissions)
@@ -690,7 +729,11 @@ hasn't been repeated."
 	   " " filename-and-process)
 	  (mark " "
 	   (name 16 -1)
-	   " " filename))))
+	   " " filename)))
+  (my/special-beginning-of-buffer ibuffer
+    (ibuffer-forward-line 1))
+  (my/special-end-of-buffer ibuffer
+    (ibuffer-backward-line 1)))
 
 (with-eval-after-load 'ibuf-ext
   (add-to-list 'ibuffer-never-show-predicates "^\\*slime-events\\*\\'")
@@ -1562,6 +1605,11 @@ on the location of the new git directory."
   (advice-add 'magit-init :around #'magit-auto-create-gitattributes&ignore)
   (defvar magit-completing-read-function)
   (setq magit-completing-read-function #'magit-ido-completing-read)
+  (my/special-beginning-of-buffer magit-status
+    (while (looking-at "\\(Head\\|Push\\):")
+      (magit-section-forward)))
+  (my/special-end-of-buffer magit-status
+    (magit-section-backward))
   (with-eval-after-load 'magit-repos
     (add-to-list 'magit-repository-directories (cons user-emacs-directory 0))
     (when (eval-when-compile (file-exists-p #1="~/quicklisp/local-projects/"))
