@@ -2190,7 +2190,8 @@ one window, `split-window-right' and display next buffer in
 	(delete-other-windows))
     (split-window-right)
     (let ((cur-buf (current-buffer)))
-      (other-window 1)
+      (unless (get-buffer-process cur-buf)
+	(other-window 1))
       (unwind-protect
 	   (cl-dolist (win (buffer-list))
 	     (unless (or (eq win cur-buf)
