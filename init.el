@@ -3095,6 +3095,10 @@ otherwise self-insert."
 
 (add-hook 'comint-mode-hook #'maybe-enable-smartparens)
 
+(defkeys ((python-mode t t)
+	  (sage-shell-mode t sage-shell-mode))
+  [remap sp-forward-slurp-sexp] sp-slurp-hybrid-sexp)
+
 (with-eval-after-load 'elpy
   (add-hook 'elpy-mode-hook #'set-flymake-no-changes-timeout-to-one-hour)
   (defvar elpy-mode-map)
