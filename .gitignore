@@ -13,3 +13,4 @@ eshell/
 games/
 projectile-bookmarks.eld
 projectile.cache
+.sage_shell_input_history

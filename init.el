@@ -3039,7 +3039,9 @@ project."
 (with-eval-after-load 'sage-shell-mode
   (sage-shell:define-alias)
   (defvar sage-shell-mode-map)
-  (defkey "C-d" sage-shell:delchar-or-maybe-eof-or-kill-buffer sage-shell-mode))
+  (defkey "C-d" sage-shell:delchar-or-maybe-eof-or-kill-buffer sage-shell-mode)
+  (defvar sage-shell:input-history-cache-file)
+  (setq sage-shell:input-history-cache-file "~/.emacs.d/.sage_shell_input_history"))
 
 (defun python-repl-clear-buffer ()
   (interactive)
