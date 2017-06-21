@@ -2363,8 +2363,8 @@ one window, `split-window-right' and display next buffer in
 		  finally return
 		    (progn
 		      (re-search-forward
-		       "runs the command \\(\\(\\sw\\|\\s_\\)*\\)"
-		       (point-at-eol) t)
+		       "runs[[:space:]\n]the[[:space:]\n]command[[:space:]\n]\\(\\(\\sw\\|\\s_\\)*\\)"
+		       (point-at-eol 3) t)
 		      (setq fun (intern (match-string 1)))
 		      (fboundp fun)))))
 	(find-function fun)
