@@ -78,7 +78,13 @@ of the buffer."
 
 (add-hook 'edit-server-start-hook #'writegood-mode)
 (add-hook 'edit-server-start-hook #'flyspell-mode)
-(add-hook 'edit-server-start-hook (lambda () (setq indent-tabs-mode nil)))
+
+(defun my/ewe-setup-hook ()
+  (setq indent-tabs-mode nil)
+  (unless (or paredit-mode smartparens-mode)
+    (electric-pair-mode 1)))
+(add-hook 'edit-server-start-hook #'my/ewe-setup-hook)
+
 (add-hook 'edit-server-start-hook #'end-of-buffer)
 
 (provide 'ewe-config)
