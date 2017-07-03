@@ -2173,6 +2173,53 @@ change the value of `non-native-C-c-C-z-first'."
   "C-x" projectile-direct-jack-in
   "C-s" C-c-C-z-or-smart-switch-to-output-buffer)
 
+(define-prefix-command 'my/buffer-jump-map)
+(defkey "C-e" my/buffer-jump-map my/avy-passthrough)
+
+(let ((map (make-sparse-keymap)))
+  (defun my/buffer-jump (key)
+    "When KEY is not a control modified event, create an
+association with the current buffer to the control modified
+version of the event. When it is a control modified event, switch
+to the associated buffer. KEY is `last-input-event' with
+interactive use. If KEY is `help-char' display a buffer
+describing the associations."
+    (interactive (or (listify-key-sequence
+		      (lookup-key input-decode-map (vector last-input-event) t))
+		     (list last-input-event)))
+    (if (eq key help-char)
+	(let ((buf "*Buffer jump table*"))
+	  (with-output-to-temp-buffer buf
+	    (with-current-buffer buf
+	      (insert (substitute-command-keys "\\{my/buffer-jump-map}"))
+	      (cl-loop for (char . buf) in (cdr map)
+		 when (buffer-live-p buf)
+		 do
+		   (insert (format "%s		%s\n"
+				   (key-description (vector char))
+				   (buffer-name buf)))))))
+      (let ((value (lookup-key map (vector key))))
+	(if (memq 'control (event-modifiers key))
+	    (if (buffer-live-p value)
+		(pop-to-buffer value)
+	      (user-error "%s has no buffer associated with it"
+			  (key-description (vector key))))
+	  (let* ((key (vector (event-apply-modifier key 'control 26 "C-")))
+		 (key (or (lookup-key input-decode-map key t) key))
+		 (bind (lookup-key my/buffer-jump-map key)))
+	    (if bind
+		(user-error "%s is bound to %s"
+			    (key-description
+			     key
+			     (cl-subseq (this-command-keys-vector) 0 -1))
+			    bind)
+	      (define-key map key (current-buffer))
+	      (message "%s now jumps to %s" (key-description key) (buffer-name)))))))))
+
+(defkeys my/buffer-jump
+  "C-g" keyboard-quit
+  [t] my/buffer-jump)
+
 (with-eval-after-load 'avy-zap
   (defvar avy-zap-dwim-prefer-avy)
   (setq avy-zap-dwim-prefer-avy nil))
