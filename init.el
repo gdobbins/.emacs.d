@@ -2623,8 +2623,6 @@ sudo_askpass.sh"
 	   pass)))
       (read-passwd arg)))
 
-(setq-default comint-prompt-read-only t)
-
 (defmacro defun-do-when-no-process (name no-process &rest else)
   "Define an interactive function called NAME with one anaphoric
 argument ARG taking `interactive' parameter p. If the
