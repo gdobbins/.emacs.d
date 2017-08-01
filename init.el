@@ -566,7 +566,13 @@ hasn't been repeated."
 
 (with-eval-after-load 'wdired
   (defvar wdired-allow-to-change-permissions)
-  (setq wdired-allow-to-change-permissions t))
+  (setq wdired-allow-to-change-permissions t)
+  (with-no-warnings
+    (my/special-beginning-of-buffer wdired
+      (while (not (ignore-errors (wdired-get-filename)))
+	(wdired-next-line 1)))
+    (my/special-end-of-buffer wdired
+      (wdired-previous-line 1))))
 
 (global-set-key (kbd "C-x p") #'proced)
 (with-eval-after-load 'proced
