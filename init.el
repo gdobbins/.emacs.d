@@ -3167,6 +3167,12 @@ otherwise self-insert."
 (with-eval-after-load 'wttrin
   (advice-add 'wttrin :after #'truncate-lines->t))
 
+;;; Fix security issue in older versions of Emacs
+(when (eval-when-compile (<= emacs-major-version 25))
+  (eval-after-load "enriched"
+    '(defun enriched-decode-display-prop (start end &optional param)
+      (list start end))))
+
 (cl-macrolet
     ((my/undisable (&rest functions)
        `(progn
