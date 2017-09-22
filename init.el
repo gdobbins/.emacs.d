@@ -582,7 +582,7 @@ hasn't been repeated."
 (setq ibuffer-saved-filter-groups
       `(("default"
 	 ("Root"
-	  (directory . "^/sudo:root"))
+	  (filename . "^/sudo:root"))
 	 ("Lisp" (or
 		  (mode . lisp-mode)
 		  (mode . slime-repl-mode)
