@@ -340,7 +340,9 @@ multiple functions can call each other in repetition."
   (defun my/regexp-part->char-match (regexp)
     (or
      (case (length regexp)
-       (1 (cons `(= direction ,(aref regexp 0)) nil))
+       (1 (if (= ?\$ (aref regexp 0))
+	      (cons '(eolp) nil)
+	    (cons `(= direction ,(aref regexp 0)) nil)))
        (3 (and (= ?\\ (aref regexp 0)) (= ?s (aref regexp 1))
 	       (cons `(= char-syntax-direction ,(let ((temp (aref regexp 2)))
 						  (if (= temp 45)
