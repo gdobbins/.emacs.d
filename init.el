@@ -2850,16 +2850,33 @@ otherwise if within a comment then uncomment, else call
 	       #'paredit-space-for-predicates-cl)
   (advice-add 'paredit-reindent-defun :around #'my/save-excursion-advice))
 
-(defun insert-earmuffs ()
+(defun my/wrap-earmuffs ()
+  "Wrap the symbol at point in *'s or insert **"
   (interactive)
-  (let ((pointer-position (point)))
-    (if (not (my/looking-back "\\s-\\|\n" 1))
-	(if (not (my/looking-at "\*"))
-	    (insert "*"))
-      (insert "**"))
-    (goto-char (+ 1 pointer-position))))
+  (let ((forward-blank (my/looking-at "\\s-\\|$"))
+	(backward-blank (my/looking-back "\\s-\\|$" 1))
+	(not-region (not (use-region-p)))
+	move-forward)
+    (save-excursion
+      (if (and forward-blank backward-blank)
+	  (progn
+	    (insert "**")
+	    (setq move-forward t))
+	(when (and (not forward-blank)
+		   (not backward-blank)
+		   not-region)
+	  (backward-sexp))
+	(when not-region
+	  (smarter-mark-sexp))
+	(exchange-point-and-mark)
+	(insert "*")
+	(exchange-point-and-mark)
+	(insert "*")))
+    (when move-forward
+      (forward-char)))
+  (setq mark-active nil))
 
-(defset-function insert-earmuffs "*")
+(defkey "C-*" my/wrap-earmuffs)
 
 (defun make-new-quicklisp-project (name description)
   "Make a new project in the quicklisp local-projects directory
