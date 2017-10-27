@@ -2859,7 +2859,7 @@ otherwise if within a comment then uncomment, else call
   "Wrap the symbol at point in *'s or insert **"
   (interactive)
   (let ((forward-blank (my/looking-at "\\s-\\|$"))
-	(backward-blank (my/looking-back "\\s-\\|$" 1))
+	(backward-blank (my/looking-back "\\s-\\|^" 1))
 	(not-region (not (use-region-p)))
 	move-forward)
     (save-excursion
