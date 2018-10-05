@@ -32,6 +32,11 @@ some other initialization operations which slow startup time."
 
 (add-hook 'emacs-startup-hook #'setup-delayed-initialization)
 
+(defvar my/on-mobile-device
+  (eval-when-compile
+    (string=
+     (shell-command-to-string "uname -o") "Android\n")))
+
 (defun setup-input-decode-map ()
   (define-key input-decode-map (kbd "C-t") (kbd "C-x"))
   (define-key input-decode-map (kbd "C-x") (kbd "C-t"))
@@ -50,9 +55,9 @@ some other initialization operations which slow startup time."
 
   (define-key input-decode-map (kbd "C-S-g") (kbd "C-g")))
 
-(setup-input-decode-map)
-
-(add-hook 'tty-setup-hook #'setup-input-decode-map)
+(unless my/on-mobile-device
+  (setup-input-decode-map)
+  (add-hook 'tty-setup-hook #'setup-input-decode-map))
 
 (setq ring-bell-function #'ignore)
 (setq ad-redefinition-action 'accept)
