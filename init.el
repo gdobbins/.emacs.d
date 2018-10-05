@@ -170,14 +170,15 @@ FLAG is then removed if found and added to `used-command-flags'."
 (unless-command-flag
     ("--no-pinentry" "--no-server")
   (when (eval-when-compile
-	  (>= emacs-major-version 25))
+	  (and
+	   (>= emacs-major-version 25)
+	   (file-exists-p "~/.gnupg/gpg-agent.conf")
+	   (with-temp-buffer
+	     (insert-file-contents "~/.gnupg/gpg-agent.conf")
+	     (search-forward-regexp "^allow-emacs-pinentry" nil t))))
     (unless (server-running-p)
-      (require 'pinentry)
-      (pinentry-start t))))
-
-(with-eval-after-load 'pinentry
-  (defvar pinentry-popup-prompt-window)
-  (setq pinentry-popup-prompt-window nil))
+      (require 'epa)
+      (setq epa-pinentry-mode 'loopback))))
 
 (defvar hidden-minor-modes
   '(undo-tree-mode
