@@ -70,7 +70,9 @@ some other initialization operations which slow startup time."
 ;;      '--------_- - - - - _/
 ;;                `--------'\n;;\n"
        (let ((fortune-file "~/.emacs.d/fortunes"))
-	 (when (file-readable-p fortune-file)
+	 (when (and (file-readable-p fortune-file)
+		    (eval-when-compile
+		      (file-exists-p "/usr/share/fonts/TTF/Klingon-pIqaD-HaSta.ttf")))
 	   (with-temp-buffer
 	     (insert-file-contents fortune-file)
 	     (let ((num-fortunes (prog1 (thing-at-point 'number t)
