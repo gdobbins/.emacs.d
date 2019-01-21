@@ -606,6 +606,12 @@ hasn't been repeated."
 		  (name . "^\\*slime-\\(description\\|compilation\\|xref\\|error\\)\\*\\'")
 		  (name . "^\\*sldb .*\\*\\'")
 		  (filename . "^\\(file://\\)?/usr/local/doc/HyperSpec/")))
+	 ("Clojure" (or
+		  (mode . clojure-mode)
+		  (mode . cider-repl-mode)
+		  (mode . cider-inspector-mode)
+		  (name . "^\\*cider-\\(description\\|compilation\\|xref\\|error\\)\\*\\'")
+		  (name . "^\\*nrepl-*")))
 	 ("Sage"
 	  (or
 	   (mode . sage-shell:sage-mode)
@@ -760,6 +766,7 @@ hasn't been repeated."
 (with-eval-after-load 'ibuf-ext
   (add-to-list 'ibuffer-never-show-predicates "^\\*slime-events\\*\\'")
   (add-to-list 'ibuffer-never-show-predicates "^\\*inferior-lisp\\*\\(<[0-9]>\\)?\\'")
+  (add-to-list 'ibuffer-never-show-predicates "^\\*nrepl-server*")
   (add-to-list 'ibuffer-never-show-predicates "^\\*Compile-Log\\*\\'")
   (add-to-list 'ibuffer-never-show-predicates "^\\*Completions\\*\\'")
   (add-to-list 'ibuffer-never-show-predicates "^\\*tramp/sudo root@localhost\\*\\'")
@@ -979,7 +986,7 @@ FUNCTION either locally, or optionally in KEYMAP"
 (add-to-list 'ido-ignore-files "^ido\\.last\\'")
 (add-to-list 'ido-ignore-files "^\\.newsrc\\(\\.eld\\)?\\'")
 
-(setq ido-file-extensions-order '(".el" ".org" ".lisp" ".py" ".pdf" t))
+(setq ido-file-extensions-order '(".el" ".org" ".lisp" ".clj" ".py" ".pdf" t))
 (setq ido-use-filename-at-point 'guess)
 
 (defvar my/user-has-root-privileges 'ask)
@@ -1141,7 +1148,20 @@ function."
 			    cl-package))
 		   (slime-switch-to-output-buffer)
 		   (cd root))
-	       (projectile-vc root))))
+		 (projectile-vc root))))
+	  ((string-match (expand-file-name "~/clojure/\\(.*\\)/\\'"))
+	   (let ((files (directory-files root t "^[^.].*\\.clj\\'" t)))
+	     (if files
+		 (dolist (f (setq files (sort files
+					      (lambda (a b)
+						(cond
+						  ((file-remote-p a) t)
+						  ((file-remote-p b) nil)
+						  (t (file-newer-than-file-p b a)))))))
+		   (find-file f))
+		 (dired root))
+	     (require 'cider)
+	     (call-interactively #'cider-jack-in)))
 	  ((string-match (expand-file-name "~/.emacs.d/") root)
 	   (find-file user-init-file)
 	   (projectile-vc root))
@@ -1418,14 +1438,21 @@ lone t is treated specially."
 
 (defun smart-switch-to-output-buffer ()
   "Attempt to switch to an output buffer, cycling in order
-through lisp, shell, multi-term, sage, python, then ielm.
-Make `last-key-repeating'."
+through lisp, clojure, shell, multi-term, sage, python, then
+ielm. Make `last-key-repeating'."
   (interactive)
   (my/do-next-cond
    ((list (get-process "inferior-lisp")
 	  (not (eq major-mode
 		   'slime-repl-mode)))
     (slime-switch-to-output-buffer))
+   ((my/check-for-process "nrepl-server")
+    (switch-to-buffer
+     (with-no-warnings
+       (dolist (buf (buffer-list) buf)
+	 (with-current-buffer buf
+	   (when (derived-mode-p 'cider-repl-mode)
+	     (return buf)))))))
    ((my/check-for-process "shell")
     (sh-show-shell))
    ((with-no-warnings
@@ -3005,14 +3032,45 @@ project."
   (when (and (bobp) (not (my/looking-at ".")))
     (insert ";; This buffer is for notes you don't want to save, and for Common Lisp evaluation.\n\n")))
 
+(defun cider-repl-previous-if-eobp-else-up ()
+  "If point is at end of the buffer call
+`cider-repl-previous-input', else move up."
+  (interactive)
+  (if (eobp)
+      (with-no-warnings
+	(cider-repl-previous-input))
+    (call-interactively #'previous-line)))
+
+(defun cider-repl-next-if-eobp-else-down ()
+  "If point is at end of the buffer call `cider-repl-next-input',
+ else move down."
+  (interactive)
+  (if (eobp)
+      (with-no-warnings
+	(cider-repl-next-input))
+    (call-interactively #'next-line)))
+
+(with-eval-after-load 'cider-repl
+  (defvar cider-repl-history-size)
+  (setq cider-repl-history-size 500)
+  (defvar cider-repl-mode-map)
+  (define-key cider-repl-mode-map (kbd "C-c C-s") #'cider-scratch)
+  (define-key cider-repl-mode-map (kbd "<up>") #'cider-repl-previous-if-eobp-else-up)
+  (define-key cider-repl-mode-map (kbd "<down>") #'cider-repl-next-if-eobp-else-down)
+  ;(define-key cider-repl-mode-map (kbd "DEL") nil)
+  ;(define-key cider-repl-mode-map (kbd "M-r") nil)
+  (with-no-warnings
+    (define-key cider-repl-mode-map (kbd "C-M-r") #'cider-repl-previous-matching-input)))
+
 (defun paredit-or-smartparens ()
   "Enable either paredit or smartparens strict mode."
   (if (member major-mode '(emacs-lisp-mode
 			   lisp-interaction-mode
 			   lisp-mode
+			   clojure-mode
 			   scheme-mode))
       (enable-paredit-mode)
-    (smartparens-strict-mode)))
+      (smartparens-strict-mode)))
 
 (add-hook 'prog-mode-hook #'paredit-or-smartparens)
 
@@ -3020,6 +3078,7 @@ project."
 (add-hook 'ielm-mode-hook				#'enable-paredit-mode)
 (add-hook 'eval-expression-minibuffer-setup-hook	#'enable-paredit-mode)
 (add-hook 'slime-repl-mode-hook				#'enable-paredit-mode)
+(add-hook 'clojure-repl-mode-hook			#'enable-paredit-mode)
 
 (defun my/c-electric-brace-electric-pair (&rest args)
   (when (= last-command-event ?\{)
