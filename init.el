@@ -528,7 +528,7 @@ hasn't been repeated."
 	     ,@forms
 	     (when (= p (point))
 	       (goto-char (point-min))))))
-       (define-key ,mode-map [remap beginning-of-buffer] #',fname))))
+       (define-key ,mode-map [remap beginning-of-buffer] (with-no-warnings #',fname)))))
 
 (defmacro my/special-end-of-buffer (mode &rest forms)
   "Define a special version of `end-of-buffer' in MODE."
@@ -544,7 +544,7 @@ hasn't been repeated."
 	     ,@forms
 	     (when (= p (point))
 	       (goto-char (point-max))))))
-       (define-key ,mode-map [remap end-of-buffer] #',fname))))
+       (define-key ,mode-map [remap end-of-buffer] (with-no-warnings #',fname)))))
 
 (autoload 'dired-jump "dired-x"
   "Jump to Dired buffer corresponding to current buffer." t)
@@ -1050,7 +1050,8 @@ then copy without directory."
 	  try-complete-file-name-partially
 	  try-complete-file-name))
 
-  (advice-add #'he-substitute-string :after #'he-closing-delimiter-fix))
+  (with-no-warnings
+    (advice-add #'he-substitute-string :after #'he-closing-delimiter-fix)))
 
 (defun my/dabbrev-friend-buffer (other-buffer)
   (< (buffer-size other-buffer) 1048576))
@@ -1625,12 +1626,14 @@ on the location of the new git directory."
   (advice-add 'magit-init :around #'magit-auto-create-gitattributes&ignore)
   (defvar magit-completing-read-function)
   (setq magit-completing-read-function #'magit-ido-completing-read)
+  (defvar magit-status-mode-map)
   (my/special-beginning-of-buffer magit-status
     (while (looking-at "\\(Head\\|Push\\):")
       (magit-section-forward)))
   (my/special-end-of-buffer magit-status
     (magit-section-backward))
   (with-eval-after-load 'magit-repos
+    (defvar magit-repository-directories)
     (add-to-list 'magit-repository-directories (cons user-emacs-directory 0))
     (when (eval-when-compile (file-exists-p #1="~/quicklisp/local-projects/"))
       (add-to-list 'magit-repository-directories (cons #1# 1)))
@@ -3181,7 +3184,7 @@ otherwise self-insert."
 
 (defkeys ((python-mode t t)
 	  (sage-shell-mode t sage-shell-mode))
-  [remap sp-forward-slurp-sexp] sp-slurp-hybrid-sexp)
+  [remap sp-forward-slurp-sexp] (with-no-warnings #'sp-slurp-hybrid-sexp))
 
 (with-eval-after-load 'elpy
   (add-hook 'elpy-mode-hook #'set-flymake-no-changes-timeout-to-one-hour)
