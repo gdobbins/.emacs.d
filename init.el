@@ -152,7 +152,7 @@ FLAG is then removed if found and added to `used-command-flags'."
 (when (and (eval-when-compile (>= emacs-major-version 25))
 	   (not package-selected-packages))
   (setq package-selected-packages
-	'(ace-window alert auctex avy avy-zap browse-kill-ring dired-narrow edit-server elpy expand-region flycheck ido-hacks ido-sort-mtime ido-completing-read+ ido-yes-or-no interleave ioccur latex-preview-pane lua-mode magit multi-term paredit pdf-tools pkgbuild-mode projectile sage-shell-mode slime smartparens smartscan smex solarized-theme string-edit undo-tree writegood-mode wttrin x86-lookup))
+	'(ace-window alert auctex avy avy-zap browse-kill-ring dired-narrow edit-server elpy expand-region flycheck ido-sort-mtime ido-completing-read+ ido-yes-or-no interleave ioccur latex-preview-pane lua-mode magit multi-term paredit pdf-tools pkgbuild-mode projectile sage-shell-mode slime smartparens smartscan smex solarized-theme string-edit undo-tree writegood-mode wttrin x86-lookup))
   (package-refresh-contents)
   (package-install-selected-packages)
   (dolist (file (cons user-init-file
@@ -928,8 +928,6 @@ abort completely with `C-g'."
 (ido-sort-mtime-mode 1)
 (require 'ido-yes-or-no)
 (ido-yes-or-no-mode 1)
-(require 'ido-hacks)
-(ido-hacks-mode 1)
 (require 'ido-completing-read+)
 (ido-ubiquitous-mode)
 (global-set-key (kbd "M-x") #'smex)
