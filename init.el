@@ -152,7 +152,7 @@ FLAG is then removed if found and added to `used-command-flags'."
 (when (and (eval-when-compile (>= emacs-major-version 25))
 	   (not package-selected-packages))
   (setq package-selected-packages
-	'(ace-window alert auctex avy avy-zap browse-kill-ring dired-narrow edit-server elpy expand-region flycheck ido-sort-mtime ido-completing-read+ ido-yes-or-no interleave ioccur latex-preview-pane lua-mode magit multi-term paredit pdf-tools pkgbuild-mode projectile sage-shell-mode slime smartparens smartscan smex solarized-theme string-edit undo-tree writegood-mode wttrin x86-lookup))
+	'(ace-window alert auctex avy avy-zap browse-kill-ring cider dired-narrow edit-server elpy expand-region flycheck ido-sort-mtime ido-completing-read+ ido-yes-or-no interleave ioccur latex-preview-pane lua-mode magit multi-term paredit pdf-tools pkgbuild-mode projectile sage-shell-mode slime smartparens smartscan smex solarized-theme string-edit undo-tree writegood-mode wttrin x86-lookup))
   (package-refresh-contents)
   (package-install-selected-packages)
   (dolist (file (cons user-init-file
@@ -3057,8 +3057,6 @@ project."
   (define-key cider-repl-mode-map (kbd "C-c C-s") #'cider-scratch)
   (define-key cider-repl-mode-map (kbd "<up>") #'cider-repl-previous-if-eobp-else-up)
   (define-key cider-repl-mode-map (kbd "<down>") #'cider-repl-next-if-eobp-else-down)
-  ;(define-key cider-repl-mode-map (kbd "DEL") nil)
-  ;(define-key cider-repl-mode-map (kbd "M-r") nil)
   (with-no-warnings
     (define-key cider-repl-mode-map (kbd "C-M-r") #'cider-repl-previous-matching-input)))
 
@@ -3078,7 +3076,7 @@ project."
 (add-hook 'ielm-mode-hook				#'enable-paredit-mode)
 (add-hook 'eval-expression-minibuffer-setup-hook	#'enable-paredit-mode)
 (add-hook 'slime-repl-mode-hook				#'enable-paredit-mode)
-(add-hook 'clojure-repl-mode-hook			#'enable-paredit-mode)
+(add-hook 'cider-repl-mode-hook				#'enable-paredit-mode)
 
 (defun my/c-electric-brace-electric-pair (&rest args)
   (when (= last-command-event ?\{)
