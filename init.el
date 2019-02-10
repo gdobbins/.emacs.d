@@ -3050,6 +3050,10 @@ project."
 	(cider-repl-next-input))
     (call-interactively #'next-line)))
 
+(with-eval-after-load 'cider
+  (defvar cider-prompt-for-symbol)
+  (setq cider-prompt-for-symbol nil))
+
 (with-eval-after-load 'cider-repl
   (defvar cider-repl-history-size)
   (setq cider-repl-history-size 500)
