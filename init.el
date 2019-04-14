@@ -3301,6 +3301,8 @@ derived from prog-mode."
 	   (not (string= copyright-names-regexp "")))
   (add-hook 'before-save-hook #'copyright-update))
 
+(add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
+
 (defun byte-compile-current-buffer ()
   "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
   (interactive)
