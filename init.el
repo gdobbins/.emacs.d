@@ -2310,7 +2310,7 @@ one window, `split-window-right' and display next buffer in
   "M-v"		 scroll-other-window-down)
 
 (defkeys my/window
-  "C-l" linum-mode
+  "C-l" (eval-when-compile (if (>= emacs-major-version 26) #'display-line-numbers-mode #'linum-mode))
   "C-c" emacs-uptime
   "C-e" erase-buffer
   "C-s" delete-trailing-whitespace
