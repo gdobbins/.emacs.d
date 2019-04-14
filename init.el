@@ -2249,7 +2249,8 @@ describing the associations."
 				   (key-description (vector char))
 				   (buffer-name buf)))))))
       (let ((value (lookup-key map (vector key))))
-	(if (memq 'control (event-modifiers key))
+	(if (or (memq 'control (event-modifiers key))
+		(eq key 127)) ;; Make C-h being read as DEL work right
 	    (if (buffer-live-p value)
 		(pop-to-buffer value)
 	      (user-error "%s has no buffer associated with it"
