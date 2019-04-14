@@ -3291,6 +3291,16 @@ derived from prog-mode."
 
 (add-hook 'before-save-hook #'maybe-delete-trailing-whitespace)
 
+(when (and (boundp 'user-full-name)
+	   (not (string= user-full-name ""))
+	   (require 'copyright)
+	   (string= copyright-names-regexp ""))
+  (setq copyright-names-regexp (regexp-quote user-full-name)))
+
+(when (and (boundp 'copyright-names-regexp)
+	   (not (string= copyright-names-regexp "")))
+  (add-hook 'before-save-hook #'copyright-update))
+
 (defun byte-compile-current-buffer ()
   "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
   (interactive)
