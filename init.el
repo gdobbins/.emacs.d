@@ -986,7 +986,57 @@ FUNCTION either locally, or optionally in KEYMAP"
 (add-to-list 'ido-ignore-files "^ido\\.last\\'")
 (add-to-list 'ido-ignore-files "^\\.newsrc\\(\\.eld\\)?\\'")
 
-(setq ido-file-extensions-order '(".el" ".org" ".lisp" ".clj" ".py" ".pdf" t))
+(setq ido-file-extensions-order '(".el" ".org" ".lisp" ".clj" ".py" ".tex" ".pdf" t))
+
+(eval-when-compile
+  (defvar ido-temp-list))
+
+(defun my/resort-ido-by-extension ()
+  "Sort files with the same name according to
+`ido-file-extensions-order' when they are next to each other
+within the sorted list already. This is useful in conjunction
+with mtime sorted lists."
+  (let (last-cons)
+    (cl-do ((itl ido-temp-list (cdr itl)))
+	   ((null itl))
+      (let* ((name (file-name-sans-extension (car itl)))
+	     (sub
+	      (cl-loop
+		 with count = 0
+		 for el in (cdr itl)
+		 if (string= (file-name-sans-extension el) name)
+		 collect el into ret
+		 and do (incf count)
+		 else do (return (cons ret count))
+		 finally (return (cons ret count)))))
+	(when (> (cdr sub) 0)
+	  (let ((tail (nthcdr (1+ (cdr sub)) itl))
+		(sorted (sort (cons (car itl) (car sub)) #'ido-file-extension-lessp)))
+	    (rplacd (last sorted) tail)
+	    (if last-cons
+		(rplacd last-cons sorted)
+	      (setq ido-temp-list sorted)
+	      (setq itl ido-temp-list))))
+	(setq itl (nthcdr (cdr sub) itl))
+	(setq last-cons itl)))))
+
+(add-hook 'ido-make-file-list-hook #'my/resort-ido-by-extension t)
+(add-hook 'ido-make-dir-list-hook #'my/resort-ido-by-extension t)
+
+(defvar my/ido-file-push-to-end '(".log" ".out"))
+
+(defun my/ido-push-extensions-to-end ()
+  "Push files with extensions in `my/ido-file-push-to-end' to the
+  end of the list."
+  (cl-loop for el in ido-temp-list
+     if (member (file-name-extension el t) my/ido-file-push-to-end)
+     collect el into pushed
+     else collect el into regular
+     finally (setq ido-temp-list (nconc regular pushed))))
+
+(add-hook 'ido-make-file-list-hook #'my/ido-push-extensions-to-end t)
+(add-hook 'ido-make-dir-list-hook #'my/ido-push-extensions-to-end t)
+
 (setq ido-use-filename-at-point 'guess)
 
 (defvar my/user-has-root-privileges 'ask)
