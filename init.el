@@ -231,7 +231,7 @@ those files."
 (defun command-line-magit (switch)
   (add-to-list 'used-command-flags switch)
   (let ((git-dir (pop command-line-args-left)))
-    (magit-status-internal (expand-file-name git-dir))
+    (magit-status-setup-buffer (expand-file-name git-dir))
     (delete-other-windows)))
 
 (add-to-list 'command-switch-alist '("-magit" . command-line-magit))
@@ -1720,9 +1720,6 @@ on the location of the new git directory."
       (add-to-list 'magit-repository-directories (cons #1# 0)))
     (when (eval-when-compile (file-exists-p #1="~/sbcl/"))
       (add-to-list 'magit-repository-directories (cons #1# 0)))))
-
-(add-to-list 'safe-local-variable-values
-	     '(magit-commit-arguments . ("--gpg-sign=F1F2C078BAEE096B!")))
 
 (defun my/git-commit-setup ()
   (when (string-match
